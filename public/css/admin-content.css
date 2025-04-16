@@ -1,0 +1,261 @@
+/* Reset default margin and padding */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #E7EFFF;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh; /* Tinggi penuh */
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    z-index: 1000;
+}
+
+/* Logo Styling */
+.sidebar-logo {
+    padding: 20px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.sidebar-logo .navbar-brand {
+    font-size: 1.5rem;
+    color: #333 !important; /* Warna logo sesuai dengan sidebar */
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.sidebar-logo .navbar-brand:hover {
+    color: #007bff !important;
+}
+
+/* Menu Styling */
+.sidebar .nav-link {
+    color: #333;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+}
+
+/* Main Container (Header + Content) */
+.main-container {
+    margin-left: 250px; /* Sesuaikan dengan lebar sidebar */
+    width: calc(100% - 250px); /* Lebar penuh dikurangi lebar sidebar */
+}
+
+/* Header Styling */
+.navbar {
+    width: calc(100% - 40px);
+    padding: 0; /* Hapus padding default */
+    margin: 20px; /* Margin untuk header */
+    border: none; /* Hapus border jika ada */
+    border-radius: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 900; /* Pastikan header di bawah sidebar dalam hal z-index */
+}
+
+.navbar .container-fluid {
+    padding: 10px 20px; /* Atur padding hanya di dalam container */
+}
+
+/* Navbar Nav Styling */
+.navbar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Search Container (75%) */
+.search-container {
+    flex: 0 0 65%; /* 75% dari lebar header */
+}
+
+/* Search Input Styling */
+.search-input {
+    width: 100%; /* Mengambil lebar penuh dari search-container */
+    border-radius: 20px; /* Sudut melengkung */
+}
+
+/* .profil {
+    width: auto;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+} */
+
+.border-profil {
+    width: 40px; /* Lebar wrapper sama dengan ukuran gambar */
+    height: 40px; /* Tinggi wrapper sama dengan ukuran gambar */
+    border: 2px solid #007bff; /* Border biru di sekitar gambar */
+    border-radius: 50%; /* Membuat border berbentuk lingkaran */
+    display: flex;
+    justify-content: center; /* Posisikan gambar di tengah secara horizontal */
+    align-items: center; /* Posisikan gambar di tengah secara vertikal */
+    overflow: hidden; /* Sembunyikan bagian gambar yang melebihi wrapper */
+    margin-right: 10px; /* Jarak antara gambar dan nama */
+}
+
+/* Profile Picture Styling */
+.profil {
+    width: 100%; /* Gambar mengisi wrapper */
+    height: 100%; /* Gambar mengisi wrapper */
+    object-fit: cover; /* Pastikan gambar tidak terdistorsi, dipotong jika perlu */
+    object-position: center; /* Posisikan gambar di tengah */
+}
+
+.namaprofile {
+    font-size: 1.2rem;
+    text-overflow: ellipsis;
+}
+
+/* Icons Container (25%) */
+.icons-container {
+    flex: 0 0 35%; /* 25% dari lebar header */
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Content Styling */
+.content {
+    margin: 0 20px 20px 20px; /* Margin untuk konten */
+    border-radius: 10px;
+    padding: 20px; /* Padding untuk konten */
+    background-color: #ffffff;
+    min-height: calc(100vh - 100px); /* Tinggi penuh dikurangi tinggi header dan margin */
+}
+
+/* Card Styling untuk Dashboard */
+.admin-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-card h3 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.admin-card p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Table Styling */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-table th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: 600;
+}
+
+.admin-table td {
+    color: #333;
+}
+
+.admin-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Form Styling */
+.admin-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.admin-form label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.admin-form input,
+.admin-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.admin-form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.admin-form button:hover {
+    background-color: #0056b3;
+}
+
+/* File Upload Styling */
+.file-upload {
+    border: 2px dashed #ddd;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.file-upload p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.file-upload button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.file-upload button:hover {
+    background-color: #0056b3;
+}
+
+/* Image Preview */
+.student-photo {
+    max-width: 150px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
