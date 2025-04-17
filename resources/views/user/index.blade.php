@@ -13,9 +13,12 @@
             <tr>
                 <th>NIK</th>
                 <th>Nama</th>
+                <th>Username</th>
                 <th>Kelas</th>
-                <th>Foto</th>
-                <th>Tendefar</th>
+                <th>No HP Siswa</th>
+                <th>Nama Orang Tua</th>
+                <th>No HP Orang Tua</th>
+                <th>Foto Terdaftar</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -25,15 +28,20 @@
                     <tr>
                         <td>{{ $user->nik ?? 'Tidak Ada' }}</td>
                         <td>{{ $user->nama }}</td>
+                        <td>{{ $user->username }}</td>
                         <td>{{ $user->kelas ?? 'Tidak Ada' }}</td>
+                        <td>{{ $user->no_hp_siswa ?? 'Tidak Ada' }}</td>
+                        <td>{{ $user->nama_ortu }}</td>
+                        <td>{{ $user->no_hp_ortu }}</td>
                         <td>
                             @if ($user->foto)
-                                <img src="{{ asset('storage/' . $user->foto) }}" class="student-photo" alt="Foto Siswa">
+                                <img src="{{ asset('storage/' . $user->foto) }}" class="student-photo" alt="Foto Siswa" width="50" height="50">
                             @else
                                 Tidak Ada
                             @endif
+                            <br>
+                            <span>{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</span> <!-- Menampilkan status face encoding -->
                         </td>
-                        <td>{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</td>
                         <td>
                             <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('user.destroy', $user->id_user) }}" method="POST" style="display:inline;">
