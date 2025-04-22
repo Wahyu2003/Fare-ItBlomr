@@ -31,7 +31,7 @@
                     <td>{{ $jp->multimedia }}</td>
                     <td>{{ $jp->mataPelajaran->nama_mata_pelajaran }}</td>
                     <td>
-                        <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning" style="padding: 5px 16px; margin:10px 0">Edit</a>
                         <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')

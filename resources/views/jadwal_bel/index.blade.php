@@ -22,7 +22,7 @@
                     <td>{{ $jadwal->jam }}</td>
                     <td>{{ $jadwal->keterangan }}</td>
                     <td>
-                        <a href="{{ route('jadwal_bel.edit', $jadwal->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{{ route('jadwal_bel.edit', $jadwal->id) }}" class="btn btn-warning btn-sm" style="padding: 5px 16px; margin:10px 0">Edit</a>
                         <form action="{{ route('jadwal_bel.destroy', $jadwal->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')

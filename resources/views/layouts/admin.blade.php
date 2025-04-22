@@ -14,17 +14,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
 </head>
-<body>
+<body class="body-container">
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Logo -->
         <div class="sidebar-logo">
-            <a href="#" class="navbar-brand">LogoIpsum</a>
+            <a href="#" class="navbar-brand">Utopia</a>
         </div>
         <!-- Menu -->
         <ul class="nav flex-column p-3">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-line me-2"></i> Dashboard</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('jadwalPelajaran.index') ? 'active' : '' }}" href="{{ route('jadwalPelajaran.index') }}"><i class="fas fa-calendar-alt me-2"></i> Jadwal Pelajaran</a>
@@ -33,7 +33,7 @@
                 <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}" href="{{ route('detailPresensi.index') }}"><i class="fas fa-user-check me-2"></i> Absensi</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('jadwal_bel.index') ? 'active' : '' }}" href="{{ route('jadwal_bel.index') }}"><i class="fas fa-user-check me-2"></i> Bel</a>
+                <a class="nav-link {{ request()->routeIs('jadwal_bel.index') ? 'active' : '' }}" href="{{ route('jadwal_bel.index') }}"><i class="fas fa-bell me-2"></i> Bel</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}" href="{{ route('user.index') }}"><i class="fas fa-users me-2"></i> Daftar Wajah</a>
@@ -61,11 +61,12 @@
                         <li class="nav-item icons-container">
                             <div class="d-flex align-items-center">
                                 <a class="nav-link me-3" href="#"><i class="fas fa-bell"></i></a>
+                                <a class="nav-link me-3" href="#"><i class="fas fa-message"></i></a>
                                 <div class="d-flex align-items-center">
-                                    <div class="profile-pic-wrapper">
-                                        <img src="https://via.placeholder.com/40" class="profile-pic rounded-circle" alt="Profil">
+                                    <div class="border-profil">
+                                        <img src="{{ asset('images/cindy.jpg') }}" class="profile-pic rounded-circle profil" alt="Profil">
                                     </div>
-                                    <span class="text-black username">Ahmad Aryandi Faudil</span>
+                                    <span class="text-black username">Endang Sulistiawati</span>
                                 </div>
                             </div>
                         </li>

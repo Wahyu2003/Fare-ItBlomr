@@ -28,7 +28,7 @@
     <table class="admin-table">
         <thead>
             <tr>
-                <th>NIK</th>
+                <th>NIS</th>
                 <th>Nama</th>
                 <th>Kelas</th>
                 <th>Status</th>
@@ -39,12 +39,12 @@
         <tbody>
             <!-- Placeholder untuk data dinamis -->
             <tr>
-                <td>Kolom 1</td>
-                <td>Kolom 2</td>
-                <td>Kolom 3</td>
-                <td>Kolom 4</td>
-                <td>Kolom 5</td>
-                <td>Kolom 6</td>
+                <td>1234567890</td>
+                <td>M. Sholiudin</td>
+                <td>10 MM 2</td>
+                <td>Hadir</td>
+                <td>06:45</td>
+                <td>-</td>
             </tr>
         </tbody>
     </table>

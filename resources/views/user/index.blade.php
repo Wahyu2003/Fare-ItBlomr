@@ -43,7 +43,7 @@
                             <span>{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</span> <!-- Menampilkan status face encoding -->
                         </td>
                         <td>
-                            <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning" style="padding: 5px 16px; margin:10px 0">Edit</a>
                             <form action="{{ route('user.destroy', $user->id_user) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')

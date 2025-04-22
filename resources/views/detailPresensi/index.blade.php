@@ -29,7 +29,7 @@
                     <td>{{ $presensi->waktu_presensi }}</td>
                     <td>Tidak Ada</td> <!-- Placeholder untuk Bukti Hadir -->
                     <td>
-                        <a href="{{ route('detailPresensi.edit', $presensi->id_detail_presensi) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{{ route('detailPresensi.edit', $presensi->id_detail_presensi) }}" class="btn btn-sm btn-warning" style="padding: 5px 16px; margin:10px 0">Edit</a>
                         <form action="{{ route('detailPresensi.destroy', $presensi->id_detail_presensi) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')

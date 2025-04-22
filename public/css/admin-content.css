@@ -3,6 +3,10 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background-color: #000000;
+}
+
+.body-container {
     background-color: #E7EFFF;
 }
 
@@ -14,14 +18,14 @@ body {
     width: 250px;
     height: 100vh; /* Tinggi penuh */
     background-color: #ffffff;
-    border-right: 1px solid #ddd;
+    border-right: 2px solid #ddd;
     z-index: 1000;
 }
 
 /* Logo Styling */
 .sidebar-logo {
     padding: 20px 15px;
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
     text-align: center;
 }
 
@@ -40,6 +44,7 @@ body {
 .sidebar .nav-link {
     color: #333;
     padding: 10px 15px;
+    margin: 2px;
     font-size: 16px;
 }
 
