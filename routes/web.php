@@ -5,6 +5,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\JadwalBelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -69,3 +70,6 @@ Route::controller(PresensiController::class)->group(function() {
     Route::put('/presensi/{presensi}', 'update')->name('presensi.update');
     Route::delete('/presensi/{presensi}', 'destroy')->name('presensi.destroy');
 });
+
+// Bell
+Route::resource('jadwal_bel', JadwalBelController::class);

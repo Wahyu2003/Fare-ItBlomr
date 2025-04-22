@@ -30,6 +30,9 @@
                 <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}" href="{{ route('detailPresensi.index') }}"><i class="fas fa-user-check me-2"></i> Absensi</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('jadwal_bel.index') ? 'active' : '' }}" href="{{ route('jadwal_bel.index') }}"><i class="fas fa-user-check me-2"></i> Bel</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}" href="{{ route('user.index') }}"><i class="fas fa-users me-2"></i> Daftar Wajah</a>
             </li>
         </ul>
