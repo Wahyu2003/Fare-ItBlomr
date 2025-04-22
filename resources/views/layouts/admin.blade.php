@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- CSS Kustom untuk Konten -->
     <link rel="stylesheet" href="{{ asset('css/admin-content.css') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
 </head>
 <body>
     <!-- Sidebar -->
@@ -24,7 +27,7 @@
                 <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('presensi.index') ? 'active' : '' }}" href="{{ route('presensi.index') }}"><i class="fas fa-calendar-alt me-2"></i> Jadwal Pelajaran</a>
+                <a class="nav-link {{ request()->routeIs('jadwalPelajaran.index') ? 'active' : '' }}" href="{{ route('jadwalPelajaran.index') }}"><i class="fas fa-calendar-alt me-2"></i> Jadwal Pelajaran</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}" href="{{ route('detailPresensi.index') }}"><i class="fas fa-user-check me-2"></i> Absensi</a>
@@ -55,13 +58,11 @@
                         <li class="nav-item icons-container">
                             <div class="d-flex align-items-center">
                                 <a class="nav-link me-3" href="#"><i class="fas fa-bell"></i></a>
-                                <!-- Tambahkan ikon pesan jika diperlukan -->
-                                <a class="nav-link me-3" href="#"><i class="fas fa-envelope"></i></a>
                                 <div class="d-flex align-items-center">
-                                    <div class="border-profil">
-                                        <img src="{{ asset('images/cindy.jpg') }}" class="profil rounded-circle" alt="Profil">
+                                    <div class="profile-pic-wrapper">
+                                        <img src="https://via.placeholder.com/40" class="profile-pic rounded-circle" alt="Profil">
                                     </div>
-                                    <span class="namaprofil">Ahmad Aryandi Faudil</span>
+                                    <span class="text-black username">Ahmad Aryandi Faudil</span>
                                 </div>
                             </div>
                         </li>
@@ -76,9 +77,10 @@
         </div>
     </div>
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- JS Kustom untuk Konten -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><!-- JS Kustom untuk Konten -->
     <script src="{{ asset('js/admin-content.js') }}"></script>
 </body>
 </html>

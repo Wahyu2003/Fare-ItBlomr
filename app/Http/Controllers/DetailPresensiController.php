@@ -10,7 +10,7 @@ class DetailPresensiController extends Controller
 {
     public function index()
     {
-        $detailPresensi = DetailPresensi::with(['user', 'presensi.kelas'])->get();
+        $detailPresensi = DetailPresensi::with(['user', 'jadwalPelajaran'])->get();
         return view('detailPresensi.index', compact('detailPresensi'));
     }
 
