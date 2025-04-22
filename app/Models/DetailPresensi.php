@@ -7,21 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetailPresensi extends Model
 {
-    protected $table = 'detail_presensi'; // Tentukan nama tabel secara eksplisit
+    protected $table = 'detail_presensi';
+    protected $primaryKey = 'id_detail_presensi';
 
     protected $fillable = [
         'waktu_presensi',
         'kehadiran',
         'jenis_absen',
         'id_user',
-        'id_presensi',
+        'id_jadwal_pelajaran',
     ];
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function presensi(): BelongsTo {
-        return $this->belongsTo(Presensi::class, 'id_presensi');
+    public function jadwalPelajaran(): BelongsTo
+    {
+        return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal_pelajaran');
     }
 }

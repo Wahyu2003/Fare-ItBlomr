@@ -14,9 +14,9 @@ return new class extends Migration
             $table->enum('kehadiran', ['tepat waktu', 'telat', 'alpha', 'izin', 'sakit']);
             $table->enum('jenis_absen', ['belum keluar', 'pulang', 'tidak hadir']);
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_presensi');
+            $table->unsignedBigInteger('id_jadwal_pelajaran'); // Ubah dari id_presensi ke id_jadwal_pelajaran
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
-            $table->foreign('id_presensi')->references('id_presensi')->on('presensi')->onDelete('cascade');
+            $table->foreign('id_jadwal_pelajaran')->references('id_jadwal_pelajaran')->on('jadwal_pelajaran')->onDelete('cascade'); // Ubah referensi ke jadwal_pelajaran
             $table->timestamps();
         });
     }
