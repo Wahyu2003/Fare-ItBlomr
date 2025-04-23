@@ -7,7 +7,17 @@
         @csrf
         <div class="form-group">
             <label for="hari">Hari</label>
-            <input type="text" name="hari" id="hari" class="form-control" required>
+            <select name="hari" id="hari" class="form-control" required>
+                <option value="">-- Pilih Hari --</option>
+                <option value="Senin">Senin</option>
+                <option value="Selasa">Selasa</option>
+                <option value="Rabu">Rabu</option>
+                <option value="Kamis">Kamis</option>
+                <option value="Jumat">Jumat</option>
+                <option value="Sabtu">Sabtu</option>
+                <option value="Minggu">Minggu</option>
+                <option value="Senin" {{ old('hari') == 'Senin' ? 'selected' : '' }}>Senin</option>
+            </select>
         </div>
 
         <div class="form-group">

@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalBel;
 use Illuminate\Http\Request;
+use App\Services\FirebaseService;
 
 class JadwalBelController extends Controller
 {
+    protected $firebase;
+
+    public function __construct(FirebaseService $firebase)
+    {
+        $this->firebase = $firebase;
+    }
+
     // Menampilkan daftar jadwal
     public function index()
     {
@@ -23,13 +31,18 @@ class JadwalBelController extends Controller
     // Menyimpan jadwal baru
     public function store(Request $request)
     {
-        $request->validate([
+        // Validasi input
+        $validated = $request->validate([
             'hari' => 'required|string|max:20',
             'jam' => 'required|date_format:H:i',
             'keterangan' => 'required|string|max:255',
         ]);
 
-        JadwalBel::create($request->all());
+        // Menyimpan jadwal baru ke database
+        $jadwal = JadwalBel::create($request->all());
+
+        // Menyimpan jadwal ke Firebase
+        $this->firebase->storeJadwal($jadwal->id, $jadwal->toArray());
 
         return redirect()->route('jadwal_bel.index')->with('success', 'Jadwal berhasil ditambahkan');
     }
@@ -43,13 +56,18 @@ class JadwalBelController extends Controller
     // Memperbarui jadwal
     public function update(Request $request, JadwalBel $jadwalBel)
     {
-        $request->validate([
+        // Validasi input
+        $validated = $request->validate([
             'hari' => 'required|string|max:20',
             'jam' => 'required|date_format:H:i',
             'keterangan' => 'required|string|max:255',
         ]);
 
+        // Memperbarui jadwal
         $jadwalBel->update($request->all());
+
+        // Menyimpan pembaruan ke Firebase
+        $this->firebase->storeJadwal($jadwalBel->id, $jadwalBel->toArray());
 
         return redirect()->route('jadwal_bel.index')->with('success', 'Jadwal berhasil diperbarui');
     }
@@ -57,6 +75,10 @@ class JadwalBelController extends Controller
     // Menghapus jadwal
     public function destroy(JadwalBel $jadwalBel)
     {
+        // Menghapus jadwal dari Firebase
+        $this->firebase->storeJadwal($jadwalBel->id, null);
+
+        // Menghapus jadwal dari database
         $jadwalBel->delete();
 
         return redirect()->route('jadwal_bel.index')->with('success', 'Jadwal berhasil dihapus');

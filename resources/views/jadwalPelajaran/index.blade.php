@@ -8,7 +8,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <a href="{{ route('jadwalPelajaran.create') }}" class="btn btn-primary mb-3">Tambah Jadwal Pelajaran</a>
+    <a href="{{ route('jadwalPelajaran.create') }}" class="btn btn-primary mb-3"><i class="fas fa-plus"></i> Jadwal Pelajaran</a>
     <table class="admin-table">
         <thead>
             <tr>
@@ -31,11 +31,11 @@
                     <td>{{ $jp->multimedia }}</td>
                     <td>{{ $jp->mataPelajaran->nama_mata_pelajaran }}</td>
                     <td>
-                        <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning" style="padding: 5px 16px; margin:10px 0">Edit</a>
+                        <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning" style="display:inline;"><i class="fas fa-pencil-alt"></i></a>
                         <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus jadwal pelajaran ini?')">Hapus</button>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus jadwal pelajaran ini?')"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>

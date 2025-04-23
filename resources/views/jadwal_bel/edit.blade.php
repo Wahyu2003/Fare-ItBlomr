@@ -9,7 +9,15 @@
 
         <div class="form-group">
             <label for="hari">Hari</label>
-            <input type="text" name="hari" id="hari" class="form-control" value="{{ $jadwalBel->hari }}" required>
+            <select name="hari" id="hari" class="form-control" required>
+                <option value="Senin" {{ $jadwalBel->hari == 'Senin' ? 'selected' : '' }}>Senin</option>
+                <option value="Selasa" {{ $jadwalBel->hari == 'Selasa' ? 'selected' : '' }}>Selasa</option>
+                <option value="Rabu" {{ $jadwalBel->hari == 'Rabu' ? 'selected' : '' }}>Rabu</option>
+                <option value="Kamis" {{ $jadwalBel->hari == 'Kamis' ? 'selected' : '' }}>Kamis</option>
+                <option value="Jumat" {{ $jadwalBel->hari == 'Jumat' ? 'selected' : '' }}>Jumat</option>
+                <option value="Sabtu" {{ $jadwalBel->hari == 'Sabtu' ? 'selected' : '' }}>Sabtu</option>
+                <option value="Minggu" {{ $jadwalBel->hari == 'Minggu' ? 'selected' : '' }}>Minggu</option>
+            </select>
         </div>
 
         <div class="form-group">
