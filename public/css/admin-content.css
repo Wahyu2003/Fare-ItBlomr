@@ -263,3 +263,134 @@ body {
     border-radius: 8px;
     margin-top: 10px;
 }
+
+
+/* Tampilan Daftar Wajah */
+.wajahFlipContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wajahFlipTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.wajahFlipTable th,
+.wajahFlipTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.wajahFlipTable th {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.wajahFlipTable tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.wajahFlipPhoto {
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.wajahFlipPhoto:hover {
+    transform: scale(1.2);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+/* Animasi Buku */
+.wajahFlipBook {
+    position: relative;
+    perspective: 1200px;
+    min-height: 500px;
+}
+
+.wajahFlipPage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    transform-origin: left center;
+    transition: transform 0.8s ease-in-out;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none; /* Sembunyikan halaman non-aktif */
+}
+
+.wajahFlipPage.wajahFlipActive {
+    display: block; /* Tampilkan halaman aktif */
+    transform: rotateY(0deg);
+}
+
+.wajahFlipPage:not(.wajahFlipActive) {
+    transform: rotateY(-180deg); /* Animasi flip untuk halaman tersembunyi */
+}
+
+/* Styling Tombol Switch */
+.wajahFlipSwitch {
+    position: absolute;
+    z-index: 10;
+}
+
+.wajahFlipLeft {
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 10px; /* Jarak antara tombol Tambah Pengguna dan tombol switch */
+}
+
+.wajahFlipRight {
+    top: 10px;
+    right: 10px;
+}
+
+.wajahFlipBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+/* .wajahFlipBtn:hover:not(.wajahFlipDisabled) {
+    background-color: #ffee00;
+} */
+
+.wajahFlipDisabled {
+    display: none; /* Sembunyikan tombol yang dinonaktifkan */
+}
+
+.wajahFlipAddBtn {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+
+/* Ikon Bootstrap */
+.bi {
+    font-size: 16px;
+}
