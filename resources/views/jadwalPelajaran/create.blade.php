@@ -36,25 +36,23 @@
             @enderror
         </div>
         <div class="mb-3">
-            <label for="kelas">Kelas</label>
-            <select name="kelas" id="kelas" class="form-control">
-                <option value="">Pilih Kelas</option>
-                <option value="10" {{ old('kelas') == '10' ? 'selected' : '' }}>10</option>
-                <option value="11" {{ old('kelas') == '11' ? 'selected' : '' }}>11</option>
-                <option value="12" {{ old('kelas') == '12' ? 'selected' : '' }}>12</option>
-            </select>
-            @error('kelas')
+            <label for="ruangan">Ruangan</label>
+            <input type="text" name="ruangan" id="ruangan" class="form-control" value="{{ old('ruangan') }}">
+            @error('ruangan')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <div class="mb-3">
-            <label for="multimedia">Multimedia</label>
-            <select name="multimedia" id="multimedia" class="form-control">
-                <option value="">Pilih Multimedia</option>
-                <option value="Multimedia 1" {{ old('multimedia') == 'Multimedia 1' ? 'selected' : '' }}>Multimedia 1</option>
-                <option value="Multimedia 2" {{ old('multimedia') == 'Multimedia 2' ? 'selected' : '' }}>Multimedia 2</option>
+            <label for="guru_id">Guru</label>
+            <select name="guru_id" id="guru_id" class="form-control">
+                <option value="">Pilih Guru</option>
+                @foreach($gurus as $guru)
+                    <option value="{{ $guru->id_user }}" {{ old('guru_id') == $guru->id_user ? 'selected' : '' }}>
+                        {{ $guru->nama }}
+                    </option>
+                @endforeach
             </select>
-            @error('multimedia')
+            @error('guru_id')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
@@ -64,7 +62,7 @@
                 <select name="id_mata_pelajaran" id="id_mata_pelajaran" class="form-control">
                     <option value="">Pilih Mata Pelajaran</option>
                     @foreach($mataPelajaran as $mp)
-                        <option value="{{ $mp->id_mata_pelajaran }}" data-kelas="{{ $mp->kelas }}" data-multimedia="{{ $mp->multimedia }}">
+                        <option value="{{ $mp->id_mata_pelajaran }}">
                             {{ $mp->nama_mata_pelajaran }} (Kelas {{ $mp->kelas }} - {{ $mp->multimedia }})
                         </option>
                     @endforeach
@@ -84,53 +82,4 @@
         </div>
     @endif
 </div>
-
-<script>
-$(document).ready(function() {
-    // Filter mata pelajaran berdasarkan kelas dan multimedia
-    function filterMataPelajaran() {
-        const kelas = $('#kelas').val();
-        const multimedia = $('#multimedia').val();
-        const mataPelajaranSelect = $('#id_mata_pelajaran');
-        const options = mataPelajaranSelect.find('option');
-
-        options.each(function() {
-            const option = $(this);
-            const optionKelas = option.data('kelas');
-            const optionMultimedia = option.data('multimedia');
-
-            if (option.val() === '') {
-                return;
-            }
-
-            if (kelas && multimedia) {
-                if (optionKelas === kelas && optionMultimedia === multimedia) {
-                    option.show();
-                } else {
-                    option.hide();
-                }
-            } else {
-                option.hide();
-            }
-        });
-
-        const selectedOption = mataPelajaranSelect.find(':selected');
-        if (selectedOption.length && selectedOption.is(':hidden')) {
-            mataPelajaranSelect.val('');
-        }
-    }
-
-    $('#kelas, #multimedia').on('change', function() {
-        filterMataPelajaran();
-    });
-
-    filterMataPelajaran(); // Inisialisasi filter
-});
-</script>
-
-<style>
-.mata-pelajaran-container {
-    position: relative;
-}
-</style>
 @endsection

@@ -15,14 +15,19 @@ class JadwalPelajaran extends Model
         'hari',
         'jam_mulai',
         'jam_selesai',
-        'kelas',
-        'multimedia',
+        'ruangan',
         'id_mata_pelajaran',
+        'guru_id',
     ];
 
     public function mataPelajaran(): BelongsTo
     {
         return $this->belongsTo(MataPelajaran::class, 'id_mata_pelajaran');
+    }
+
+    public function guru(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'guru_id')->where('role', 'guru');
     }
 
     public function detailPresensi(): HasMany

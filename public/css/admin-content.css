@@ -6,6 +6,9 @@ body {
     background-color: #E7EFFF;
 }
 
+.bodi {
+    background-color: #E7EFFF;
+}
 /* Sidebar Styling */
 .sidebar {
     position: fixed;
@@ -14,14 +17,15 @@ body {
     width: 250px;
     height: 100vh; /* Tinggi penuh */
     background-color: #ffffff;
-    border-right: 1px solid #ddd;
+    /* border-right: 3px solid #ddd; */
+    box-shadow: #333 0px 2px 5px;
     z-index: 1000;
 }
 
 /* Logo Styling */
 .sidebar-logo {
     padding: 20px 15px;
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
     text-align: center;
 }
 
@@ -61,7 +65,7 @@ body {
     width: calc(100% - 40px);
     padding: 0; /* Hapus padding default */
     margin: 20px; /* Margin untuk header */
-    border: none; /* Hapus border jika ada */
+    border-bottom: none; /* Hapus border jika ada */
     border-radius: 10px;
     position: sticky;
     top: 0;
