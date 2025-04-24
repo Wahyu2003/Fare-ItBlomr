@@ -12,6 +12,6 @@ class JadwalBel extends Model
     protected $table = 'jadwal_bel';  // Nama tabel
     
     protected $fillable = [
-        'hari', 'jam', 'keterangan'
+        'hari', 'jam', 'keterangan', 'file_suara', 'aktif'
     ];
 }

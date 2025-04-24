@@ -30,6 +30,11 @@
             <input type="text" name="keterangan" id="keterangan" class="form-control" value="{{ $jadwalBel->keterangan }}" required>
         </div>
 
+        <div class="form-group">
+            <label for="file_suara">File Suara</label>
+            <input type="file" name="file_suara" class="form-control">
+        </div>
+
         <button type="submit" class="btn btn-warning">Update</button>
     </form>
 @endsection

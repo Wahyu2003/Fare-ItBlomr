@@ -30,6 +30,16 @@
             <input type="text" name="keterangan" id="keterangan" class="form-control" required>
         </div>
 
+        <div class="form-group">
+            <label for="file_suara">File Suara</label>
+            <input type="file" name="file_suara" class="form-control">
+        </div>
+
+        <div class="form-check form-switch mt-3">
+            <input class="form-check-input" type="checkbox" name="aktif" value="1" {{ old('aktif', $jadwalBel->aktif ?? true) ? 'checked' : '' }}>
+            <label class="form-check-label">Aktif</label>
+        </div>
+
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 @endsection

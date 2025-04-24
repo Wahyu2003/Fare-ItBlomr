@@ -30,16 +30,6 @@ Route::controller(UserController::class)->group(function() {
     Route::delete('/user/{user}', 'destroy')->name('user.destroy');
 });
 
-// // Orang Tua
-// Route::controller(OrtuController::class)->group(function() {
-//     Route::get('/ortu', 'index')->name('ortu.index');
-//     Route::get('/ortu/create', 'create')->name('ortu.create');
-//     Route::post('/ortu', 'store')->name('ortu.store');
-//     Route::get('/ortu/{ortu}', 'show')->name('ortu.show');
-//     Route::get('/ortu/{ortu}/edit', 'edit')->name('ortu.edit');
-//     Route::put('/ortu/{ortu}', 'update')->name('ortu.update');
-//     Route::delete('/ortu/{ortu}', 'destroy')->name('ortu.destroy');
-// });
 
 // Kelas
 Route::controller(KelasController::class)->group(function() {
@@ -85,3 +75,4 @@ Route::resource('user', \App\Http\Controllers\UserController::class);
 
 Route::resource('jadwalPelajaran', JadwalPelajaranController::class);
 Route::resource('jadwal_bel', JadwalBelController::class);
+Route::put('/jadwal-bel/{jadwalBel}/toggle', [JadwalBelController::class, 'toggle'])->name('jadwal_bel.toggle');

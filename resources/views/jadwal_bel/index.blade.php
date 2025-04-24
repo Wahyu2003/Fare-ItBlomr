@@ -11,6 +11,8 @@
                 <th>Hari</th>
                 <th>Jam</th>
                 <th>Keterangan</th>
+                <th>File Suara</th>
+                <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -21,8 +23,33 @@
                     <td>{{ $jadwal->hari }}</td>
                     <td>{{ $jadwal->jam }}</td>
                     <td>{{ $jadwal->keterangan }}</td>
+                    
+                    {{-- Kolom File Suara --}}
                     <td>
-                        <a href="{{ route('jadwal_bel.edit', $jadwal->id) }}" class="btn btn-warning btn-sm" style="display:inline;"><i class="fas fa-pencil-alt"></i></a>
+                        @if ($jadwal->file_suara)
+                            <audio controls style="width: 120px;">
+                                <source src="{{ asset('storage/' . $jadwal->file_suara) }}" type="audio/mpeg">
+                                Browser tidak mendukung audio
+                            </audio>
+                        @else
+                            <span class="text-muted">-</span>
+                        @endif
+                    </td>
+
+                    {{-- Kolom Aktif/Nonaktif (Switch) --}}
+                    <td>
+                        <form method="POST" action="{{ route('jadwal_bel.toggle', $jadwal->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="form-check form-switch">
+                                <input type="checkbox" class="form-check-input" onchange="this.form.submit()" {{ $jadwal->aktif ? 'checked' : '' }}>
+                            </div>
+                        </form>
+                    </td>
+
+                    {{-- Kolom Aksi --}}
+                    <td>
+                        <a href="{{ route('jadwal_bel.edit', $jadwal->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i></a>
                         <form action="{{ route('jadwal_bel.destroy', $jadwal->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')

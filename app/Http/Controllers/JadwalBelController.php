@@ -31,17 +31,23 @@ class JadwalBelController extends Controller
     // Menyimpan jadwal baru
     public function store(Request $request)
     {
-        // Validasi input
         $validated = $request->validate([
             'hari' => 'required|string|max:20',
             'jam' => 'required|date_format:H:i',
             'keterangan' => 'required|string|max:255',
+            'file_suara' => 'nullable|file|mimes:mp3,wav',
+            'aktif' => 'nullable|boolean',
         ]);
-
-        // Menyimpan jadwal baru ke database
-        $jadwal = JadwalBel::create($request->all());
-
-        // Menyimpan jadwal ke Firebase
+        
+        $data = $request->all();
+        
+        if ($request->hasFile('file_suara')) {
+            $data['file_suara'] = $request->file('file_suara')->store('suara_bel', 'public');
+        }
+        
+        $data['aktif'] = $request->has('aktif'); // true jika dicentang
+        
+        $jadwal = JadwalBel::create($data);
         $this->firebase->storeJadwal($jadwal->id, $jadwal->toArray());
 
         return redirect()->route('jadwal_bel.index')->with('success', 'Jadwal berhasil ditambahkan');
@@ -61,12 +67,19 @@ class JadwalBelController extends Controller
             'hari' => 'required|string|max:20',
             'jam' => 'required|date_format:H:i',
             'keterangan' => 'required|string|max:255',
+            'file_suara' => 'nullable|file|mimes:mp3,wav',
+            'aktif' => 'nullable|boolean',
         ]);
-
-        // Memperbarui jadwal
-        $jadwalBel->update($request->all());
-
-        // Menyimpan pembaruan ke Firebase
+        
+        $data = $request->all();
+        
+        if ($request->hasFile('file_suara')) {
+            $data['file_suara'] = $request->file('file_suara')->store('suara_bel', 'public');
+        }
+        
+        $data['aktif'] = $request->has('aktif');
+        
+        $jadwalBel->update($data);
         $this->firebase->storeJadwal($jadwalBel->id, $jadwalBel->toArray());
 
         return redirect()->route('jadwal_bel.index')->with('success', 'Jadwal berhasil diperbarui');
@@ -82,5 +95,13 @@ class JadwalBelController extends Controller
         $jadwalBel->delete();
 
         return redirect()->route('jadwal_bel.index')->with('success', 'Jadwal berhasil dihapus');
+    }
+
+    public function toggle(JadwalBel $jadwalBel)
+    {
+        $jadwalBel->update(['aktif' => !$jadwalBel->aktif]);
+        $this->firebase->storeJadwal($jadwalBel->id, $jadwalBel->toArray());
+
+        return back();
     }
 }
