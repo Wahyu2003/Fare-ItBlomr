@@ -21,4 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-*.ZoneIdentifier
+
+**/caddy
+frankenphp
+frankenphp-worker.php
