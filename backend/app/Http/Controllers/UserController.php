@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 
@@ -60,7 +61,22 @@ class UserController extends Controller
         }
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('fotos', 'public');
+            $photo = $request->file('foto');
+            $data['foto'] = $photo->store('fotos', 'public');
+
+            $response = Http::attach(
+                'photo', file_get_contents($photo), $photo->getClientOriginalName()
+            )->post('http://faceapi:5000/register', [
+                'name' => $request->nama,
+            ]);
+
+            if ($response->successful()) {
+                $encoding = $response->json()['encoding'];
+                $data['face_encoding'] = json_encode($encoding);
+            } else {
+                \Log::error('FaceAPI Error: ' . $response->body());
+                return redirect()->back()->with('error', 'Gagal memproses wajah. Wajah Kurang Jelas')->withInput();
+            }
         }
 
         try {
