@@ -101,15 +101,14 @@ class DetailPresensiController extends Controller
             if (isset($data['name'])) {
                 DetailPresensi::create([
                     'waktu_presensi' => now(),
-                    'kehadiran' => $data['status'],
-                    'jenis_absen' => $data['jenis_absen'],
+                    'kehadiran' => 'tepat waktu',
+                    'jenis_absen' => 'belum keluar',
                     'id_user' => $data['id_user'],
-                    'id_jadwal_pelajaran' => $data['id_jadwal_pelajaran'],
+                    'id_jadwal_pelajaran' => '1',
                 ]);
                 $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
                 Http::post($firebaseUrl, [
                     'nama' => $data['name'],
-                    'status' => $data['status'],
                     'waktu_presensi' => now()->toDateTimeString(),
                 ]);
             }

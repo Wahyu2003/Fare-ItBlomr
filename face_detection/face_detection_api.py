@@ -80,6 +80,8 @@ def recognize_face():
 
                 encoding_str = face.get('face_encoding')
                 name = face.get('nama')
+                id_user = face.get('id_user')
+                role = face.get('role')
 
                 if not encoding_str or not name:
                     errors.append(f'Encoding atau nama kosong: {face}')
@@ -105,7 +107,9 @@ def recognize_face():
                 match = face_recognition.compare_faces([known_encoding], unknown_encoding, tolerance=0.5)
 
                 if match[0]:
-                    return jsonify({'name': name})
+                    return jsonify({'name': name,
+                                    'id_user':id_user,
+                                    'role':guru})
 
             except Exception as e:
                 errors.append(f'Error saat membandingkan wajah: {str(e)}')
