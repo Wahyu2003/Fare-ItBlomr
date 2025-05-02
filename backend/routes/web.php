@@ -47,6 +47,9 @@ Route::put('/detailPresensi/{detailPresensi}', [DetailPresensiController::class,
 Route::post('detailPresensi/kirim',[DetailPresensiController::class,'sendToPython'])->name('detailPresensi.send');
 Route::delete('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'destroy'])->name('detailPresensi.destroy');
 
+// Route untuk Jadwal Bell
+Route::resource('jadwal_bel',JadwalBelController::class);
+Route::put('/jadwal_bel/{jadwalBel}/toggle', [JadwalBelController::class, 'toggle'])->name('jadwal_bel.toggle');
 
 // Rute untuk Jadwal Pelajaran
 Route::get('/jadwalPelajaran', [JadwalPelajaranController::class, 'index'])->name('jadwalPelajaran.index');
@@ -75,7 +78,6 @@ Route::get('/storage/{path}', function ($path) {
     return response()->file(storage_path('app/public/' . $path));
 })->where('path', '.*')->name('storage.local');
 
-Route::resource('jadwal_bel',JadwalBelController::class);
 // Jika ada middleware auth, kamu bisa tambahkan di sini
 // Route::middleware(['auth'])->group(function () {
 //     // Rute yang memerlukan autentikasi
