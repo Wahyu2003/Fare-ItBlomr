@@ -107,10 +107,12 @@ class DetailPresensiController extends Controller
                     'id_jadwal_pelajaran' => '1',
                 ]);
                 $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
-                Http::post($firebaseUrl, [
+                $payload = [
                     'nama' => $data['name'],
-                    'waktu_presensi' => now()->toDateTimeString(),
-                ]);
+                    'waktu_presensi' => now()->toDayDateTimeString(),
+                    'role' => $data['role'] ?? 'siswa',
+                ];
+                Http::put($firebaseUrl, $payload);
             }
 
             return response()->json($data);
