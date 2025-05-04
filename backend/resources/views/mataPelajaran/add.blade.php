@@ -12,29 +12,23 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-        <div class="mb-3">
-            <label for="kelas">Kelas</label>
-            <select name="kelas" id="kelas" class="form-control">
-                <option value="">Pilih Kelas</option>
-                <option value="10" {{ old('kelas') == '10' ? 'selected' : '' }}>10</option>
-                <option value="11" {{ old('kelas') == '11' ? 'selected' : '' }}>11</option>
-                <option value="12" {{ old('kelas') == '12' ? 'selected' : '' }}>12</option>
+
+        <!-- Pilihan Kelas (Sekarang menggunakan kelas_id) -->
+        <label for="kelas_id">Kelas</label>
+        <div class="mb-3 d-flex">
+            
+            <select name="kelas_id" id="kelas_id" class="form-control">
+                
+                @foreach($kelas as $kelasItem)
+                    <option value="{{ $kelasItem->id_kelas }}" {{ old('kelas_id') == $kelasItem->id_kelas ? 'selected' : '' }}>{{ $kelasItem->nama_kelas }}</option>
+                @endforeach
             </select>
-            @error('kelas')
+            <a href="{{ route('kelas.create') }}" class="btn btn-success">tambah</a>
+            @error('kelas_id')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-        <div class="mb-3">
-            <label for="multimedia">Multimedia</label>
-            <select name="multimedia" id="multimedia" class="form-control">
-                <option value="">Pilih Multimedia</option>
-                <option value="Multimedia 1" {{ old('multimedia') == 'Multimedia 1' ? 'selected' : '' }}>Multimedia 1</option>
-                <option value="Multimedia 2" {{ old('multimedia') == 'Multimedia 2' ? 'selected' : '' }}>Multimedia 2</option>
-            </select>
-            @error('multimedia')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
+
         <button type="submit" class="btn btn-primary">Simpan</button>
         <a href="{{ route('jadwalPelajaran.create') }}" class="btn btn-secondary">Kembali</a>
     </form>

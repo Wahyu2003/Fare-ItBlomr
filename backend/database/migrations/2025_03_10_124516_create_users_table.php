@@ -17,10 +17,11 @@ return new class extends Migration
             $table->enum("role", ['admin', 'siswa', 'guru']);
             $table->text('face_encoding')->nullable();
             $table->string('no_hp_siswa')->nullable();
-            $table->string('kelas')->nullable(); // Tetap string untuk menyimpan "10 - Multimedia 1"
+            $table->unsignedBigInteger('kelas_id')->nullable();
             $table->string('foto')->nullable();
             $table->string('nama_ortu')->nullable();
             $table->string('no_hp_ortu')->nullable();
+            $table->foreign('kelas_id')->references('id_kelas')->on('kelas')->onDelete('set null');
             $table->timestamps();
         });
     }

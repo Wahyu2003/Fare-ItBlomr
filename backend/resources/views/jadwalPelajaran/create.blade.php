@@ -63,7 +63,7 @@
                     <option value="">Pilih Mata Pelajaran</option>
                     @foreach($mataPelajaran as $mp)
                         <option value="{{ $mp->id_mata_pelajaran }}">
-                            {{ $mp->nama_mata_pelajaran }} (Kelas {{ $mp->kelas }} - {{ $mp->multimedia }})
+                            {{ $mp->nama_mata_pelajaran }} (Kelas {{ $mp->kelas->nama_kelas ?? 'Tidak Ada' }})
                         </option>
                     @endforeach
                 </select>

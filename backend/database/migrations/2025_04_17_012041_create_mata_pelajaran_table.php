@@ -10,10 +10,12 @@ return new class extends Migration
     {
         Schema::create('mata_pelajaran', function (Blueprint $table) {
             $table->id('id_mata_pelajaran');
-            $table->string('nama_mata_pelajaran'); // Nama mata pelajaran
-            $table->enum('kelas', ['10', '11', '12']); // Kelas
-            $table->enum('multimedia', ['Multimedia 1', 'Multimedia 2']); // Jurusan multimedia
+            $table->string('nama_mata_pelajaran');
+            $table->unsignedBigInteger('kelas_id'); 
             $table->timestamps();
+
+            // Menambahkan foreign key
+            $table->foreign('kelas_id')->references('id_kelas')->on('kelas')->onDelete('cascade');
         });
     }
 

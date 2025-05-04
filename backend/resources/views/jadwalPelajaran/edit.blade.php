@@ -6,6 +6,8 @@
     <form action="{{ route('jadwalPelajaran.update', $jadwalPelajaran->id_jadwal_pelajaran) }}" method="POST" class="admin-form">
         @csrf
         @method('PUT')
+        
+        <!-- Form untuk Hari -->
         <div class="mb-3">
             <label for="hari">Hari</label>
             <select name="hari" id="hari" class="form-control">
@@ -22,6 +24,8 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        
+        <!-- Form untuk Jam Mulai -->
         <div class="mb-3">
             <label for="jam_mulai">Jam Mulai</label>
             <input type="time" name="jam_mulai" id="jam_mulai" class="form-control" value="{{ old('jam_mulai', $jadwalPelajaran->jam_mulai) }}">
@@ -29,6 +33,8 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        
+        <!-- Form untuk Jam Selesai -->
         <div class="mb-3">
             <label for="jam_selesai">Jam Selesai</label>
             <input type="time" name="jam_selesai" id="jam_selesai" class="form-control" value="{{ old('jam_selesai', $jadwalPelajaran->jam_selesai) }}">
@@ -36,6 +42,8 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        
+        <!-- Form untuk Ruangan -->
         <div class="mb-3">
             <label for="ruangan">Ruangan</label>
             <input type="text" name="ruangan" id="ruangan" class="form-control" value="{{ old('ruangan', $jadwalPelajaran->ruangan) }}">
@@ -43,6 +51,8 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        
+        <!-- Form untuk Guru -->
         <div class="mb-3">
             <label for="guru_id">Guru</label>
             <select name="guru_id" id="guru_id" class="form-control">
@@ -57,6 +67,8 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        
+        <!-- Form untuk Mata Pelajaran (Memperbarui untuk menggunakan kelas_id) -->
         <div class="mb-3">
             <label for="id_mata_pelajaran">Mata Pelajaran</label>
             <div class="mata-pelajaran-container">
@@ -64,7 +76,7 @@
                     <option value="">Pilih Mata Pelajaran</option>
                     @foreach($mataPelajaran as $mp)
                         <option value="{{ $mp->id_mata_pelajaran }}" {{ old('id_mata_pelajaran', $jadwalPelajaran->id_mata_pelajaran) == $mp->id_mata_pelajaran ? 'selected' : '' }}>
-                            {{ $mp->nama_mata_pelajaran }} (Kelas {{ $mp->kelas }} - {{ $mp->multimedia }})
+                            {{ $mp->nama_mata_pelajaran }} (Kelas {{ $mp->kelas->nama_kelas ?? 'Tidak Ada' }})
                         </option>
                     @endforeach
                 </select>
@@ -74,6 +86,7 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+        
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 </div>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Kelas;
 
 class UserController extends Controller
 {
@@ -18,7 +19,11 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('user.create');
+        // Mengambil data kelas
+        $kelas = Kelas::all(); // Ambil semua data kelas
+
+        // Passing data kelas ke view 'user.create'
+        return view('user.create', compact('kelas'));
     }
 
     public function store(Request $request)

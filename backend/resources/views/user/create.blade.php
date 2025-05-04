@@ -40,31 +40,19 @@
         </div>
 
         <div id="siswaFields">
-            <div>
-                <label for="kelas">Kelas</label>
-                <select name="kelas" id="kelas">
-                    <option value="">Pilih Kelas</option>
-                    <option value="10" {{ old('kelas') == '10' ? 'selected' : '' }}>10</option>
-                    <option value="11" {{ old('kelas') == '11' ? 'selected' : '' }}>11</option>
-                    <option value="12" {{ old('kelas') == '12' ? 'selected' : '' }}>12</option>
+            <label for="kelas">Kelas</label>
+            <div class="d-flex">
+                <select name="kelas" id="kelas" required>
+                <option value="">Pilih Kelas</option>
+                    @foreach($kelas as $kelasItem)
+                        <option value="{{ $kelasItem->id_kelas }}" {{ old('kelas_id') == $kelasItem->id_kelas ? 'selected' : '' }}>{{ $kelasItem->nama_kelas }}</option>
+                    @endforeach
                 </select>
+                <a href="{{ route('kelas.index') }}" class="btn btn-success mb-3 ms-2">Tambah Kelas</a>
                 @error('kelas')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-
-            <div>
-                <label for="multimedia">Multimedia</label>
-                <select name="multimedia" id="multimedia">
-                    <option value="">Pilih Multimedia</option>
-                    <option value="Multimedia 1" {{ old('multimedia') == 'Multimedia 1' ? 'selected' : '' }}>Multimedia 1</option>
-                    <option value="Multimedia 2" {{ old('multimedia') == 'Multimedia 2' ? 'selected' : '' }}>Multimedia 2</option>
-                </select>
-                @error('multimedia')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
             <div>
                 <label for="nama_ortu">Nama Orang Tua/Wali</label>
                 <input type="text" name="nama_ortu" id="nama_ortu" value="{{ old('nama_ortu') }}">
@@ -126,20 +114,17 @@
             const role = document.getElementById('role').value;
             const siswaFields = document.getElementById('siswaFields');
             const kelas = document.getElementById('kelas');
-            const multimedia = document.getElementById('multimedia');
             const namaOrtu = document.getElementById('nama_ortu');
             const noHpOrtu = document.getElementById('no_hp_ortu');
 
             if (role === 'guru') {
                 siswaFields.style.display = 'none';
                 kelas.removeAttribute('required');
-                multimedia.removeAttribute('required');
                 namaOrtu.removeAttribute('required');
                 noHpOrtu.removeAttribute('required');
             } else {
                 siswaFields.style.display = 'block';
                 kelas.setAttribute('required', 'required');
-                multimedia.setAttribute('required', 'required');
                 namaOrtu.setAttribute('required', 'required');
             }
         }

@@ -6,18 +6,7 @@ use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\JadwalBelController;
 use App\Http\Controllers\DetailPresensiController;
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\KelasController;
 
 // Dashboard (jika ada)
 Route::get('/dashboard', function () {
@@ -64,9 +53,13 @@ Route::delete('/jadwalPelajaran/{jadwalPelajaran}', [JadwalPelajaranController::
 Route::get('/mataPelajaran/add', [MataPelajaranController::class, 'create'])->name('mataPelajaran.add');
 Route::post('/mataPelajaran/store-form', [MataPelajaranController::class, 'storeForm'])->name('mataPelajaran.storeForm');
 
+Route::resource('kelas', KelasController::class)->parameters([
+    'kelas' => 'kelas'
+]);
+
 // Rute lain yang mungkin ada (dari output route:list sebelumnya)
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 });
 
 Route::get('/up', function () {

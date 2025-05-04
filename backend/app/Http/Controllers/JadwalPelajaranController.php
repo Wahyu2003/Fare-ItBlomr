@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JadwalPelajaran;
 use App\Models\MataPelajaran;
 use App\Models\User;
+use App\Models\Kelas; // Import model Kelas
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,16 +14,16 @@ class JadwalPelajaranController extends Controller
     public function index(Request $request)
     {
         $roleFilter = $request->input('role', 'siswa'); // Default ke siswa
-        $kelasFilter = $request->input('kelas');
-        $multimediaFilter = $request->input('multimedia');
+        $kelasFilter = $request->input('kelas'); // Filter untuk kelas
         $guruFilter = $request->input('guru'); // Filter untuk guru
 
+        // Inisialisasi query untuk jadwal pelajaran dengan relasi
         $jadwalPelajaran = JadwalPelajaran::with('mataPelajaran', 'guru');
 
-        // Filter untuk siswa berdasarkan kelas dan multimedia
-        if ($roleFilter === 'siswa' && $kelasFilter && $multimediaFilter) {
-            $jadwalPelajaran->whereHas('mataPelajaran', function ($query) use ($kelasFilter, $multimediaFilter) {
-                $query->where('kelas', $kelasFilter)->where('multimedia', $multimediaFilter);
+        // Filter untuk siswa berdasarkan kelas_id
+        if ($roleFilter === 'siswa' && $kelasFilter) {
+            $jadwalPelajaran->whereHas('mataPelajaran', function ($query) use ($kelasFilter) {
+                $query->where('kelas_id', $kelasFilter); // Menggunakan kelas_id
             });
         }
 
@@ -33,19 +34,17 @@ class JadwalPelajaranController extends Controller
 
         $jadwalPelajaran = $jadwalPelajaran->get();
 
-        // Ambil data untuk filter kelas, multimedia, dan guru
-        $kelasOptions = MataPelajaran::select('kelas')->distinct()->pluck('kelas');
-        $multimediaOptions = MataPelajaran::select('multimedia')->distinct()->pluck('multimedia');
+        // Ambil data untuk filter kelas dan guru
+        $kelasOptions = Kelas::pluck('nama_kelas', 'id_kelas'); // Mengambil nama kelas dan id_kelas
         $guruOptions = User::where('role', 'guru')->select('id_user', 'nama')->get();
 
-        return view('jadwalPelajaran.index', compact('jadwalPelajaran', 'roleFilter', 'kelasFilter', 'multimediaFilter', 'guruFilter', 'kelasOptions', 'multimediaOptions', 'guruOptions'));
+        return view('jadwalPelajaran.index', compact('jadwalPelajaran', 'roleFilter', 'kelasFilter', 'guruFilter', 'kelasOptions', 'guruOptions'));
     }
 
-    // Method lainnya tetap sama
     public function create()
     {
-        $mataPelajaran = MataPelajaran::all();
-        $gurus = User::where('role', 'guru')->get();
+        $mataPelajaran = MataPelajaran::with('kelas')->get(); // Ambil mata pelajaran dengan relasi kelas
+        $gurus = User::where('role', 'guru')->get(); // Ambil semua guru
         return view('jadwalPelajaran.create', compact('mataPelajaran', 'gurus'));
     }
 
@@ -79,8 +78,8 @@ class JadwalPelajaranController extends Controller
     public function edit($id)
     {
         $jadwalPelajaran = JadwalPelajaran::findOrFail($id);
-        $mataPelajaran = MataPelajaran::all();
-        $gurus = User::where('role', 'guru')->get();
+        $mataPelajaran = MataPelajaran::with('kelas')->get(); // Ambil mata pelajaran dengan relasi kelas
+        $gurus = User::where('role', 'guru')->get(); // Ambil semua guru
         return view('jadwalPelajaran.edit', compact('jadwalPelajaran', 'mataPelajaran', 'gurus'));
     }
 

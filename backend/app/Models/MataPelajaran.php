@@ -11,13 +11,18 @@ class MataPelajaran extends Model
     protected $primaryKey = 'id_mata_pelajaran';
 
     protected $fillable = [
-        'nama_mata_pelajaran',
-        'kelas',
-        'multimedia',
+        'nama_mata_pelajaran', 'kelas_id',
     ];
 
+    // Relasi dengan model JadwalPelajaran
     public function jadwalPelajaran(): HasMany
     {
         return $this->hasMany(JadwalPelajaran::class, 'id_mata_pelajaran');
+    }
+
+    // Relasi dengan model Kelas (untuk kelas_id)
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id', 'id_kelas');
     }
 }

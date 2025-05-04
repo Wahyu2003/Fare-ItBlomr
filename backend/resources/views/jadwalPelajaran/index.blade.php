@@ -32,18 +32,6 @@
                 </select>
             </div>
 
-            <div class="col-md-3" id="multimediaFilter" style="{{ $roleFilter == 'guru' ? 'display:none' : '' }}">
-                <label for="multimedia">Multimedia:</label>
-                <select name="multimedia" id="multimedia" class="form-control">
-                    <option value="">Semua Multimedia</option>
-                    @if($multimediaOptions->isNotEmpty())
-                        @foreach($multimediaOptions as $multimedia)
-                            <option value="{{ $multimedia }}" {{ $multimediaFilter == $multimedia ? 'selected' : '' }}>{{ $multimedia }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
             <div class="col-md-3" id="guruFilter" style="{{ $roleFilter == 'siswa' ? 'display:none' : '' }}">
                 <label for="guru">Guru:</label>
                 <select name="guru" id="guru" class="form-control">
@@ -77,7 +65,6 @@
                         <th>Jam Mulai</th>
                         <th>Jam Selesai</th>
                         <th>Kelas</th>
-                        <th>Multimedia</th>
                         <th>Mata Pelajaran</th>
                         <th>Ruangan</th>
                         <th>Aksi</th>
@@ -89,8 +76,7 @@
                             <td>{{ $jp->hari }}</td>
                             <td>{{ $jp->jam_mulai }}</td>
                             <td>{{ $jp->jam_selesai }}</td>
-                            <td>{{ $jp->mataPelajaran->kelas ?? 'Tidak Ada' }}</td>
-                            <td>{{ $jp->mataPelajaran->multimedia ?? 'Tidak Ada' }}</td>
+                            <td>{{ $jp->mataPelajaran->kelas->nama_kelas ?? 'Tidak Ada' }}</td> <!-- Menampilkan nama kelas -->
                             <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
                             <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
                             <td>
@@ -148,18 +134,14 @@
 function toggleFilters() {
     const role = document.getElementById('role').value;
     const kelasFilter = document.getElementById('kelasFilter');
-    const multimediaFilter = document.getElementById('multimediaFilter');
     const guruFilter = document.getElementById('guruFilter');
 
     if (role === 'guru') {
         kelasFilter.style.display = 'none';
-        multimediaFilter.style.display = 'none';
         guruFilter.style.display = 'block';
         document.getElementById('kelas').value = '';
-        document.getElementById('multimedia').value = '';
     } else {
         kelasFilter.style.display = 'block';
-        multimediaFilter.style.display = 'block';
         guruFilter.style.display = 'none';
         document.getElementById('guru').value = '';
     }
