@@ -109,7 +109,7 @@ def recognize_face():
                 if match[0]:
                     return jsonify({'name': name,
                                     'id_user':id_user,
-                                    'role':guru})
+                                    'role': role})
 
             except Exception as e:
                 errors.append(f'Error saat membandingkan wajah: {str(e)}')

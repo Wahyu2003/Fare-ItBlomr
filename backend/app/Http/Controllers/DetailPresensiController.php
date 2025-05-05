@@ -6,13 +6,25 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use App\Models\DetailPresensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Models\User;
 
 class DetailPresensiController extends Controller
 {
     public function index()
     {
-        $detailPresensi = DetailPresensi::with(['user', 'jadwalPelajaran'])->get();
-        return view('detailPresensi.index', compact('detailPresensi'));
+        // $detailPresensi = DetailPresensi::with(['user', 'jadwalPelajaran'])->get();
+        // return view('detailPresensi.index', compact('detailPresensi'));
+
+        $today = Carbon::today();
+        $sudahPresensi = DetailPresensi::with('user')
+            ->whereDate('waktu_presensi', $today)
+            ->get();
+
+        $sudahIds = $sudahPresensi->pluck('id_user');
+        $belumPresensi = User::whereNotIn('id_user', $sudahIds)->get();
+
+        return view('detailPresensi.index', compact('sudahPresensi', 'belumPresensi'));
     }
 
     public function create()
@@ -110,7 +122,7 @@ class DetailPresensiController extends Controller
                 $payload = [
                     'nama' => $data['name'],
                     'waktu_presensi' => now()->toDayDateTimeString(),
-                    'role' => $data['role'] ?? 'siswa',
+                    'role' => $data['role'],
                 ];
                 Http::put($firebaseUrl, $payload);
             }
