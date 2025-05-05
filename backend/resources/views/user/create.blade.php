@@ -41,7 +41,7 @@
 
         <div id="siswaFields">
             <label for="kelas">Kelas</label>
-            <div class="d-flex">
+            {{-- <div class="d-flex"> --}}
                 <select name="kelas" id="kelas" required>
                 <option value="">Pilih Kelas</option>
                     @foreach($kelas as $kelasItem)
@@ -52,7 +52,7 @@
                 @error('kelas')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
-            </div>
+            {{-- </div> --}}
             <div>
                 <label for="nama_ortu">Nama Orang Tua/Wali</label>
                 <input type="text" name="nama_ortu" id="nama_ortu" value="{{ old('nama_ortu') }}">

@@ -48,7 +48,7 @@
                         <tr>
                             <td>{{ $presensi->user->nama }}</td>
                             <td>{{ $presensi->user->nik }}</td>
-                            <td>{{ $siswa->role }}</td>
+                            <td>{{ $presensi->user->role }}</td>
                             <td>{{ $presensi->created_at->format('H:i:s') }}</td>
                         </tr>
                     @endforeach

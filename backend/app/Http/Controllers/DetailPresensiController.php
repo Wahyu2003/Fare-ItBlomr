@@ -13,8 +13,6 @@ class DetailPresensiController extends Controller
 {
     public function index()
     {
-        // $detailPresensi = DetailPresensi::with(['user', 'jadwalPelajaran'])->get();
-        // return view('detailPresensi.index', compact('detailPresensi'));
 
         $today = Carbon::today();
         $sudahPresensi = DetailPresensi::with('user')
