@@ -38,7 +38,7 @@
                                 <th>NIK</th>
                                 <th>Nama</th>
                                 <th>Username</th>
-                                <th>Kelas</th>
+                                <th>Kelas</th> <!-- Menampilkan Kelas -->
                                 <th>No HP Siswa</th>
                                 <th>Nama Orang Tua</th>
                                 <th>No HP Orang Tua</th>
@@ -53,7 +53,8 @@
                                         <td>{{ $user->nik ?? 'Tidak Ada' }}</td>
                                         <td>{{ $user->nama }}</td>
                                         <td>{{ $user->username }}</td>
-                                        <td>{{ $user->kelas ?? 'Tidak Ada' }}</td>
+                                        <!-- Menampilkan nama kelas yang terkait -->
+                                        <td>{{ $user->kelas->nama_kelas ?? 'Tidak Ada' }}</td> <!-- Perbaikan di sini -->
                                         <td>{{ $user->no_hp_siswa ?? 'Tidak Ada' }}</td>
                                         <td>{{ $user->nama_ortu }}</td>
                                         <td>{{ $user->no_hp_ortu }}</td>

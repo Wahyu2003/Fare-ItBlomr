@@ -21,8 +21,6 @@ class UserController extends Controller
     {
         // Mengambil data kelas
         $kelas = Kelas::all(); // Ambil semua data kelas
-
-        // Passing data kelas ke view 'user.create'
         return view('user.create', compact('kelas'));
     }
 
@@ -36,8 +34,7 @@ class UserController extends Controller
             'role' => ['required', 'in:admin,siswa,guru'],
             'face_encoding' => ['nullable'],
             'no_hp_siswa' => ['nullable', 'string', 'max:13'],
-            'kelas' => ['nullable', 'in:10,11,12'],
-            'multimedia' => ['nullable', 'in:Multimedia 1,Multimedia 2'],
+            'kelas_id' => ['nullable', 'exists:kelas,id_kelas'], // Updating to match the foreign key field
             'foto' => ['nullable', 'image', 'max:2048'],
             'nama_ortu' => ['nullable', 'string', 'max:100'],
             'no_hp_ortu' => ['nullable', 'string', 'max:13'],
@@ -46,8 +43,7 @@ class UserController extends Controller
         if ($request->role == 'siswa') {
             $rules['nama_ortu'] = ['required', 'string', 'max:100'];
             $rules['no_hp_siswa'] = ['required', 'string', 'max:13'];
-            $rules['kelas'] = ['required', 'in:10,11,12'];
-            $rules['multimedia'] = ['required', 'in:Multimedia 1,Multimedia 2'];
+            $rules['kelas_id'] = ['required', 'exists:kelas,id_kelas']; // Ensure kelas_id is required for students
         }
 
         $validator = Validator::make($request->all(), $rules);
@@ -59,11 +55,6 @@ class UserController extends Controller
 
         $data = $validator->validated();
         $data['password'] = Hash::make($request->password);
-
-        if ($request->role == 'siswa') {
-            $data['kelas'] = $data['kelas'] . ' - ' . $data['multimedia'];
-            unset($data['multimedia']);
-        }
 
         if ($request->hasFile('foto')) {
             $photo = $request->file('foto');
@@ -116,8 +107,7 @@ class UserController extends Controller
             'role' => ['required', 'in:admin,siswa,guru'],
             'face_encoding' => ['nullable'],
             'no_hp_siswa' => ['nullable', 'string', 'max:13'],
-            'kelas' => ['nullable', 'in:10,11,12'],
-            'multimedia' => ['nullable', 'in:Multimedia 1,Multimedia 2'],
+            'kelas_id' => ['nullable', 'exists:kelas,id_kelas'],
             'foto' => ['nullable', 'image', 'max:2048'],
             'nama_ortu' => ['nullable', 'string', 'max:100'],
             'no_hp_ortu' => ['nullable', 'string', 'max:13'],
@@ -126,8 +116,7 @@ class UserController extends Controller
         if ($request->role == 'siswa') {
             $rules['nama_ortu'] = ['required', 'string', 'max:100'];
             $rules['no_hp_siswa'] = ['required', 'string', 'max:13'];
-            $rules['kelas'] = ['required', 'in:10,11,12'];
-            $rules['multimedia'] = ['required', 'in:Multimedia 1,Multimedia 2'];
+            $rules['kelas_id'] = ['required', 'exists:kelas,id_kelas'];
         }
 
         $validator = Validator::make($request->all(), $rules);
@@ -141,15 +130,6 @@ class UserController extends Controller
 
         if ($request->has('password') && $request->password !== '') {
             $data['password'] = Hash::make($request->password);
-        }
-
-        if ($request->role == 'siswa') {
-            $data['kelas'] = $data['kelas'] . ' - ' . $data['multimedia'];
-            unset($data['multimedia']);
-        } else {
-            $data['kelas'] = $user->kelas;
-            $data['nama_ortu'] = null;
-            $data['no_hp_ortu'] = null;
         }
 
         if ($request->hasFile('foto')) {

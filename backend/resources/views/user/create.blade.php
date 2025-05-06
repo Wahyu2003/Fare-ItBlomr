@@ -40,19 +40,18 @@
         </div>
 
         <div id="siswaFields">
-            <label for="kelas">Kelas</label>
-            {{-- <div class="d-flex"> --}}
-                <select name="kelas" id="kelas" required>
+            <label for="kelas_id">Kelas</label>
+            <select name="kelas_id" id="kelas_id" required>
                 <option value="">Pilih Kelas</option>
-                    @foreach($kelas as $kelasItem)
-                        <option value="{{ $kelasItem->id_kelas }}" {{ old('kelas_id') == $kelasItem->id_kelas ? 'selected' : '' }}>{{ $kelasItem->nama_kelas }}</option>
-                    @endforeach
-                </select>
-                <a href="{{ route('kelas.index') }}" class="btn btn-success mb-3 ms-2">Tambah Kelas</a>
-                @error('kelas')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            {{-- </div> --}}
+                @foreach($kelas as $kelasItem)
+                    <option value="{{ $kelasItem->id_kelas }}" {{ old('kelas_id') == $kelasItem->id_kelas ? 'selected' : '' }}>{{ $kelasItem->nama_kelas }}</option>
+                @endforeach
+            </select>
+            <a href="{{ route('kelas.index') }}" class="btn btn-success mb-3 ms-2">Tambah Kelas</a>
+            @error('kelas_id')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+
             <div>
                 <label for="nama_ortu">Nama Orang Tua/Wali</label>
                 <input type="text" name="nama_ortu" id="nama_ortu" value="{{ old('nama_ortu') }}">
@@ -113,7 +112,7 @@
         function toggleFields() {
             const role = document.getElementById('role').value;
             const siswaFields = document.getElementById('siswaFields');
-            const kelas = document.getElementById('kelas');
+            const kelas = document.getElementById('kelas_id');
             const namaOrtu = document.getElementById('nama_ortu');
             const noHpOrtu = document.getElementById('no_hp_ortu');
 
