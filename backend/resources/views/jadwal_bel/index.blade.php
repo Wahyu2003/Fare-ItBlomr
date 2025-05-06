@@ -14,7 +14,7 @@
         </form>
     </div>
 
-    <table class="table table-bordered">
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -63,7 +63,7 @@
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin?')">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        </form>                    
+                        </form>
                     </td>
                 </tr>
             @endforeach

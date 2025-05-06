@@ -32,7 +32,7 @@
                 </div>
                 <h3 class="text-center mb-4">Daftar Siswa</h3>
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover wajahFlipTable">
+                    <table class="admin-table table-hover wajahFlipTable">
                         <thead class="table-light">
                             <tr>
                                 <th>NIK</th>
@@ -68,12 +68,14 @@
                                             <span class="badge {{ $user->face_encoding ? 'bg-success' : 'bg-warning' }}">{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning me-1">Edit</a>
+                                            <div class="d-flex flex-row gap-2">
+                                                <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning"><i class="fas fa-pencil-alt"></i></a>
                                             <form action="{{ route('user.destroy', $user->id_user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin?')">Hapus</button>
                                             </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endif
@@ -99,8 +101,8 @@
                 </div>
                 <h3 class="text-center mb-4">Daftar Guru</h3>
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover wajahFlipTable">
-                        <thead class="table-light">
+                    <table class="admin-tableg table-hover wajahFlipTable">
+                        <thead class="table-light  bg-success text-white">
                             <tr>
                                 <th>NIK</th>
                                 <th>Nama</th>

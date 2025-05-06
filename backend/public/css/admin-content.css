@@ -179,7 +179,7 @@ body {
 }
 
 .admin-table th {
-    background-color: #007bff;
+    background-color: #00ff22;
     color: #fff;
     font-weight: 600;
 }
@@ -189,6 +189,33 @@ body {
 }
 
 .admin-table tr:hover {
+    background-color: #f1f1f1;
+}
+.admin-tableg {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-tableg th,
+.admin-tableg td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-tableg th {
+    /* background-color: #00ff22; */
+    color: #fff;
+    font-weight: 600;
+}
+
+.admin-tableg td {
+    color: #333;
+}
+
+.admin-tableg tr:hover {
     background-color: #f1f1f1;
 }
 

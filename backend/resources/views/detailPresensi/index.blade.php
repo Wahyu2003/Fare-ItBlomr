@@ -233,7 +233,7 @@
                                 <td>{{ $presensi->user->nama }}</td>
                                 <td>{{ $presensi->user->nik }}</td>
                                 <td>{{ $presensi->user->role }}</td>
-                                <td>{{ $presensi->waktu_presensi->format('H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($presensi->waktu_presensi)->format('H:i:s') }}</td>
                             </tr>
                         @empty
                             <tr>
