@@ -1,59 +1,248 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2>Presensi Wajah Otomatis</h2>
+    <style>
+        /* Section Title */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    <div style="display: flex; gap: 20px;">
-        {{-- Kolom kiri: Video dan tabel belum presensi --}}
-        <div>
-            <video id="video" width="320" height="240" autoplay muted></video>
-            <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
-            <div id="result" class="loading">Menunggu kamera aktif...</div>
+        /* Layout untuk Video dan Kontrol */
+        .video-control-layout {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
 
-            <h3>Belum Presensi</h3>
-            <table border="1" cellpadding="5" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>NIK</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($belumPresensi as $siswa)
-                        <tr>
-                            <td>{{ $siswa->nama }}</td>
-                            <td>{{ $siswa->nik }}</td>
-                            <td>{{ $siswa->role }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        .video-section {
+            flex: 0 0 50%;
+        }
+
+        .control-section {
+            flex: 0 0 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Video Container */
+        .video-container {
+            text-align: center;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .video-container video {
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .video-container canvas {
+            display: none;
+        }
+
+        /* Result Message */
+        .result-message {
+            font-size: 1rem;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .result-message.loading {
+            background-color: #f8f9fa;
+            color: #666;
+        }
+
+        .result-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .result-message.fail {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Button Controls */
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .control-btn.start {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .control-btn.start:hover {
+            background-color: #0056b3;
+        }
+
+        .control-btn.stop {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .control-btn.stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-section label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+            color: #333;
+        }
+
+        .filter-section select {
+            width: 150px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Layout untuk Tabel */
+        .tables-layout {
+            display: flex;
+            gap: 20px;
+        }
+
+        .table-section {
+            flex: 0 0 50%;
+        }
+    </style>
+
+    <div class="container">
+        <h2 class="section-title">Presensi Wajah Otomatis</h2>
+
+        <!-- Layout Video dan Kontrol -->
+        <div class="video-control-layout">
+            <!-- Sisi Kiri: Video -->
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="video" width="320" height="240" muted></video>
+                    <canvas id="canvas" width="320" height="240"></canvas>
+                </div>
+                <div class="control-buttons">
+                    <button id="startBtn" class="control-btn start">Mulai</button>
+                    <button id="stopBtn" class="control-btn stop" disabled>Berhenti</button>
+                </div>
+            </div>
+
+            <!-- Sisi Kanan: Tombol dan Status -->
+            <div class="control-section">
+                <div id="result" class="result-message fail">Kamera belum aktif.</div>
+            </div>
         </div>
 
-        {{-- Kolom kanan: Tabel sudah presensi --}}
-        <div>
-            <h3>Sudah Presensi</h3>
-            <table border="1" cellpadding="5" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>NIS</th>
-                        <th>Role</th>
-                        <th>Waktu</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($sudahPresensi as $presensi)
-                        <tr>
-                            <td>{{ $presensi->user->nama }}</td>
-                            <td>{{ $presensi->user->nik }}</td>
-                            <td>{{ $presensi->user->role }}</td>
-                            <td>{{ $presensi->created_at->format('H:i:s') }}</td>
-                        </tr>
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div>
+                <label for="roleFilter">Role:</label>
+                <select id="roleFilter" onchange="filterPresensi()">
+                    <option value="">Semua Role</option>
+                    <option value="SISWA">Siswa</option>
+                    <option value="GURU">Guru</option>
+                </select>
+            </div>
+            <div>
+                <label for="kelasFilter" id="labelf">Kelas:</label>
+                <select id="kelasFilter" onchange="filterPresensi()">
+                    <option value="">Semua Kelas</option>
+                    @foreach ($kelasList as $kelas)
+                        <option value="{{ $kelas->id_kelas }}">{{ $kelas->nama_kelas }}</option>
                     @endforeach
-                </tbody>
-            </table>
+                </select>
+            </div>
+        </div>
+
+        <!-- Layout Tabel -->
+        <div class="tables-layout">
+            <!-- Tabel Belum Presensi -->
+            <div class="table-section">
+                <h3 class="section-title">Belum Presensi</h3>
+                <table class="admin-table" id="belumPresensiTable">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>NIK</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($belumPresensi as $siswa)
+                            <tr data-kelas="{{ $siswa->kelas_id }}" data-role="{{ $siswa->role }}">
+                                <td>{{ $siswa->nama }}</td>
+                                <td>{{ $siswa->nik }}</td>
+                                <td>{{ $siswa->role }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" style="text-align: center;">Belum ada data siswa yang belum presensi.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Sudah Presensi -->
+            <div class="table-section">
+                <h3 class="section-title">Sudah Presensi</h3>
+                <table class="admin-table" id="sudahPresensiTable">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>NIK</th>
+                            <th>Role</th>
+                            <th>Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($sudahPresensi as $presensi)
+                            <tr data-kelas="{{ $presensi->user->kelas_id }}" data-role="{{ $presensi->user->role }}">
+                                <td>{{ $presensi->user->nama }}</td>
+                                <td>{{ $presensi->user->nik }}</td>
+                                <td>{{ $presensi->user->role }}</td>
+                                <td>{{ $presensi->waktu_presensi->format('H:i:s') }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Belum ada data siswa yang sudah presensi.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -61,32 +250,61 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const resultDiv = document.getElementById('result');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         let detecting = false;
         let intervalId = null;
+        let stream = null;
 
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
+        // Fungsi untuk memulai kamera dan deteksi
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
+                video.play();
                 resultDiv.textContent = "Kamera aktif. Mendeteksi wajah...";
-                resultDiv.className = "loading";
+                resultDiv.className = "result-message loading";
 
                 intervalId = setInterval(() => {
                     if (!detecting) {
                         detectFace();
                     }
                 }, 3000);
-            })
-            .catch(err => {
-                resultDiv.textContent = "❌ Gagal mengakses kamera: " + err.message;
-                resultDiv.className = "fail";
-            });
 
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            } catch (err) {
+                resultDiv.textContent = "❌ Gagal mengakses kamera: " + err.message;
+                resultDiv.className = "result-message fail";
+            }
+        }
+
+        // Fungsi untuk menghentikan kamera
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                clearInterval(intervalId);
+                resultDiv.textContent = "Kamera dimatikan.";
+                resultDiv.className = "result-message fail";
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            }
+        }
+
+        // Event listener untuk tombol Mulai
+        startBtn.addEventListener('click', startCamera);
+
+        // Event listener untuk tombol Berhenti
+        stopBtn.addEventListener('click', stopCamera);
+
+        // Fungsi untuk mendeteksi wajah
         async function detectFace() {
             detecting = true;
             resultDiv.textContent = "Mendeteksi wajah...";
-            resultDiv.className = "loading";
+            resultDiv.className = "result-message loading";
 
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -113,7 +331,7 @@
                         console.log(data);
                     } catch (e) {
                         resultDiv.textContent = "❌ Respon tidak valid dari server.";
-                        resultDiv.className = "fail";
+                        resultDiv.className = "result-message fail";
                         console.error("Respon bukan JSON:\n", text);
                         detecting = false;
                         return;
@@ -121,22 +339,62 @@
 
                     if (data.name) {
                         resultDiv.textContent = `✅ Selamat datang, ${data.name}`;
-                        resultDiv.className = "success";
+                        resultDiv.className = "result-message success";
                         clearInterval(intervalId);
-                        location.reload(); // reload untuk perbarui tabel
+                        setTimeout(() => location.reload(), 2000); // Reload setelah 2 detik
                     } else {
                         resultDiv.textContent = data.error || "❌ Wajah tidak cocok atau belum terdaftar.";
-                        resultDiv.className = "fail";
+                        resultDiv.className = "result-message fail";
                     }
-
                 } catch (error) {
                     resultDiv.textContent = "❌ Gagal mengirim ke server.";
-                    resultDiv.className = "fail";
+                    resultDiv.className = "result-message fail";
                     console.error("Error:", error);
                 } finally {
                     detecting = false;
                 }
             }, 'image/jpeg');
         }
+
+        // Fungsi untuk memfilter tabel
+        function filterPresensi() {
+            const kelasFilter = document.getElementById('kelasFilter');
+            const labelFilter = document.getElementById('labelf'); // Mengambil elemen label kelas
+            const roleFilter = document.getElementById('roleFilter').value;
+
+            // Mengatur kelasFilter dan labelFilter berdasarkan pilihan roleFilter
+            if (roleFilter === 'GURU') {
+                kelasFilter.disabled = true; // Menonaktifkan kelasFilter
+                kelasFilter.style.display = 'none'; // Menyembunyikan kelasFilter
+                labelFilter.style.display = 'none'; // Menyembunyikan label kelas
+            } else {
+                kelasFilter.disabled = false; // Mengaktifkan kembali kelasFilter
+                kelasFilter.style.display = 'inline-block'; // Menampilkan kembali kelasFilter
+                labelFilter.style.display = 'block'; // Memastikan label tampil dengan benar
+            }
+
+            // Filter tabel Belum Presensi
+            const belumRows = document.querySelectorAll('#belumPresensiTable tbody tr');
+            belumRows.forEach(row => {
+                const kelas = row.getAttribute('data-kelas') || '';
+                const role = row.getAttribute('data-role') || '';
+                const kelasMatch = !kelasFilter.value || kelas === kelasFilter.value;
+                const roleMatch = !roleFilter || role.toUpperCase() === roleFilter.toUpperCase();
+                row.style.display = (kelasMatch && roleMatch) ? '' : 'none';
+            });
+
+            // Filter tabel Sudah Presensi
+            const sudahRows = document.querySelectorAll('#sudahPresensiTable tbody tr');
+            sudahRows.forEach(row => {
+                const kelas = row.getAttribute('data-kelas') || '';
+                const role = row.getAttribute('data-role') || '';
+                const kelasMatch = !kelasFilter.value || kelas === kelasFilter.value;
+                const roleMatch = !roleFilter || role.toUpperCase() === roleFilter.toUpperCase();
+                row.style.display = (kelasMatch && roleMatch) ? '' : 'none';
+            });
+        }
+
+
+
     </script>
 @endsection

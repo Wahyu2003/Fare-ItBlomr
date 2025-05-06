@@ -8,12 +8,12 @@ use App\Models\DetailPresensi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\User;
+use App\Models\Kelas;
 
 class DetailPresensiController extends Controller
 {
     public function index()
     {
-
         $today = Carbon::today();
         $sudahPresensi = DetailPresensi::with('user')
             ->whereDate('waktu_presensi', $today)
@@ -22,7 +22,10 @@ class DetailPresensiController extends Controller
         $sudahIds = $sudahPresensi->pluck('id_user');
         $belumPresensi = User::whereNotIn('id_user', $sudahIds)->get();
 
-        return view('detailPresensi.index', compact('sudahPresensi', 'belumPresensi'));
+        // Ambil data kelas untuk dropdown filter
+        $kelasList = Kelas::all();
+
+        return view('detailPresensi.index', compact('sudahPresensi', 'belumPresensi', 'kelasList'));
     }
 
     public function create()
@@ -37,7 +40,7 @@ class DetailPresensiController extends Controller
             'kehadiran' => ['required', 'string', 'in:tepat waktu,telat,alpha,izin,sakit'],
             'jenis_absen' => ['required', 'string', 'in:belum keluar,pulang,tidak hadir'],
             'id_user' => ['sometimes', 'exists:users,id_user'],
-            'id_jadwal_pelajaran' => ['required', 'exists:presensi,id_presensi'],
+            'id_jadwal_pelajaran' => ['required', 'exists:jadwal_pelajaran,id_jadwal_pelajaran'],
         ]);
 
         if ($validator->fails()) {
@@ -45,8 +48,8 @@ class DetailPresensiController extends Controller
         }
 
         $data = $validator->validated();
-        $data['waktu_presensi'] = $data['waktu_absen'];
-        $data['kehadiran'] = $data['status'];
+        $data['waktu_presensi'] = $request->input('waktu_presensi');
+        $data['kehadiran'] = $request->input('kehadiran');
 
         DetailPresensi::create($data);
         return redirect()->route('detailPresensi.index')->with('success', 'Presensi berhasil ditambahkan');
@@ -69,7 +72,7 @@ class DetailPresensiController extends Controller
             'kehadiran' => ['required', 'string', 'in:tepat waktu,telat,alpha,izin,sakit'],
             'jenis_absen' => ['required', 'string', 'in:belum keluar,pulang,tidak hadir'],
             'id_user' => ['sometimes', 'exists:users,id_user'],
-            'id_jadwal_pelajaran' => ['required', 'exists:presensi,id_presensi'],
+            'id_jadwal_pelajaran' => ['required', 'exists:jadwal_pelajaran,id_jadwal_pelajaran'],
         ]);
 
         if ($validator->fails()) {
@@ -77,8 +80,8 @@ class DetailPresensiController extends Controller
         }
 
         $data = $validator->validated();
-        $data['waktu_presensi'] = $data['waktu_absen'];
-        $data['kehadiran'] = $data['status'];
+        $data['waktu_presensi'] = $request->input('waktu_presensi');
+        $data['kehadiran'] = $request->input('kehadiran');
 
         $detailPresensi->update($data);
         return redirect()->route('detailPresensi.index')->with('success', 'Presensi berhasil diubah');
@@ -89,6 +92,7 @@ class DetailPresensiController extends Controller
         $detailPresensi->delete();
         return redirect()->route('detailPresensi.index')->with('success', 'Presensi berhasil dihapus');
     }
+
     public function sendToPython(Request $request)
     {
         try {
@@ -108,7 +112,7 @@ class DetailPresensiController extends Controller
 
             $data = $response->json();
 
-            if (isset($data['name'])) {
+            if (isset($data['name']) && isset($data['id_user'])) {
                 DetailPresensi::create([
                     'waktu_presensi' => now(),
                     'kehadiran' => 'tepat waktu',
@@ -123,13 +127,40 @@ class DetailPresensiController extends Controller
                     'role' => $data['role'],
                 ];
                 Http::put($firebaseUrl, $payload);
+
+                return response()->json([
+                    'name' => $data['name'],
+                    'id_user' => $data['id_user'],
+                    'role' => $data['role'],
+                ]);
             }
 
-            return response()->json($data);
+            return response()->json(['error' => 'Wajah tidak dikenali'], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function presensiWajah()
+    {
+        $today = Carbon::today();
+        
+        // Ambil data pengguna yang belum presensi hari ini
+        $belumPresensi = User::whereDoesntHave('detailPresensi', function ($query) use ($today) {
+            $query->whereDate('waktu_presensi', $today);
+        })->with('kelas')->get();
+
+        // Ambil data presensi hari ini beserta relasi user dan kelas
+        $sudahPresensi = DetailPresensi::whereDate('waktu_presensi', $today)
+            ->with(['user.kelas'])
+            ->get();
+
+        // Ambil semua data kelas untuk dropdown filter
+        $kelasList = Kelas::all();
+
+        // Gunakan view detailPresensi.index
+        return view('detailPresensi.index', compact('belumPresensi', 'sudahPresensi', 'kelasList'));
     }
 }

@@ -18,9 +18,14 @@ class DetailPresensi extends Model
         'id_jadwal_pelajaran',
     ];
 
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id', 'id_kelas');
     }
 
     public function jadwalPelajaran(): BelongsTo
