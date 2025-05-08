@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('auth.login') }}">
+    <form method="POST" action="{{ route('login') }}">
         @csrf
         <label>Username:</label>
         <input type="text" name="username" required value="{{ old('username') }}"><br>
