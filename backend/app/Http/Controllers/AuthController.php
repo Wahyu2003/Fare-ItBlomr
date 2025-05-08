@@ -45,7 +45,8 @@ class AuthController extends Controller
                 return redirect()->route('siswa.dashboard');
             }
 
-            return redirect()->intended('/dashboard');
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['username' => 'Role tidak dikenali.']);
         }
 
         return back()->withErrors([
@@ -56,6 +57,6 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/login');
+        return redirect()->route('login');
     }
 }
