@@ -29,6 +29,80 @@ class DetailPresensiController extends Controller
         return view('detailPresensi.index', compact('sudahPresensi', 'belumPresensi', 'kelasList'));
     }
 
+public function rekapanAbsenSiswa(Request $request)
+{
+    // Ambil filter status dan rentang waktu dari request
+    $statusFilter = $request->input('status', ''); // Default ke kosong
+    $timeFilter = $request->input('time_filter', 'week'); // Default ke 'week'
+    $startDate = null;
+    $endDate = null;
+
+    // Tentukan rentang waktu berdasarkan filter
+    if ($timeFilter === 'week') {
+        $startDate = Carbon::now()->startOfWeek();
+        $endDate = Carbon::now()->endOfWeek();
+    } elseif ($timeFilter === 'month') {
+        $startDate = Carbon::now()->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
+    } elseif ($timeFilter === 'custom' && $request->has('start_date') && $request->has('end_date')) {
+        $startDate = Carbon::parse($request->input('start_date'));
+        $endDate = Carbon::parse($request->input('end_date'));
+    }
+
+    // Query untuk mendapatkan data presensi siswa yang login
+    $presensiQuery = DetailPresensi::with('user', 'jadwalPelajaran')
+        ->whereBetween('waktu_presensi', [$startDate, $endDate])
+        ->where('id_user', auth()->user()->id_user); // Filter hanya untuk siswa yang login
+
+    // Filter berdasarkan status kehadiran jika ada
+    if ($statusFilter) {
+        $presensiQuery->where('kehadiran', $statusFilter);
+    }
+
+    // Ambil data presensi yang sudah terfilter
+    $presensi = $presensiQuery->get();
+
+    // Hitung total presensi
+    $totalPresensi = $presensi->count();
+
+    // Menghindari pembagian dengan nol
+    if ($totalPresensi > 0) {
+        // Hitung persentase kehadiran berdasarkan status
+        $statusCounts = $presensi->groupBy('kehadiran')->map->count();
+
+        $totalPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
+        $hadirPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
+        $telatPercentage = ($statusCounts->get('telat', 0) / $totalPresensi) * 100;
+        $alphaPercentage = ($statusCounts->get('alpha', 0) / $totalPresensi) * 100;
+        $izinPercentage = ($statusCounts->get('izin', 0) / $totalPresensi) * 100;
+        $sakitPercentage = ($statusCounts->get('sakit', 0) / $totalPresensi) * 100;
+    } else {
+        // Jika tidak ada presensi, set persentase ke 0
+        $totalPercentage = 0;
+        $hadirPercentage = 0;
+        $telatPercentage = 0;
+        $alphaPercentage = 0;
+        $izinPercentage = 0;
+        $sakitPercentage = 0;
+    }
+
+    return view('dashboard_siswa', compact(
+        'presensi',
+        'statusFilter',
+        'timeFilter',
+        'startDate',
+        'endDate',
+        'totalPercentage',
+        'hadirPercentage',
+        'telatPercentage',
+        'alphaPercentage',
+        'izinPercentage',
+        'sakitPercentage'
+    ));
+}
+
+
+
     public function create()
     {
         return view('detailPresensi.create');

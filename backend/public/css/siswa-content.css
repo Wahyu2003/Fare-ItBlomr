@@ -1,0 +1,287 @@
+/* Reset default margin and padding */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #E7F0FF; /* Soft blue background for student-friendly vibe */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bodi {
+    background-color: #E7EFFF;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hidden by default on mobile */
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: left 0.3s ease;
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar on mobile when active */
+}
+
+/* Logo Styling */
+.sidebar-logo {
+    padding: 20px 15px;
+    text-align: center;
+}
+
+.sidebar-logo .navbar-brand {
+    font-size: 1.6rem;
+    color: #2c3e50 !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.sidebar-logo .navbar-brand:hover {
+    color: #3498db !important; /* Bright blue on hover */
+}
+
+/* Menu Styling */
+.sidebar .nav-link {
+    color: #2c3e50;
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #3498db; /* Bright blue for active/hover */
+    color: #fff;
+    border-radius: 8px;
+    transform: translateX(10px); /* Subtle animation */
+}
+
+.nav-link.active{
+    transform: translateX(5px);
+}
+
+
+.nav-item.logout .nav-link:hover {
+    background-color: #c0392b;
+}
+
+/* Main Container (Header + Content) */
+.main-container {
+    margin-left: 0; /* No sidebar offset on mobile */
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+.main-container.shifted {
+    margin-left: 250px; /* Shift content when sidebar is active */
+}
+
+/* Header Styling */
+.navbar {
+    width: calc(100% - 40px);
+    margin: 20px;
+    padding: 0;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.navbar .container-fluid {
+    padding: 10px 20px;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.icons-container .d-flex {
+    gap: 15px; /* Space between icons and profile */
+}
+
+/* Profile Picture Styling */
+.border-profil {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #3498db; /* Bright blue border */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.profil {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.username {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Content Styling */
+.contents {
+    margin: 0 20px 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    min-height: calc(100vh - 100px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Styling untuk Dashboard */
+.siswa-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.siswa-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.siswa-card p {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+/* Table Styling */
+.siswa-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.siswa-table th,
+.siswa-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.siswa-table th {
+    background-color: #3498db;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.siswa-table td {
+    color: #2c3e50;
+}
+
+.siswa-table tr:hover {
+    background-color: #f5f6fa;
+}
+
+/* Form Styling */
+.siswa-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.siswa-form label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #2c3e50;
+}
+
+.siswa-form input,
+.siswa-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.siswa-form button {
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.siswa-form button:hover {
+    background-color: #2980b9;
+}
+
+
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        left: -250px; /* Hidden by default */
+    }
+
+    .sidebar.active {
+        left: 0; /* Show when active */
+    }
+
+    .main-container {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .navbar {
+        width: calc(100% - 20px);
+        margin: 10px;
+    }
+
+    .contents {
+        margin: 0 10px 10px;
+        padding: 15px;
+    }
+
+    .siswa-card {
+        padding: 15px;
+    }
+
+    .siswa-table th,
+    .siswa-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        left: 0; /* Always visible on desktop */
+    }
+
+    .main-container {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+}

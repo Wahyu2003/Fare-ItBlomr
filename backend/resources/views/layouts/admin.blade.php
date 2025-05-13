@@ -30,7 +30,7 @@
                 <a class="nav-link {{ request()->routeIs('jadwalPelajaran.index') ? 'active' : '' }}" href="{{ route('jadwalPelajaran.index') }}"><i class="fas fa-calendar-alt me-2"></i> Jadwal Pelajaran</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}" href="{{ route('detailPresensi.index') }}"><i class="fas fa-user-check me-2"></i> Presensi</a>
+                <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}" href="{{ route('detailPresensi.index') }}"><i class="fas fa-user-check me-1"></i> Presensi</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('jadwal_bel.index') ? 'active' : '' }}" href="{{ route('jadwal_bel.index') }}"><i class="fas fa-bell me-2"></i> Bel</a>
@@ -38,7 +38,14 @@
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}" href="{{ route('user.index') }}"><i class="fas fa-users me-2"></i> Daftar Wajah</a>
             </li>
+            <li class="nav-item logout">
+                <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </li>
         </ul>
+
     </div>
 
     <!-- Main Container (Header + Content) -->

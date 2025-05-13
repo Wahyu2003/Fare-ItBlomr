@@ -8,9 +8,12 @@ use App\Http\Controllers\JadwalBelController;
 use App\Http\Controllers\DetailPresensiController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\AuthController;
+use App\Http\Middleware\RoleMiddleware;
+use Illuminate\Support\Facades\Auth;
 
 // Rute untuk User (Siswa, Guru, dan Admin)
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth', RoleMiddleware::class.':admin'])->group(function () {
+    // Rute untuk User (Siswa, Guru, dan Admin)
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
@@ -26,11 +29,11 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'show'])->name('detailPresensi.show');
     Route::get('/detailPresensi/{detailPresensi}/edit', [DetailPresensiController::class, 'edit'])->name('detailPresensi.edit');
     Route::put('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'update'])->name('detailPresensi.update');
-    Route::post('detailPresensi/kirim',[DetailPresensiController::class,'sendToPython'])->name('detailPresensi.send');
+    Route::post('detailPresensi/kirim', [DetailPresensiController::class, 'sendToPython'])->name('detailPresensi.send');
     Route::delete('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'destroy'])->name('detailPresensi.destroy');
 
     // Route untuk Jadwal Bell
-    Route::resource('jadwal_bel',JadwalBelController::class);
+    Route::resource('jadwal_bel', JadwalBelController::class);
     Route::put('/jadwal_bel/{jadwalBel}/toggle', [JadwalBelController::class, 'toggle'])->name('jadwal_bel.toggle');
 
     // Rute untuk Jadwal Pelajaran
@@ -51,15 +54,37 @@ Route::middleware(['auth'])->group(function(){
     ]);
 });
 
-Route::middleware(['web'])->group(function () {
-    Route::get('/', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/', [AuthController::class, 'login']);
+Route::middleware(['auth', RoleMiddleware::class.':siswa'])->group(function () {
+    Route::get('/rekapan-absen-siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('rekapanAbsenSiswa.index');
+});
 
-    Route::middleware(['auth'])->get('/admin/dashboard', function () {
+
+Route::middleware(['web'])->group(function () {
+    // Rute login
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    // Rute root, mengarahkan ke halaman dashboard atau login
+    Route::get('/', function () {
+        if (Auth::check()) {
+            // Jika sudah login, arahkan ke dashboard
+            return redirect()->route('admin.dashboard');
+        }
+        // Jika belum login, arahkan ke login
+        return redirect()->route('login');
+    });
+    
+    // Rute untuk dashboard admin dan siswa, menggunakan middleware auth
+    Route::middleware(['auth', RoleMiddleware::class.':admin'])->get('/dashboard', function () {
         return view('dashboard');
     })->name('admin.dashboard');
 
-    Route::middleware(['auth'])->get('/siswa/dashboard', function () {
-        return view('dashboard_siswa');
-    })->name('siswa.dashboard');
+    // Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', function () {
+    //     return view('dashboard_siswa');
+    // })->name('siswa.dashboard');
+    Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('siswa.dashboard');
+
 });
+
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
