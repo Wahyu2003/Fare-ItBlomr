@@ -208,7 +208,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" style="text-align: center;">Belum ada data siswa yang belum presensi.</td>
+                                <td colspan="3" style="text-align: center;">Belum ada data siswa yang belum presensi.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -237,7 +238,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" style="text-align: center;">Belum ada data siswa yang sudah presensi.</td>
+                                <td colspan="4" style="text-align: center;">Belum ada data siswa yang sudah presensi.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -261,7 +263,9 @@
         // Fungsi untuk memulai kamera dan deteksi
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true
+                });
                 video.srcObject = stream;
                 video.play();
                 resultDiv.textContent = "Kamera aktif. Mendeteksi wajah...";
@@ -310,7 +314,9 @@
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             canvas.toBlob(async blob => {
-                const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+                const file = new File([blob], "photo.jpg", {
+                    type: "image/jpeg"
+                });
                 const formData = new FormData();
                 formData.append("photo", file);
 
@@ -326,6 +332,7 @@
 
                     const text = await res.text();
                     let data;
+                    console.log(data);
                     try {
                         data = JSON.parse(text);
                         console.log(data);
@@ -393,8 +400,5 @@
                 row.style.display = (kelasMatch && roleMatch) ? '' : 'none';
             });
         }
-
-
-
     </script>
 @endsection

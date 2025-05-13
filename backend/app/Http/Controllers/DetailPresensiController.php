@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Kelas;
+use Wablas;
 
 class DetailPresensiController extends Controller
 {
@@ -103,7 +104,9 @@ class DetailPresensiController extends Controller
             $photo = $request->file('photo');
 
             $response = Http::attach(
-                'photo', file_get_contents($photo), $photo->getClientOriginalName()
+                'photo',
+                file_get_contents($photo),
+                $photo->getClientOriginalName()
             )->post('http://faceapi:5000/recognize');
 
             if ($response->failed()) {
@@ -120,6 +123,7 @@ class DetailPresensiController extends Controller
                     'id_user' => $data['id_user'],
                     'id_jadwal_pelajaran' => '1',
                 ]);
+
                 $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
                 $payload = [
                     'nama' => $data['name'],
@@ -128,11 +132,33 @@ class DetailPresensiController extends Controller
                 ];
                 Http::put($firebaseUrl, $payload);
 
+                $user = User::find($data['id_user']);
+                $nomor = $user?->no_hp_siswa ?? null;
+
+                if ($nomor) {
+                    logger()->info('Mulai kirim WhatsApp ke user', [
+                        'nomor' => $nomor,
+                        'nama' => $data['name'],
+                    ]);
+
+                    $this->kirimPesanFonnte(
+                        $nomor,
+                        "Halo {$data['name']}, Anda berhasil presensi pada " . now()->toDayDateTimeString()
+                    );
+
+                    logger()->info('Selesai proses kirim WhatsApp ke user');
+                } else {
+                    logger()->warning('Nomor WhatsApp tidak ditemukan untuk user', [
+                        'id_user' => $data['id_user'],
+                        'nama' => $data['name'],
+                    ]);
+                }
+
                 return response()->json([
+                    'message' => 'Presensi berhasil dan WhatsApp dikirim',
                     'name' => $data['name'],
-                    'id_user' => $data['id_user'],
-                    'role' => $data['role'],
-                ]);
+                    'waktu_presensi' => now()->toDayDateTimeString(),
+                ], 200);
             }
 
             return response()->json(['error' => 'Wajah tidak dikenali'], 400);
@@ -143,11 +169,30 @@ class DetailPresensiController extends Controller
         }
     }
 
+    private function kirimPesanFonnte($nomor, $pesan)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => env('FONNTE_TOKEN'),
+            ])->post('https://api.fonnte.com/send', [
+                'target' => $nomor,
+                'message' => $pesan,
+            ]);
+
+            logger()->info('Fonnte WA response', ['response' => $response->json()]);
+        } catch (\Throwable $e) {
+            logger()->error('Gagal kirim WhatsApp via Fonnte', [
+                'nomor' => $nomor,
+                'pesan' => $pesan,
+                'error_message' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function presensiWajah()
     {
         $today = Carbon::today();
-        
-        // Ambil data pengguna yang belum presensi hari ini
+
         $belumPresensi = User::whereDoesntHave('detailPresensi', function ($query) use ($today) {
             $query->whereDate('waktu_presensi', $today);
         })->with('kelas')->get();
