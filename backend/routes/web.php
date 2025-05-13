@@ -7,6 +7,7 @@ use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\JadwalBelController;
 use App\Http\Controllers\DetailPresensiController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Auth;
@@ -75,9 +76,8 @@ Route::middleware(['web'])->group(function () {
     });
     
     // Rute untuk dashboard admin dan siswa, menggunakan middleware auth
-    Route::middleware(['auth', RoleMiddleware::class.':admin'])->get('/dashboard', function () {
-        return view('dashboard');
-    })->name('admin.dashboard');
+    Route::middleware(['auth', RoleMiddleware::class.':admin'])->get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/update-dashboard-admin', [DashboardAdminController::class, 'updateDashboardAdmin']);
 
     // Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', function () {
     //     return view('dashboard_siswa');
