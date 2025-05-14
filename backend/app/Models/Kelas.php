@@ -7,14 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kelas extends Model
 {
-    protected $table = 'kelas'; 
+    protected $table = 'kelas';
     protected $primaryKey = 'id_kelas';
 
     protected $fillable = [
         'nama_kelas'
     ];
-
-    public function presensi(): HasMany {
-        return $this->hasMany(Presensi::class, 'id_kelas');
-    }
 }

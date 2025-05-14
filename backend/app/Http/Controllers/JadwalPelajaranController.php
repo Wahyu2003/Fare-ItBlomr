@@ -14,31 +14,38 @@ class JadwalPelajaranController extends Controller
     public function index(Request $request)
     {
         $roleFilter = $request->input('role', 'siswa'); // Default ke siswa
-        $kelasFilter = $request->input('kelas'); // Filter untuk kelas
-        $guruFilter = $request->input('guru'); // Filter untuk guru
+        $kelasFilter = $request->input('kelas'); // Filter kelas
+        $guruFilter = $request->input('guru'); // Filter guru
 
-        // Inisialisasi query untuk jadwal pelajaran dengan relasi
-        $jadwalPelajaran = JadwalPelajaran::with('mataPelajaran', 'guru');
+        // Mulai query dengan eager loading
+        $query = JadwalPelajaran::with(['mataPelajaran.kelas', 'guru']);
 
-        // Filter untuk siswa berdasarkan kelas_id
-        if ($roleFilter === 'siswa' && $kelasFilter) {
-            $jadwalPelajaran->whereHas('mataPelajaran', function ($query) use ($kelasFilter) {
-                $query->where('kelas_id', $kelasFilter); // Menggunakan kelas_id
+        // Filter berdasarkan kelas_id (via relasi mataPelajaran -> kelas)
+        if (!empty($kelasFilter)) {
+            $query->whereHas('mataPelajaran', function ($q) use ($kelasFilter) {
+                $q->where('kelas_id', $kelasFilter);
             });
         }
 
-        // Filter untuk guru berdasarkan guru_id
-        if ($roleFilter === 'guru' && $guruFilter) {
-            $jadwalPelajaran->where('guru_id', $guruFilter);
+        // Filter berdasarkan guru_id
+        if (!empty($guruFilter)) {
+            $query->where('guru_id', $guruFilter);
         }
 
-        $jadwalPelajaran = $jadwalPelajaran->get();
+        $jadwalPelajaran = $query->get();
 
-        // Ambil data untuk filter kelas dan guru
-        $kelasOptions = Kelas::pluck('nama_kelas', 'id_kelas'); // Mengambil nama kelas dan id_kelas
-        $guruOptions = User::where('role', 'guru')->select('id_user', 'nama')->get();
+        // Data untuk dropdown filter
+        $kelasOptions = Kelas::pluck('nama_kelas', 'id_kelas');
+        $guruOptions = User::where('role', 'guru')->pluck('nama', 'id_user');
 
-        return view('jadwalPelajaran.index', compact('jadwalPelajaran', 'roleFilter', 'kelasFilter', 'guruFilter', 'kelasOptions', 'guruOptions'));
+        return view('jadwalPelajaran.index', compact(
+            'jadwalPelajaran',
+            'roleFilter',
+            'kelasFilter',
+            'guruFilter',
+            'kelasOptions',
+            'guruOptions'
+        ));
     }
 
     public function indexsiswa()
@@ -49,10 +56,11 @@ class JadwalPelajaranController extends Controller
         // Ambil kelas yang terkait dengan user yang sedang login
         $kelasUser = $user->kelas;
 
-        // Ambil jadwal pelajaran yang sesuai dengan kelas siswa
-        $jadwalPelajaran = JadwalPelajaran::whereHas('mataPelajaran.kelas', function($query) use ($kelasUser) {
-            $query->where('id_kelas', $kelasUser->id_kelas);
-        })->get();
+        // Ambil jadwal pelajaran yang sesuai dengan kelas siswa dan juga data guru
+        $jadwalPelajaran = JadwalPelajaran::with('mataPelajaran', 'guru') // Pastikan guru dimasukkan dalam with()
+            ->whereHas('mataPelajaran.kelas', function ($query) use ($kelasUser) {
+                $query->where('id_kelas', $kelasUser->id_kelas);
+            })->get();
 
         return view('jadwalpelajaran.indexsiswa', compact('jadwalPelajaran'));
     }

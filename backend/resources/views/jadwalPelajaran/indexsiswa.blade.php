@@ -15,6 +15,7 @@
                     <th>Jam Selesai</th>
                     <th>Mata Pelajaran</th>
                     <th>Ruangan</th>
+                    <th>Guru</th> <!-- Kolom Guru -->
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +26,7 @@
                         <td>{{ $jp->jam_selesai }}</td>
                         <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
                         <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
+                        <td>{{ $jp->guru->nama ?? 'Tidak Ada' }}</td> <!-- Menampilkan nama guru -->
                     </tr>
                 @endforeach
             </tbody>
