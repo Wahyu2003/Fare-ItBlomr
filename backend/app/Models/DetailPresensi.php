@@ -23,11 +23,6 @@ class DetailPresensi extends Model
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class, 'kelas_id', 'id_kelas');
-    }
-
     public function jadwalPelajaran(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal_pelajaran');

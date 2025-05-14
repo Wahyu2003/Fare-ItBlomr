@@ -3,22 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Kelas;
 use App\Models\DetailPresensi;
+use Illuminate\Support\Facades\Http;
+use App\Models\Kelas;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
 
 class DashboardAdminController extends Controller
 {
     // Menampilkan Dashboard Admin
     public function index()
     {
-        // Ambil semua data kelas dari tabel kelas
         $kelasList = Kelas::all();
 
-        // Tampilkan view dashboard di luar folder admin
-        return view('dashboard', compact('kelasList'));  // Pastikan path-nya sesuai dengan tempat view disimpan
+        $today = Carbon::today();
+        $presensiData = DetailPresensi::whereDate('waktu_presensi', $today)
+            ->with(['user.kelas'])
+            ->get();
+
+        // Hitung jumlah presensi berdasarkan status kehadiran
+        $jumlahHadir = $presensiData->where('kehadiran', 'tepat waktu')->count();
+        $jumlahIzin = $presensiData->where('kehadiran', 'izin')->count();
+        $jumlahAlpa = $presensiData->where('kehadiran', 'alpha')->count();
+
+        // Kirimkan data ke view
+        return view('dashboard', compact('kelasList', 'presensiData', 'jumlahHadir', 'jumlahIzin', 'jumlahAlpa'));
     }
 
     // Fungsi untuk memperbarui data dashboard berdasarkan kelas yang dipilih
@@ -28,7 +37,7 @@ class DashboardAdminController extends Controller
 
         // Ambil data presensi berdasarkan kelas yang dipilih dan tanggal hari ini
         $presensiData = DetailPresensi::with('user.kelas')
-            ->whereHas('user', function($query) use ($kelasId) {
+            ->whereHas('user', function ($query) use ($kelasId) {
                 if ($kelasId) {
                     $query->where('kelas_id', $kelasId); // Filter berdasarkan kelas
                 }
@@ -36,40 +45,44 @@ class DashboardAdminController extends Controller
             ->whereDate('waktu_presensi', Carbon::today())
             ->get();
 
-        // Hitung jumlah kehadiran, izin, alpa untuk kelas yang dipilih
-        $jumlahHadir = $presensiData->where('kehadiran', 'Hadir')->count();
-        $jumlahIzin = $presensiData->where('kehadiran', 'Izin')->count();
-        $jumlahAlpa = $presensiData->where('kehadiran', 'Alpa')->count();
+        // Hitung jumlah presensi berdasarkan status kehadiran
+        $jumlahHadir = $presensiData->where('kehadiran', 'tepat waktu')->count();
+        $jumlahIzin = $presensiData->where('kehadiran', 'izin')->count();
+        $jumlahAlpa = $presensiData->where('kehadiran', 'alpha')->count();
 
         // Ambil data suhu dan status relay dari Firebase
         $firebaseData = Http::get('https://smartsmn4-default-rtdb.asia-southeast1.firebasedatabase.app/ds18b20.json');
         $firebaseData = $firebaseData->json();
-
-        // Ambil status relay dan suhu dari Firebase
         $relayStatus = $firebaseData['relay_status'] ?? 'OFF';
-        $temperature = $firebaseData['temperature'] ?? 'N/A'; // Default 'N/A' jika tidak ada data suhu
+        $temperature = $firebaseData['temperature'] ?? 'N/A';
 
-        // Ambil status kehadiran guru
-        $guruHadir = 'Tidak Hadir'; // Default
-        $guruPresensi = DetailPresensi::whereHas('user', function($query) {
-                $query->where('role', 'guru');
-            })
-            ->whereDate('waktu_presensi', Carbon::today())
-            ->exists();
-
-        if ($guruPresensi) {
-            $guruHadir = 'Hadir';
-        }
-
-        // Mengembalikan data dalam format JSON
+        // Mengembalikan data dalam format JSON untuk dikonsumsi oleh front-end
         return response()->json([
-            'presensiData' => $presensiData,
+            'dataSiswaHariIni' => $presensiData,
             'jumlahHadir' => $jumlahHadir,
             'jumlahIzin' => $jumlahIzin,
             'jumlahAlpa' => $jumlahAlpa,
             'relayStatus' => $relayStatus,
             'temperature' => $temperature,
-            'guruHadir' => $guruHadir,
         ]);
+    }
+    public function presensiWajah()
+    {
+        $today = Carbon::today();
+
+        $belumPresensi = User::whereDoesntHave('detailPresensi', function ($query) use ($today) {
+            $query->whereDate('waktu_presensi', $today);
+        })->with('kelas')->get();
+
+        // Ambil data presensi hari ini beserta relasi user dan kelas
+        $sudahPresensi = DetailPresensi::whereDate('waktu_presensi', $today)
+            ->with(['user.kelas'])
+            ->get();
+
+        // Ambil semua data kelas untuk dropdown filter
+        $kelasList = Kelas::all();
+
+        // Gunakan view detailPresensi.index
+        return view('dashboard', compact('sudahPresensi', 'kelasList'));
     }
 }

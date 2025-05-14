@@ -208,6 +208,7 @@ class DetailPresensiController extends Controller
             } elseif ($now->lt($jamPulang)) {
                 return response()->json(['error' => 'Presensi hanya tersedia untuk masuk atau pulang di jam yang ditentukan'], 403);
             } else {
+                $kehadiran = 'tepat waktu';
                 $jenis_absen = 'pulang';
             }
 
