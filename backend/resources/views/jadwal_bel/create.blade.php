@@ -41,7 +41,7 @@
 
         <div class="form-group">
             <label for="file_suara">File Suara</label>
-            <input type="file" name="file_suara" class="form-control">
+            <input type="text" name="file_suara" class="form-control" placeholder="Masukkan nama file suara" required>
         </div>
 
         <div class="form-check form-switch mt-3">

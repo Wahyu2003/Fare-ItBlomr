@@ -38,19 +38,18 @@ class JadwalBelController extends Controller
             'tanggal' => 'nullable|date',
             'jam' => 'required|date_format:H:i',
             'keterangan' => 'required|string|max:255',
-            'file_suara' => 'nullable|file|mimes:mp3,wav',
+            'file_suara' => 'nullable|string',  // Simpan hanya nama file sebagai string
             'aktif' => 'nullable|boolean',
         ]);
 
         $data = $validated;
 
-        // Simpan file suara jika ada
-        if ($request->hasFile('file_suara')) {
-            $data['file_suara'] = $request->file('file_suara')->store('suara_bel', 'public');
-        }
+        // Ambil nama file dari inputan string
+        $data['file_suara'] = $request->input('file_suara');  // Ambil nama file suara sebagai string
 
         $data['aktif'] = $request->has('aktif');
 
+        // Simpan data ke database
         $jadwal = JadwalBel::create($data);
 
         // Kirim ke Firebase
@@ -73,18 +72,18 @@ class JadwalBelController extends Controller
             'tanggal' => 'nullable|date',
             'jam' => 'required|date_format:H:i',
             'keterangan' => 'required|string|max:255',
-            'file_suara' => 'nullable|file|mimes:mp3,wav',
+            'file_suara' => 'nullable|string',  // Simpan hanya nama file sebagai string
             'aktif' => 'nullable|boolean',
         ]);
 
         $data = $validated;
 
-        if ($request->hasFile('file_suara')) {
-            $data['file_suara'] = $request->file('file_suara')->store('suara_bel', 'public');
-        }
+        // Ambil nama file dari inputan string
+        $data['file_suara'] = $request->input('file_suara');  // Ambil nama file suara sebagai string
 
         $data['aktif'] = $request->has('aktif');
 
+        // Update data pada database
         $jadwalBel->update($data);
 
         // Update Firebase

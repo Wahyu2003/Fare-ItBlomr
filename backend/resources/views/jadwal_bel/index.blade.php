@@ -33,18 +33,7 @@
                     <td>{{ $jadwal->is_manual ? $jadwal->tanggal : $jadwal->hari }}</td>
                     <td>{{ $jadwal->jam }}</td>
                     <td>{{ $jadwal->keterangan }}</td>
-
-                    <td>
-                        @if ($jadwal->file_suara)
-                            <audio controls style="width: 120px;">
-                                <source src="{{ asset('storage/' . $jadwal->file_suara) }}" type="audio/mpeg">
-                                Browser tidak mendukung audio
-                            </audio>
-                        @else
-                            <span class="text-muted">-</span>
-                        @endif
-                    </td>
-
+                    <td>{{ $jadwal->file_suara }}</td>
                     <td>
                         <form method="POST" action="{{ route('jadwal_bel.toggle', $jadwal->id) }}">
                             @csrf
