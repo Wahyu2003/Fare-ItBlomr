@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -21,11 +20,6 @@ class DetailPresensi extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
-    }
-
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class, 'kelas_id', 'id_kelas');
     }
 
     public function jadwalPelajaran(): BelongsTo

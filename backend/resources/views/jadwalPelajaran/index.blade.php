@@ -25,9 +25,9 @@
                 <select name="kelas" id="kelas" class="form-control">
                     <option value="">Semua Kelas</option>
                     @if($kelasOptions->isNotEmpty())
-                        @foreach($kelasOptions as $kelas)
-                            <option value="{{ $kelas }}" {{ $kelasFilter == $kelas ? 'selected' : '' }}>{{ $kelas }}</option>
-                        @endforeach
+                    @foreach($kelasOptions as $id => $nama)
+                        <option value="{{ $id }}" {{ $kelasFilter == $id ? 'selected' : '' }}>{{ $nama }}</option>
+                    @endforeach
                     @endif
                 </select>
             </div>
