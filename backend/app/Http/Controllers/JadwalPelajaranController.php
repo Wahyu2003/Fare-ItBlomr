@@ -13,30 +13,30 @@ class JadwalPelajaranController extends Controller
 {
     public function index(Request $request)
     {
-        $roleFilter = $request->input('role', 'siswa'); // Default ke siswa
-        $kelasFilter = $request->input('kelas'); // Filter kelas
-        $guruFilter = $request->input('guru'); // Filter guru
+        $roleFilter = $request->input('role', 'siswa');
+        $kelasFilter = $request->input('kelas');
+        $guruFilter = $request->input('guru');
 
-        // Mulai query dengan eager loading
+        // Eager load relasi yang dibutuhkan
         $query = JadwalPelajaran::with(['mataPelajaran.kelas', 'guru']);
 
-        // Filter berdasarkan kelas_id (via relasi mataPelajaran -> kelas)
-        if (!empty($kelasFilter)) {
+        // Jika role siswa dan ada filter kelas
+        if ($roleFilter === 'siswa' && !empty($kelasFilter)) {
             $query->whereHas('mataPelajaran', function ($q) use ($kelasFilter) {
                 $q->where('kelas_id', $kelasFilter);
             });
         }
 
-        // Filter berdasarkan guru_id
-        if (!empty($guruFilter)) {
+        // Jika role guru dan ada filter guru
+        if ($roleFilter === 'guru' && !empty($guruFilter)) {
             $query->where('guru_id', $guruFilter);
         }
 
         $jadwalPelajaran = $query->get();
 
-        // Data untuk dropdown filter
-        $kelasOptions = Kelas::pluck('nama_kelas', 'id_kelas');
-        $guruOptions = User::where('role', 'guru')->pluck('nama', 'id_user');
+        // Ambil data dropdown
+        $kelasOptions = Kelas::pluck('nama_kelas', 'id_kelas'); // Format: [id => nama]
+        $guruOptions = User::where('role', 'guru')->get(); // Tetap gunakan ->get() karena kita pakai objek di Blade
 
         return view('jadwalPelajaran.index', compact(
             'jadwalPelajaran',

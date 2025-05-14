@@ -11,44 +11,40 @@
 
     <!-- Form Filter -->
     <form method="GET" action="{{ route('jadwalPelajaran.index') }}" class="mb-4">
-        <div class="row">
-            <div class="col-md-3">
-                <label for="role">Tampilkan Jadwal Untuk:</label>
-                <select name="role" id="role" class="form-control" onchange="toggleFilters()">
-                    <option value="siswa" {{ $roleFilter == 'siswa' ? 'selected' : '' }}>Siswa</option>
-                    <option value="guru" {{ $roleFilter == 'guru' ? 'selected' : '' }}>Guru</option>
-                </select>
-            </div>
+    <div class="row">
+    <div class="col-md-3">
+        <label for="role">Tampilkan Jadwal Untuk:</label>
+        <select name="role" id="role" class="form-control" onchange="toggleFilters()">
+            <option value="siswa" {{ $roleFilter == 'siswa' ? 'selected' : '' }}>Siswa</option>
+            <option value="guru" {{ $roleFilter == 'guru' ? 'selected' : '' }}>Guru</option>
+        </select>
+    </div>
 
-            <div class="col-md-3" id="kelasFilter" style="{{ $roleFilter == 'guru' ? 'display:none' : '' }}">
-                <label for="kelas">Kelas:</label>
-                <select name="kelas" id="kelas" class="form-control">
-                    <option value="">Semua Kelas</option>
-                    @if($kelasOptions->isNotEmpty())
-                    @foreach($kelasOptions as $id => $nama)
-                        <option value="{{ $id }}" {{ $kelasFilter == $id ? 'selected' : '' }}>{{ $nama }}</option>
-                    @endforeach
-                    @endif
-                </select>
-            </div>
+    <div class="col-md-3" id="kelasFilter" style="{{ $roleFilter == 'guru' ? 'display:none' : '' }}">
+        <label for="kelas">Kelas:</label>
+        <select name="kelas" id="kelas" class="form-control">
+            <option value="">Semua Kelas</option>
+            @foreach($kelasOptions as $id => $nama)
+                <option value="{{ $id }}" {{ $kelasFilter == $id ? 'selected' : '' }}>{{ $nama }}</option>
+            @endforeach
+        </select>
+    </div>
 
-            <div class="col-md-3" id="guruFilter" style="{{ $roleFilter == 'siswa' ? 'display:none' : '' }}">
-                <label for="guru">Guru:</label>
-                <select name="guru" id="guru" class="form-control">
-                    <option value="">Semua Guru</option>
-                    @if($guruOptions->isNotEmpty())
-                        @foreach($guruOptions as $guru)
-                            <option value="{{ $guru->id_user }}" {{ $guruFilter == $guru->id_user ? 'selected' : '' }}>{{ $guru->nama }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
+    <div class="col-md-3" id="guruFilter" style="{{ $roleFilter == 'siswa' ? 'display:none' : '' }}">
+        <label for="guru">Guru:</label>
+        <select name="guru" id="guru" class="form-control">
+            <option value="">Semua Guru</option>
+            @foreach($guruOptions as $guru)
+                <option value="{{ $guru->id_user }}" {{ $guruFilter == $guru->id_user ? 'selected' : '' }}>{{ $guru->nama }}</option>
+            @endforeach
+        </select>
+    </div>
 
-            <div class="col-md-3">
-                <label>&nbsp;</label>
-                <button type="submit" class="btn btn-primary form-control">Filter</button>
-            </div>
-        </div>
+    <div class="col-md-3">
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary form-control">Filter</button>
+    </div>
+</div>
     </form>
 
     <a href="{{ route('jadwalPelajaran.create') }}" class="btn btn-primary mb-3">Tambah Jadwal Pelajaran</a>
