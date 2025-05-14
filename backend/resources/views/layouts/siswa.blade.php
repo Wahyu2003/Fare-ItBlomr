@@ -26,6 +26,9 @@
             <li class="nav-item m-1">
                 <a class="nav-link {{ request()->routeIs('siswa.dashboard') ? 'active' : '' }}" href="{{ route('siswa.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
             </li>
+            <li class="nav-item m-1">
+                <a class="nav-link {{ request()->routeIs('siswa.dashboard') ? 'active' : '' }}" href="{{ route('siswa.jadwal') }}"><i class="fas fa-tachometer-alt me-2"></i> Jadwal Pelajaran</a>
+            </li>
             <li class="nav-item logout m-1">
                 <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

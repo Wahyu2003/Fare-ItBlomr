@@ -41,6 +41,23 @@ class JadwalPelajaranController extends Controller
         return view('jadwalPelajaran.index', compact('jadwalPelajaran', 'roleFilter', 'kelasFilter', 'guruFilter', 'kelasOptions', 'guruOptions'));
     }
 
+    public function indexsiswa()
+    {
+        // Ambil user yang sedang login
+        $user = auth()->user();
+
+        // Ambil kelas yang terkait dengan user yang sedang login
+        $kelasUser = $user->kelas;
+
+        // Ambil jadwal pelajaran yang sesuai dengan kelas siswa
+        $jadwalPelajaran = JadwalPelajaran::whereHas('mataPelajaran.kelas', function($query) use ($kelasUser) {
+            $query->where('id_kelas', $kelasUser->id_kelas);
+        })->get();
+
+        return view('jadwalpelajaran.indexsiswa', compact('jadwalPelajaran'));
+    }
+
+
     public function create()
     {
         $mataPelajaran = MataPelajaran::with('kelas')->get(); // Ambil mata pelajaran dengan relasi kelas

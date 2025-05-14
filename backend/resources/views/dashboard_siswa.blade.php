@@ -113,11 +113,14 @@
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            width: 100%;
         }
 
         @media (max-width: 992px) {
             .stats-section {
                 grid-template-columns: 1fr;
+                width: 100%;
             }
         }
 

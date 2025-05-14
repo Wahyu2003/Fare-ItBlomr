@@ -57,6 +57,8 @@ Route::middleware(['auth', RoleMiddleware::class.':admin'])->group(function () {
 
 Route::middleware(['auth', RoleMiddleware::class.':siswa'])->group(function () {
     Route::get('/rekapan-absen-siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('rekapanAbsenSiswa.index');
+    // routes/web.php
+    Route::get('/jadwal-pelajaran', [JadwalPelajaranController::class, 'indexsiswa'])->name('siswa.jadwal');
 });
 
 
