@@ -71,9 +71,9 @@
                                 <a class="nav-link me-3" href="#"><i class="fas fa-message"></i></a>
                                 <div class="d-flex align-items-center">
                                     <div class="profile-pic-wrapper border-profil">
-                                        <img src="{{ asset('images/cindy.jpg') }}" class="profile-pic rounded-circle profil" alt="Profil">
+                                        <img src="{{ Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('images/default.jpg') }}" class="profil" alt="Profil">
                                     </div>
-                                    <span class="text-black username">Niken Hildawati</span>
+                                    <span class="username">{{ Auth::user()->username }}</span>
                                 </div>
                             </div>
                         </li>

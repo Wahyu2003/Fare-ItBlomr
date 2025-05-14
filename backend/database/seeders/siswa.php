@@ -27,7 +27,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567891',
                 'no_hp_siswa' => '081234567811',
                 'username' => 'ahmadf10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023002',
@@ -38,7 +38,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567892',
                 'no_hp_siswa' => '081234567812',
                 'username' => 'bella10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023003',
@@ -49,7 +49,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567893',
                 'no_hp_siswa' => '081234567813',
                 'username' => 'cahyo10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023004',
@@ -60,7 +60,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567894',
                 'no_hp_siswa' => '081234567814',
                 'username' => 'dinda10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023005',
@@ -71,7 +71,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567895',
                 'no_hp_siswa' => '081234567815',
                 'username' => 'eko10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023006',
@@ -82,7 +82,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567896',
                 'no_hp_siswa' => '081234567816',
                 'username' => 'fitri10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023007',
@@ -93,7 +93,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567897',
                 'no_hp_siswa' => '081234567817',
                 'username' => 'gilang10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '102023008',
@@ -104,7 +104,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567898',
                 'no_hp_siswa' => '081234567818',
                 'username' => 'hana10',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
         ]);
 
@@ -119,7 +119,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567901',
                 'no_hp_siswa' => '081234567821',
                 'username' => 'irfan11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '112023002',
@@ -130,7 +130,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567902',
                 'no_hp_siswa' => '081234567822',
                 'username' => 'jihan11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '112023003',
@@ -141,7 +141,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567903',
                 'no_hp_siswa' => '081234567823',
                 'username' => 'kevin11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '112023004',
@@ -152,7 +152,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567904',
                 'no_hp_siswa' => '081234567824',
                 'username' => 'lia11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '112023005',
@@ -163,7 +163,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567905',
                 'no_hp_siswa' => '081234567825',
                 'username' => 'rizky11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '112023006',
@@ -174,7 +174,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567906',
                 'no_hp_siswa' => '081234567826',
                 'username' => 'nadia11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '112023007',
@@ -185,7 +185,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567907',
                 'no_hp_siswa' => '081234567827',
                 'username' => 'oki11',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
         ]);
 
@@ -200,7 +200,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567911',
                 'no_hp_siswa' => '081234567831',
                 'username' => 'putri12',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '122023002',
@@ -211,7 +211,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567912',
                 'no_hp_siswa' => '081234567832',
                 'username' => 'qori12',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '122023003',
@@ -222,7 +222,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567913',
                 'no_hp_siswa' => '081234567833',
                 'username' => 'rizki12',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '122023004',
@@ -233,7 +233,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567914',
                 'no_hp_siswa' => '081234567834',
                 'username' => 'siti12',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '122023005',
@@ -244,7 +244,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567915',
                 'no_hp_siswa' => '081234567835',
                 'username' => 'tegar12',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
             [
                 'nik' => '122023006',
@@ -255,7 +255,7 @@ class siswa extends Seeder
                 'no_hp_ortu' => '081234567916',
                 'no_hp_siswa' => '081234567836',
                 'username' => 'umi12',
-                'password' => 'siswa123',
+                'password' => bcrypt('siswa123'),
             ],
         ]);
 

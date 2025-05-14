@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Kelas;
-use Wablas;
 
 class DetailPresensiController extends Controller
 {
@@ -29,77 +28,76 @@ class DetailPresensiController extends Controller
         return view('detailPresensi.index', compact('sudahPresensi', 'belumPresensi', 'kelasList'));
     }
 
-public function rekapanAbsenSiswa(Request $request)
-{
-    // Ambil filter status dan rentang waktu dari request
-    $statusFilter = $request->input('status', ''); // Default ke kosong
-    $timeFilter = $request->input('time_filter', 'week'); // Default ke 'week'
-    $startDate = null;
-    $endDate = null;
+    public function rekapanAbsenSiswa(Request $request)
+    {
+        // Ambil filter status dan rentang waktu dari request
+        $statusFilter = $request->input('status', ''); // Default ke kosong
+        $timeFilter = $request->input('time_filter', 'week'); // Default ke 'week'
+        $startDate = null;
+        $endDate = null;
 
-    // Tentukan rentang waktu berdasarkan filter
-    if ($timeFilter === 'week') {
-        $startDate = Carbon::now()->startOfWeek();
-        $endDate = Carbon::now()->endOfWeek();
-    } elseif ($timeFilter === 'month') {
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
-    } elseif ($timeFilter === 'custom' && $request->has('start_date') && $request->has('end_date')) {
-        $startDate = Carbon::parse($request->input('start_date'));
-        $endDate = Carbon::parse($request->input('end_date'));
+        // Tentukan rentang waktu berdasarkan filter
+        if ($timeFilter === 'week') {
+            $startDate = Carbon::now()->startOfWeek();
+            $endDate = Carbon::now()->endOfWeek();
+        } elseif ($timeFilter === 'month') {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+        } elseif ($timeFilter === 'custom' && $request->has('start_date') && $request->has('end_date')) {
+            $startDate = Carbon::parse($request->input('start_date'));
+            $endDate = Carbon::parse($request->input('end_date'));
+        }
+
+        // Query untuk mendapatkan data presensi siswa yang login
+        $presensiQuery = DetailPresensi::with('user', 'jadwalPelajaran')
+            ->whereBetween('waktu_presensi', [$startDate, $endDate])
+            ->where('id_user', auth()->user()->id_user); // Filter hanya untuk siswa yang login
+
+        // Filter berdasarkan status kehadiran jika ada
+        if ($statusFilter) {
+            $presensiQuery->where('kehadiran', $statusFilter);
+        }
+
+        // Ambil data presensi yang sudah terfilter
+        $presensi = $presensiQuery->get();
+
+        // Hitung total presensi
+        $totalPresensi = $presensi->count();
+
+        // Menghindari pembagian dengan nol
+        if ($totalPresensi > 0) {
+            // Hitung persentase kehadiran berdasarkan status
+            $statusCounts = $presensi->groupBy('kehadiran')->map->count();
+
+            $totalPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
+            $hadirPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
+            $telatPercentage = ($statusCounts->get('telat', 0) / $totalPresensi) * 100;
+            $alphaPercentage = ($statusCounts->get('alpha', 0) / $totalPresensi) * 100;
+            $izinPercentage = ($statusCounts->get('izin', 0) / $totalPresensi) * 100;
+            $sakitPercentage = ($statusCounts->get('sakit', 0) / $totalPresensi) * 100;
+        } else {
+            $totalPercentage = 0;
+            $hadirPercentage = 0;
+            $telatPercentage = 0;
+            $alphaPercentage = 0;
+            $izinPercentage = 0;
+            $sakitPercentage = 0;
+        }
+
+        return view('dashboard_siswa', compact(
+            'presensi',
+            'statusFilter',
+            'timeFilter',
+            'startDate',
+            'endDate',
+            'totalPercentage',
+            'hadirPercentage',
+            'telatPercentage',
+            'alphaPercentage',
+            'izinPercentage',
+            'sakitPercentage'
+        ));
     }
-
-    // Query untuk mendapatkan data presensi siswa yang login
-    $presensiQuery = DetailPresensi::with('user', 'jadwalPelajaran')
-        ->whereBetween('waktu_presensi', [$startDate, $endDate])
-        ->where('id_user', auth()->user()->id_user); // Filter hanya untuk siswa yang login
-
-    // Filter berdasarkan status kehadiran jika ada
-    if ($statusFilter) {
-        $presensiQuery->where('kehadiran', $statusFilter);
-    }
-
-    // Ambil data presensi yang sudah terfilter
-    $presensi = $presensiQuery->get();
-
-    // Hitung total presensi
-    $totalPresensi = $presensi->count();
-
-    // Menghindari pembagian dengan nol
-    if ($totalPresensi > 0) {
-        // Hitung persentase kehadiran berdasarkan status
-        $statusCounts = $presensi->groupBy('kehadiran')->map->count();
-
-        $totalPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
-        $hadirPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
-        $telatPercentage = ($statusCounts->get('telat', 0) / $totalPresensi) * 100;
-        $alphaPercentage = ($statusCounts->get('alpha', 0) / $totalPresensi) * 100;
-        $izinPercentage = ($statusCounts->get('izin', 0) / $totalPresensi) * 100;
-        $sakitPercentage = ($statusCounts->get('sakit', 0) / $totalPresensi) * 100;
-    } else {
-        // Jika tidak ada presensi, set persentase ke 0
-        $totalPercentage = 0;
-        $hadirPercentage = 0;
-        $telatPercentage = 0;
-        $alphaPercentage = 0;
-        $izinPercentage = 0;
-        $sakitPercentage = 0;
-    }
-
-    return view('dashboard_siswa', compact(
-        'presensi',
-        'statusFilter',
-        'timeFilter',
-        'startDate',
-        'endDate',
-        'totalPercentage',
-        'hadirPercentage',
-        'telatPercentage',
-        'alphaPercentage',
-        'izinPercentage',
-        'sakitPercentage'
-    ));
-}
 
 
 
@@ -174,9 +172,7 @@ public function rekapanAbsenSiswa(Request $request)
             if (!$request->hasFile('photo')) {
                 return response()->json(['error' => 'Photo is required'], 400);
             }
-
             $photo = $request->file('photo');
-
             $response = Http::attach(
                 'photo',
                 file_get_contents($photo),
@@ -188,54 +184,70 @@ public function rekapanAbsenSiswa(Request $request)
             }
 
             $data = $response->json();
+            if (!isset($data['name']) || !isset($data['id_user'])) {
+                return response()->json(['error' => 'Wajah tidak dikenali'], 400);
+            }
+            $now = Carbon::now();
+            $jamMulai = Carbon::createFromTimeString('06:30');
+            $jamTelat = Carbon::createFromTimeString('07:15');
+            $jamBatasPulang = Carbon::createFromTimeString('13:00');
+            $jamPulang = Carbon::createFromTimeString('15:00');
 
-            if (isset($data['name']) && isset($data['id_user'])) {
-                DetailPresensi::create([
-                    'waktu_presensi' => now(),
-                    'kehadiran' => 'tepat waktu',
-                    'jenis_absen' => 'belum keluar',
-                    'id_user' => $data['id_user'],
-                    'id_jadwal_pelajaran' => '1',
-                ]);
-
-                $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
-                $payload = [
-                    'nama' => $data['name'],
-                    'waktu_presensi' => now()->toDayDateTimeString(),
-                    'role' => $data['role'],
-                ];
-                Http::put($firebaseUrl, $payload);
-
-                $user = User::find($data['id_user']);
-                $nomor = $user?->no_hp_siswa ?? null;
-
-                if ($nomor) {
-                    logger()->info('Mulai kirim WhatsApp ke user', [
-                        'nomor' => $nomor,
-                        'nama' => $data['name'],
-                    ]);
-
-                    $this->kirimPesanFonnte(
-                        $nomor,
-                        "Halo {$data['name']}, Anda berhasil presensi pada " . now()->toDayDateTimeString()
-                    );
-
-                    logger()->info('Selesai proses kirim WhatsApp ke user');
-                } else {
-                    logger()->warning('Nomor WhatsApp tidak ditemukan untuk user', [
-                        'id_user' => $data['id_user'],
-                        'nama' => $data['name'],
-                    ]);
-                }
-
-                return response()->json([
-                    'message' => 'Presensi berhasil dan WhatsApp dikirim',
-                    'name' => $data['name'],
-                    'waktu_presensi' => now()->toDayDateTimeString(),
-                ], 200);
+            if ($now->lt($jamMulai)) {
+                return response()->json(['error' => 'Presensi belum dimulai. Presensi masuk mulai pukul 06:30'], 403);
             }
 
-            return response()->json(['error' => 'Wajah tidak dikenali'], 400);
+            $jenis_absen = null;
+            $kehadiran = 'hadir';
+
+            if ($now->between($jamMulai, $jamTelat)) {
+                $jenis_absen = 'masuk';
+            } elseif ($now->gt($jamTelat) && $now->lt($jamPulang)) {
+                $jenis_absen = 'masuk';
+                $kehadiran = 'telat';
+            } elseif ($now->lt($jamPulang)) {
+                return response()->json(['error' => 'Presensi hanya tersedia untuk masuk atau pulang di jam yang ditentukan'], 403);
+            } else {
+                $jenis_absen = 'pulang';
+            }
+
+            DetailPresensi::create([
+                'waktu_presensi' => $now,
+                'kehadiran' => $kehadiran,
+                'jenis_absen' => $jenis_absen,
+                'id_user' => $data['id_user'],
+                'id_jadwal_pelajaran' => '1',
+            ]);
+
+            // Firebase
+            $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
+            $payload = [
+                'nama' => $data['name'],
+                'waktu_presensi' => $now->toDayDateTimeString(),
+                'role' => $data['role'],
+                'jenis_absen' => $jenis_absen,
+            ];
+            Http::put($firebaseUrl, $payload);
+
+            // Kirim WhatsApp
+            $user = User::find($data['id_user']);
+            $nomor = $user?->no_hp_siswa ?? null;
+
+            if ($nomor) {
+                $this->kirimPesanFonnte(
+                    $nomor,
+                    "Halo {$data['name']}, Anda berhasil presensi *{$jenis_absen}* pada " . $now->toDayDateTimeString()
+                );
+            }
+
+            return response()->json([
+                'message' => "Presensi {$jenis_absen} berhasil dan WhatsApp dikirim",
+                'name' => $data['name'],
+                'waktu_presensi' => $now->toDayDateTimeString(),
+                'jenis_absen' => $jenis_absen,
+                'kehadiran' => $kehadiran,
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Terjadi kesalahan: ' . $e->getMessage(),
