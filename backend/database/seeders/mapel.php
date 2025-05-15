@@ -16,66 +16,99 @@ class mapel extends Seeder
     public function run(): void
     {
         // Seeder untuk Mata Pelajaran dengan kode ruangan
-$mataPelajaran = [
-    [
-        'nama_mata_pelajaran' => 'Pend. Jasmani, Olahraga Kesehatan',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Sejarah',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Bahasa Inggris',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Matematika',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Akuntansi Keuangan',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Akuntansi Pemerintahan Desa',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Komputer Akuntansi',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Siklus Akuntansi Perusahaan',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Sistem Informasi Akuntansi',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'BK',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ],
-    [
-        'nama_mata_pelajaran' => 'Projek Kreatif Kewirausahaan',
-        'kelas' => '11',
-        'multimedia' => 'Multimedia 1'
-    ]
-];
+        $mataPelajaran = [
+            [
+                'nama_mata_pelajaran' => 'Pend. Jasmani, Olahraga Kesehatan',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Pend. Jasmani, Olahraga Kesehatan',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Sejarah',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Sejarah',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Bahasa Inggris',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Bahasa Inggris',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Matematika',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Matematika',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Akuntansi Keuangan',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Akuntansi Keuangan',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Akuntansi Pemerintahan Desa',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Akuntansi Pemerintahan Desa',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Komputer Akuntansi',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Komputer Akuntansi',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Siklus Akuntansi Perusahaan',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Siklus Akuntansi Perusahaan',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Sistem Informasi Akuntansi',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Sistem Informasi Akuntansi',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'BK',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'BK',
+                'kelas_id' => '2',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Projek Kreatif Kewirausahaan',
+                'kelas_id' => '1',
+            ],
+            [
+                'nama_mata_pelajaran' => 'Projek Kreatif Kewirausahaan',
+                'kelas_id' => '2',
+            ]
+        ];
 
-foreach ($mataPelajaran as $mp) {
-    MataPelajaran::create($mp);
-}
+        foreach ($mataPelajaran as $mp) {
+            MataPelajaran::create($mp);
+        }
     }
 }

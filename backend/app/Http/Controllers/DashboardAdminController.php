@@ -35,14 +35,16 @@ class DashboardAdminController extends Controller
     {
         $kelasId = $request->input('kelas', null); // Ambil kelas dari request
 
+        $today = Carbon::today();
+
         // Ambil data presensi berdasarkan kelas yang dipilih dan tanggal hari ini
         $presensiData = DetailPresensi::with('user.kelas')
-            ->whereHas('user', function ($query) use ($kelasId) {
-                if ($kelasId) {
-                    $query->where('kelas_id', $kelasId); // Filter berdasarkan kelas
-                }
+            ->when($kelasId, function ($query) use ($kelasId) {
+                $query->whereHas('user', function ($q) use ($kelasId) {
+                    $q->where('kelas_id', $kelasId);
+                });
             })
-            ->whereDate('waktu_presensi', Carbon::today())
+            ->whereDate('waktu_presensi', $today)
             ->get();
 
         // Hitung jumlah presensi berdasarkan status kehadiran
@@ -56,6 +58,13 @@ class DashboardAdminController extends Controller
         $relayStatus = $firebaseData['relay_status'] ?? 'OFF';
         $temperature = $firebaseData['temperature'] ?? 'N/A';
 
+        // Cek status kehadiran guru hari ini
+        $guruHadir = DetailPresensi::whereDate('waktu_presensi', $today)
+            ->whereHas('user', function ($q) {
+                $q->where('role', 'guru');
+            })
+            ->exists();
+
         // Mengembalikan data dalam format JSON untuk dikonsumsi oleh front-end
         return response()->json([
             'dataSiswaHariIni' => $presensiData,
@@ -64,8 +73,10 @@ class DashboardAdminController extends Controller
             'jumlahAlpa' => $jumlahAlpa,
             'relayStatus' => $relayStatus,
             'temperature' => $temperature,
+            'guruHadir' => $guruHadir,
         ]);
     }
+
     public function presensiWajah()
     {
         $today = Carbon::today();
