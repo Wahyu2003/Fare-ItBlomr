@@ -77,12 +77,15 @@ Route::middleware(['web'])->group(function () {
         // Jika belum login, arahkan ke login
         return redirect()->route('login');
     });
-    
+
     // Rute untuk dashboard admin dan siswa, menggunakan middleware auth
-    Route::get('/update-dashboard-admin', [DashboardAdminController::class, 'updateDashboardAdmin']);
+    Route::middleware(['auth', RoleMiddleware::class . ':admin'])->group(function () {
+        Route::get('/get-firebase-data', [DashboardAdminController::class, 'getFirebaseData']);
+        Route::get('/update-dashboard-admin', [DashboardAdminController::class, 'updateDashboardAdmin']);
+    });
     Route::middleware(['auth', RoleMiddleware::class.':admin'])->get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
     Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('siswa.dashboard');
-    
+
     Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -92,7 +95,7 @@ Route::middleware(['web'])->group(function () {
     // Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', function () {
     //     return view('dashboard_siswa');
     // })->name('siswa.dashboard');
-    
+
 });
 
 

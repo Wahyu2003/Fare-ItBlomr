@@ -62,10 +62,9 @@ body {
     transform: translateX(10px); /* Subtle animation */
 }
 
-.nav-link.active{
+.nav-link.active {
     transform: translateX(5px);
 }
-
 
 .nav-item.logout .nav-link:hover {
     background-color: #c0392b;
@@ -99,40 +98,55 @@ body {
     padding: 10px 20px;
 }
 
-.navbar-nav {
+.navbar-top {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
-}
-
-.icons-container .d-flex {
-    gap: 15px; /* Space between icons and profile */
-}
-
-/* Profile Picture Styling */
-.border-profil {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #3498db; /* Bright blue border */
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    margin-right: 10px;
-}
-
-.profil {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
 }
 
-.username {
-    font-size: 1.1rem;
-    color: #2c3e50;
+.icons-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 50px;
+}
+
+.profile-link:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.profile-link .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e9ecef;
+}
+
+.profile-link .username {
     font-weight: 500;
+    color: #212529;
+}
+
+.profile-link:hover .username {
+    color: #0d6efd;
+}
+
+.profile-link .caret {
+    transition: transform 0.3s ease;
+}
+
+.profile-link:hover .caret {
+    transform: translateX(3px);
 }
 
 /* Content Styling */
@@ -237,10 +251,35 @@ body {
     background-color: #2980b9;
 }
 
+/* Overlay default hidden */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* warna hitam semi transparan */
+    z-index: 900; /* harus di bawah sidebar yang z-index: 1000 */
+    opacity: 0;
+    pointer-events: none; /* agar tidak menangkap klik saat tidak aktif */
+    transition: opacity 0.3s ease;
+}
+
+/* Overlay aktif */
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto; /* menangkap klik */
+}
+
+.main-container.dimmed {
+    filter: brightness(0.6) blur(2px); /* buat gelap dengan filter */
+    transition: filter 0.3s ease;
+    pointer-events: none; /* agar konten tidak bisa di klik saat gelap */
+}
 
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Responsive Styling */
+@media (max-width: 769px) {
     .sidebar {
         left: -250px; /* Hidden by default */
     }
@@ -259,6 +298,20 @@ body {
         margin: 10px;
     }
 
+    .navbar-top {
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .icons-container {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .navbar-toggler {
+        flex-shrink: 0;
+    }
+
     .contents {
         margin: 0 10px 10px;
         padding: 15px;
@@ -275,7 +328,7 @@ body {
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 770px) {
     .sidebar {
         left: 0; /* Always visible on desktop */
     }
@@ -283,5 +336,13 @@ body {
     .main-container {
         margin-left: 250px;
         width: calc(100% - 250px);
+    }
+
+    .navbar-top {
+        justify-content: flex-end;
+    }
+
+    .navbar-toggler {
+        display: none; /* Hide toggle button on desktop */
     }
 }

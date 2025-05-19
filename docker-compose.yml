@@ -1,6 +1,5 @@
 services:
   laravel_franken:
-    container_name: franken
     build: ./backend
     ports:
       - "8002:8002"
@@ -14,7 +13,6 @@ services:
 
   # MySQL database
   mysql:
-    container_name: mysql_recognation
     image: mysql:8.4.4
     restart: always
     ports:
@@ -28,7 +26,6 @@ services:
 
   # phpMyAdmin
   phpmyadmin:
-    container_name: phpmyadmin_recognation
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
@@ -42,7 +39,6 @@ services:
       - mysql
 
   faceapi:
-    container_name: face_recognition
     build:
       context: ./face_detection
     ports:

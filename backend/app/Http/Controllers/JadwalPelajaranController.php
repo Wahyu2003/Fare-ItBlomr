@@ -62,7 +62,7 @@ class JadwalPelajaranController extends Controller
                 $query->where('id_kelas', $kelasUser->id_kelas);
             })->get();
 
-        return view('jadwalpelajaran.indexsiswa', compact('jadwalPelajaran'));
+        return view('jadwalPelajaran.indexsiswa', compact('jadwalPelajaran'));
     }
 
 

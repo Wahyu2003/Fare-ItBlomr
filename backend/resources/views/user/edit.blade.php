@@ -114,27 +114,4 @@
 
         <button type="submit">Update Pengguna</button>
     </form>
-
-    <script>
-        function toggleFields() {
-            const role = document.getElementById('role').value;
-            const siswaFields = document.querySelectorAll('#kelas_id, #nama_ortu, #no_hp_ortu');
-            
-            if (role === 'guru') {
-                siswaFields.forEach(field => {
-                    field.closest('div').style.display = 'none';
-                    field.removeAttribute('required');
-                });
-            } else {
-                siswaFields.forEach(field => {
-                    field.closest('div').style.display = 'block';
-                    if(field.id === 'kelas_id' || field.id === 'nama_ortu') {
-                        field.setAttribute('required', 'required');
-                    }
-                });
-            }
-        }
-
-        window.onload = toggleFields;
-    </script>
 @endsection
