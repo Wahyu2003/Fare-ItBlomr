@@ -94,7 +94,8 @@ class UserController extends Controller
         if ($user->role == 'guru') {
             return view('user.edit_guru', compact('user'));
         }
-        return view('user.edit', compact('user'));
+        $kelas = Kelas::all();
+        return view('user.edit', compact('user', 'kelas'));
     }
 
     public function update(Request $request, User $user)
