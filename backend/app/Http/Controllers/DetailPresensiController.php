@@ -38,13 +38,11 @@ class DetailPresensiController extends Controller
 
     public function rekapanAbsenSiswa(Request $request)
     {
-        // Ambil filter status dan rentang waktu dari request
-        $statusFilter = $request->input('status', ''); // Default ke kosong
-        $timeFilter = $request->input('time_filter', 'week'); // Default ke 'week'
+        $statusFilter = $request->input('status', ''); 
+        $timeFilter = $request->input('time_filter', 'week');
         $startDate = null;
         $endDate = null;
 
-        // Tentukan rentang waktu berdasarkan filter
         if ($timeFilter === 'week') {
             $startDate = Carbon::now()->startOfWeek();
             $endDate = Carbon::now()->endOfWeek();
@@ -54,42 +52,69 @@ class DetailPresensiController extends Controller
         } elseif ($timeFilter === 'custom' && $request->has('start_date') && $request->has('end_date')) {
             $startDate = Carbon::parse($request->input('start_date'));
             $endDate = Carbon::parse($request->input('end_date'));
+        } else {
+            // Default rentang waktu jika filter tidak valid
+            $startDate = Carbon::now()->startOfWeek();
+            $endDate = Carbon::now()->endOfWeek();
         }
 
-        // Query untuk mendapatkan data presensi siswa yang login
         $presensiQuery = DetailPresensi::with('user', 'jadwalPelajaran')
             ->whereBetween('waktu_presensi', [$startDate, $endDate])
-            ->where('id_user', auth()->user()->id_user); // Filter hanya untuk siswa yang login
+            ->where('id_user', auth()->user()->id_user);
 
-        // Filter berdasarkan status kehadiran jika ada
         if ($statusFilter) {
             $presensiQuery->where('kehadiran', $statusFilter);
         }
 
-        // Ambil data presensi yang sudah terfilter
         $presensi = $presensiQuery->get();
-
-        // Hitung total presensi
         $totalPresensi = $presensi->count();
 
-        // Menghindari pembagian dengan nol
         if ($totalPresensi > 0) {
-            // Hitung persentase kehadiran berdasarkan status
             $statusCounts = $presensi->groupBy('kehadiran')->map->count();
 
-            $totalPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
             $hadirPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
             $telatPercentage = ($statusCounts->get('telat', 0) / $totalPresensi) * 100;
             $alphaPercentage = ($statusCounts->get('alpha', 0) / $totalPresensi) * 100;
             $izinPercentage = ($statusCounts->get('izin', 0) / $totalPresensi) * 100;
             $sakitPercentage = ($statusCounts->get('sakit', 0) / $totalPresensi) * 100;
         } else {
-            $totalPercentage = 0;
-            $hadirPercentage = 0;
-            $telatPercentage = 0;
-            $alphaPercentage = 0;
-            $izinPercentage = 0;
-            $sakitPercentage = 0;
+            $hadirPercentage = $telatPercentage = $alphaPercentage = $izinPercentage = $sakitPercentage = 0;
+        }
+
+        // Statistik Bulanan untuk Bar Chart (tahun berjalan)
+        $monthlyStats = DetailPresensi::where('id_user', auth()->user()->id_user)
+            ->whereYear('waktu_presensi', Carbon::now()->year)
+            ->selectRaw('MONTH(waktu_presensi) as bulan, kehadiran, COUNT(*) as total')
+            ->groupBy('bulan', 'kehadiran')
+            ->get()
+            ->groupBy('bulan');
+
+        $labels = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = array_fill(0, 12, 0);
+
+        foreach ($monthlyStats as $bulan => $items) {
+            foreach ($items as $item) {
+                $index = $bulan - 1;
+                switch ($item->kehadiran) {
+                    case 'tepat waktu':
+                        $dataHadir[$index] = $item->total;
+                        break;
+                    case 'telat':
+                        $dataTelat[$index] = $item->total;
+                        break;
+                    case 'alpha':
+                        $dataAlpha[$index] = $item->total;
+                        break;
+                    case 'izin':
+                        $dataIzin[$index] = $item->total;
+                        break;
+                    case 'sakit':
+                        $dataSakit[$index] = $item->total;
+                        break;
+                }
+            }
         }
 
         return view('dashboard_siswa', compact(
@@ -98,12 +123,17 @@ class DetailPresensiController extends Controller
             'timeFilter',
             'startDate',
             'endDate',
-            'totalPercentage',
             'hadirPercentage',
             'telatPercentage',
             'alphaPercentage',
             'izinPercentage',
-            'sakitPercentage'
+            'sakitPercentage',
+            'labels',
+            'dataHadir',
+            'dataTelat',
+            'dataAlpha',
+            'dataIzin',
+            'dataSakit'
         ));
     }
 
