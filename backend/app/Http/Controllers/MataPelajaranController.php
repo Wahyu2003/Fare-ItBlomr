@@ -10,10 +10,20 @@ use Illuminate\Support\Facades\Validator;
 class MataPelajaranController extends Controller
 {
     // Tampil list mata pelajaran
-    public function index()
+    public function index(Request $request)
     {
-        $mataPelajaran = MataPelajaran::with('kelas')->paginate(10); // Bisa pake paginate
-        return view('mataPelajaran.index', compact('mataPelajaran'));
+        $kelasList = Kelas::all();
+        $kelasFilter = $request->get('kelas');
+
+        $query = MataPelajaran::with('kelas');
+
+        if ($kelasFilter) {
+            $query->where('kelas_id', $kelasFilter);
+        }
+
+        $mataPelajaran = $query->get(); // tanpa pagination
+
+        return view('mataPelajaran.index', compact('mataPelajaran', 'kelasList', 'kelasFilter'));
     }
 
     // Tampil form tambah data
@@ -73,5 +83,20 @@ class MataPelajaranController extends Controller
         $mataPelajaran->delete();
 
         return redirect()->route('mataPelajaran.index')->with('success', 'Mata pelajaran berhasil dihapus!');
+    }
+
+    public function filterKelas(Request $request)
+    {
+        $query = MataPelajaran::with('kelas');
+
+        if ($request->has('kelas_id') && $request->kelas_id != '') {
+            $query->where('kelas_id', $request->kelas_id);
+        }
+
+        $mataPelajaran = $query->get();
+
+        return response()->json([
+            'data' => $mataPelajaran
+        ]);
     }
 }
