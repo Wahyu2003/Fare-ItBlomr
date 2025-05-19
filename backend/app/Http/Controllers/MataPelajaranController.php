@@ -3,82 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\MataPelajaran;
-use App\Models\Kelas; // Import model Kelas untuk relasi
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class MataPelajaranController extends Controller
 {
-    // Menampilkan semua mata pelajaran
-    public function getMataPelajaran()
+    // Tampil list mata pelajaran
+    public function index()
     {
-        $mataPelajaran = MataPelajaran::with('kelas')->get(); // Memuat relasi dengan kelas
-        return response()->json($mataPelajaran);
+        $mataPelajaran = MataPelajaran::with('kelas')->paginate(10); // Bisa pake paginate
+        return view('mataPelajaran.index', compact('mataPelajaran'));
     }
 
-    // Menyimpan data mata pelajaran
-    public function store(Request $request)
-    {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'nama_mata_pelajaran' => 'required|string|max:255',
-            'kelas_id' => 'required|exists:kelas,id_kelas', // Validasi kelas_id yang ada di tabel kelas
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Menyimpan data mata pelajaran
-        $mataPelajaran = MataPelajaran::create([
-            'nama_mata_pelajaran' => $request->nama_mata_pelajaran,
-            'kelas_id' => $request->kelas_id, // Menyimpan kelas_id
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'mataPelajaran' => $mataPelajaran,
-        ], 200);
-    }
-
-    // Menghapus mata pelajaran
-    public function destroy($id)
-    {
-        $mataPelajaran = MataPelajaran::findOrFail($id);
-        $mataPelajaran->delete();
-
-        return response()->json(['success' => true]);
-    }
-
-    // Metode baru untuk menampilkan form
+    // Tampil form tambah data
     public function create()
     {
-        $kelas = Kelas::all(); // Menampilkan semua kelas untuk pilihan pada form
-        return view('mataPelajaran.add', compact('kelas')); // Passing data kelas ke view
+        $kelas = Kelas::all();
+        return view('mataPelajaran.add', compact('kelas'));
     }
 
-    // Metode baru untuk menyimpan dari form biasa
-    public function storeForm(Request $request)
+    // Simpan data dari form tambah
+    public function store(Request $request)
     {
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_mata_pelajaran' => 'required|string|max:255',
-            'kelas_id' => 'required|exists:kelas,id_kelas', // Validasi kelas_id yang ada di tabel kelas
+            'kelas_id' => 'required|exists:kelas,id_kelas',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Menyimpan data mata pelajaran
-        MataPelajaran::create([
-            'nama_mata_pelajaran' => $request->nama_mata_pelajaran,
-            'kelas_id' => $request->kelas_id, // Menyimpan kelas_id
+        MataPelajaran::create($request->only('nama_mata_pelajaran', 'kelas_id'));
+
+        return redirect()->route('mataPelajaran.index')->with('success', 'Mata pelajaran berhasil ditambahkan!');
+    }
+
+    // Tampil form edit data
+    public function edit($id)
+    {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
+        $kelas = Kelas::all();
+        return view('mataPelajaran.edit', compact('mataPelajaran', 'kelas'));
+    }
+
+    // Update data
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_mata_pelajaran' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id_kelas',
         ]);
 
-        return redirect()->route('jadwalPelajaran.create')->with('success', 'Mata pelajaran berhasil ditambahkan!');
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $mataPelajaran = MataPelajaran::findOrFail($id);
+        $mataPelajaran->update($request->only('nama_mata_pelajaran', 'kelas_id'));
+
+        return redirect()->route('mataPelajaran.index')->with('success', 'Mata pelajaran berhasil diperbarui!');
+    }
+
+    // Hapus data
+    public function destroy($id)
+    {
+        $mataPelajaran = MataPelajaran::findOrFail($id);
+        $mataPelajaran->delete();
+
+        return redirect()->route('mataPelajaran.index')->with('success', 'Mata pelajaran berhasil dihapus!');
     }
 }

@@ -50,7 +50,7 @@ Route::middleware(['auth', RoleMiddleware::class.':admin'])->group(function () {
 
     // Rute untuk Mata Pelajaran
     Route::get('/mataPelajaran/add', [MataPelajaranController::class, 'create'])->name('mataPelajaran.add');
-    Route::post('/mataPelajaran/store-form', [MataPelajaranController::class, 'storeForm'])->name('mataPelajaran.storeForm');
+    Route::resource('mataPelajaran', MataPelajaranController::class);
 
     Route::resource('kelas', KelasController::class)->parameters([
         'kelas' => 'kelas'

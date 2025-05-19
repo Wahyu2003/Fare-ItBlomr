@@ -67,7 +67,7 @@
                         </option>
                     @endforeach
                 </select>
-                <a href="{{ route('mataPelajaran.add') }}" class="btn btn-sm btn-primary mt-2">Tambah Mata Pelajaran</a>
+                <a href="{{ route('mataPelajaran.index') }}" class="btn btn-sm btn-primary mt-2">Tambah Mata Pelajaran</a>
             </div>
             @error('id_mata_pelajaran')
                 <div class="text-danger">{{ $message }}</div>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h1>Tambah Mata Pelajaran</h1>
-    <form action="{{ route('mataPelajaran.storeForm') }}" method="POST" class="admin-form">
+    <form action="{{ route('mataPelajaran.store') }}" method="POST" class="admin-form">
         @csrf
         <div class="mb-3">
             <label for="nama_mata_pelajaran">Nama Mata Pelajaran</label>
