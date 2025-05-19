@@ -76,7 +76,7 @@
                             <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
                             <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
                             <td>
-                                <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning edit" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
                                 <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')

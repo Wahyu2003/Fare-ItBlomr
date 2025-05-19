@@ -15,7 +15,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan</button>
-            <a href="{{ route('kelas.index') }}" class="btn btn-secondary">Kembali</a>
+            <a href="{{ route('kelas.index') }}" class="btn btn-secondary ms-2 p-2">Kembali</a>
         </form>
     </div>
 @endsection

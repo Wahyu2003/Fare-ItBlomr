@@ -23,14 +23,15 @@
                     <option value="{{ $kelasItem->id_kelas }}" {{ old('kelas_id') == $kelasItem->id_kelas ? 'selected' : '' }}>{{ $kelasItem->nama_kelas }}</option>
                 @endforeach
             </select>
-            <a href="{{ route('kelas.create') }}" class="btn btn-success">tambah</a>
+            <a href="{{ route('kelas.create') }}" class="btn btn-success mb-3 ms-3">tambah</a>
             @error('kelas_id')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ route('jadwalPelajaran.create') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('jadwalPelajaran.create') }}" class="btn btn-secondary ms-2 p-2">Kembali</a>
     </form>
 </div>
+<script></script>
 @endsection

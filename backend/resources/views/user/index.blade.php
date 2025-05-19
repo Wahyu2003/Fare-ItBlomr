@@ -69,7 +69,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex flex-row gap-2">
-                                                <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning"><i class="fas fa-pencil-alt"></i></a>
+                                                <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning edit" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
                                             <form action="{{ route('user.destroy', $user->id_user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -130,7 +130,7 @@
                                             <span class="badge {{ $user->face_encoding ? 'bg-success' : 'bg-warning' }}">{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning me-1">Edit</a>
+                                            <a href="{{ route('user.edit', $user->id_user) }}" class="btn btn-sm btn-warning edit" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
                                             <form action="{{ route('user.destroy', $user->id_user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')

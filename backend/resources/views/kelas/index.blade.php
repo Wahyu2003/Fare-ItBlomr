@@ -26,7 +26,7 @@
                         <td>{{ $kelasItem->id_kelas }}</td>
                         <td>{{ $kelasItem->nama_kelas }}</td>
                         <td>
-                            <a href="{{ route('kelas.edit', $kelasItem->id_kelas) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="{{ route('kelas.edit', $kelasItem->id_kelas) }}" class="btn btn-sm btn-warning" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
                             <form action="{{ route('kelas.destroy', $kelasItem->id_kelas) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('delete')

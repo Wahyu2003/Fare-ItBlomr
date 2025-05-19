@@ -316,6 +316,16 @@ body {
 
 /* Responsive Styling */
 @media (max-width: 769px) {
+    .edit {
+        margin-bottom : 10px;
+    }
+
+    .kumpul {
+        display: flex; /* Sembunyikan filter di mobile */
+        justify-content: space-between;
+        align-items: center;
+    }    
+
     .sidebar {
         left: -250px; /* Hidden by default */
     }
