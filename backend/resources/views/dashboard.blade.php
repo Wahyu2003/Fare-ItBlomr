@@ -44,12 +44,12 @@
 
         /* Filter Section */
         /* .filter-section {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 30px;
-        } */
+                                    background: white;
+                                    border-radius: var(--border-radius);
+                                    padding: 20px;
+                                    box-shadow: var(--box-shadow);
+                                    margin-bottom: 30px;
+                                } */
 
         .filter-title {
             font-size: 18px;
@@ -274,7 +274,9 @@
         <div class="dashboard-header">
             <div>
                 <h1 class="dashboard-title">Admin Dashboard</h1>
-                <p class="welcome-message">Selamat datang, <span class="username" style="color:#f94144"><b>{{ Auth::user()->nama }}</b></span>! Berikut adalah ringkasan sistem hari ini.</p>
+                <p class="welcome-message">Selamat datang, <span class="username"
+                        style="color:#f94144"><b>{{ Auth::user()->nama }}</b></span>! Berikut adalah ringkasan sistem hari
+                    ini.</p>
             </div>
         </div>
 
@@ -338,6 +340,7 @@
                             <th>Kelas</th>
                             <th>Status</th>
                             <th>Waktu</th>
+                            <th>Presensi</th>
                         </tr>
                     </thead>
                     <tbody id="data_presensi">
@@ -348,17 +351,29 @@
                                 <td>
                                     @php
                                         $statusClass = '';
-                                        switch($presensi->kehadiran) {
-                                            case 'tepat waktu': $statusClass = 'status-present'; break;
-                                            case 'telat': $statusClass = 'status-late'; break;
-                                            case 'alpha': $statusClass = 'status-absent'; break;
-                                            case 'izin': $statusClass = 'status-permit'; break;
-                                            case 'sakit': $statusClass = 'status-sick'; break;
+                                        switch ($presensi->kehadiran) {
+                                            case 'tepat waktu':
+                                                $statusClass = 'status-present';
+                                                break;
+                                            case 'telat':
+                                                $statusClass = 'status-late';
+                                                break;
+                                            case 'alpha':
+                                                $statusClass = 'status-absent';
+                                                break;
+                                            case 'izin':
+                                                $statusClass = 'status-permit';
+                                                break;
+                                            case 'sakit':
+                                                $statusClass = 'status-sick';
+                                                break;
                                         }
                                     @endphp
-                                    <span class="status-badge {{ $statusClass }}">{{ ucfirst($presensi->kehadiran) }}</span>
+                                    <span
+                                        class="status-badge {{ $statusClass }}">{{ ucfirst($presensi->kehadiran) }}</span>
                                 </td>
                                 <td>{{ $presensi->waktu_presensi }}</td>
+                                <td>{{ $presensi->jenis_absen ?? '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -367,10 +382,10 @@
         </section>
     </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-<script>
+    <script>
         // Konfigurasi Firebase - ganti sesuai projectmu di Firebase Console
         const firebaseConfig = {
             apiKey: "AIzaSyCMOv8YNAVKo2qjkJjpa9ACZxtCP8Y85Dw",
@@ -397,10 +412,11 @@
             const data = snapshot.val();
             console.log('Firebase data:', data);
             if (data) {
-            relayStatusElem.innerText = data.relay_status || 'OFF';
-            relayStatusElem.className = data.relay_status === 'ON' ? 'stat-value stat-relay-on' : 'stat-value stat-relay-off';
+                relayStatusElem.innerText = data.relay_status || 'OFF';
+                relayStatusElem.className = data.relay_status === 'ON' ? 'stat-value stat-relay-on' :
+                    'stat-value stat-relay-off';
 
-            temperatureElem.innerText = data.temperature !== undefined ? data.temperature : 'N/A';
+                temperatureElem.innerText = data.temperature !== undefined ? data.temperature : 'N/A';
             }
         });
 
@@ -409,43 +425,55 @@
             const kelas = document.getElementById("kelas").value;
 
             fetch(`/update-dashboard-admin?kelas=${kelas}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("jumlah_hadir").innerText = data.jumlahHadir;
-                document.getElementById("jumlah_izin").innerText = data.jumlahIzin;
-                document.getElementById("jumlah_alpa").innerText = data.jumlahAlpa;
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("jumlah_hadir").innerText = data.jumlahHadir;
+                    document.getElementById("jumlah_izin").innerText = data.jumlahIzin;
+                    document.getElementById("jumlah_alpa").innerText = data.jumlahAlpa;
 
-                const guruElement = document.getElementById("guru_hadir");
-                guruElement.innerText = data.guruHadir ? 'Hadir' : 'Tidak Hadir';
-                guruElement.className = data.guruHadir ? 'stat-value stat-teacher-present' : 'stat-value stat-teacher-absent';
+                    const guruElement = document.getElementById("guru_hadir");
+                    guruElement.innerText = data.guruHadir ? 'Hadir' : 'Tidak Hadir';
+                    guruElement.className = data.guruHadir ? 'stat-value stat-teacher-present' :
+                        'stat-value stat-teacher-absent';
 
-                let tableRows = '';
-                data.dataSiswaHariIni.forEach(presensi => {
-                let statusClass = '';
-                switch(presensi.kehadiran) {
-                    case 'tepat waktu': statusClass = 'status-present'; break;
-                    case 'telat': statusClass = 'status-late'; break;
-                    case 'alpha': statusClass = 'status-absent'; break;
-                    case 'izin': statusClass = 'status-permit'; break;
-                    case 'sakit': statusClass = 'status-sick'; break;
-                }
-                tableRows += `
+                    let tableRows = '';
+                    data.dataSiswaHariIni.forEach(presensi => {
+                        let statusClass = '';
+                        switch (presensi.kehadiran) {
+                            case 'tepat waktu':
+                                statusClass = 'status-present';
+                                break;
+                            case 'telat':
+                                statusClass = 'status-late';
+                                break;
+                            case 'alpha':
+                                statusClass = 'status-absent';
+                                break;
+                            case 'izin':
+                                statusClass = 'status-permit';
+                                break;
+                            case 'sakit':
+                                statusClass = 'status-sick';
+                                break;
+                        }
+                        tableRows += `
                     <tr>
                     <td>${presensi.user.nama}</td>
                     <td>${presensi.user.kelas?.nama_kelas || 'N/A'}</td>
                     <td><span class="status-badge ${statusClass}">${presensi.kehadiran}</span></td>
                     <td>${new Date(presensi.waktu_presensi).toLocaleString()}</td>
+                    <td>${ presensi->jenis_presensi }</td>
                     </tr>
                 `;
-                });
-                document.getElementById("data_presensi").innerHTML = tableRows;
-            })
-            .catch(error => console.error("Error updating dashboard:", error));
+                    });
+                    document.getElementById("data_presensi").innerHTML = tableRows;
+                })
+                .catch(error => console.error("Error updating dashboard:", error));
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('kelas').addEventListener('change', updateDashboardAdmin);
             updateDashboardAdmin();
         });
-</script>
+    </script>
 @endsection

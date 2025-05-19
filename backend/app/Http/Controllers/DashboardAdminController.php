@@ -81,6 +81,8 @@ class DashboardAdminController extends Controller
         // Ambil semua data kelas untuk dropdown filter
         $kelasList = Kelas::all();
 
+        dd($sudahPresensi);
+
         // Gunakan view detailPresensi.index
         return view('dashboard', compact('sudahPresensi', 'kelasList'));
     }

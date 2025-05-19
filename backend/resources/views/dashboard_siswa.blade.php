@@ -113,14 +113,11 @@
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
-            flex-wrap: wrap;
-            width: 100%;
         }
 
         @media (max-width: 992px) {
             .stats-section {
                 grid-template-columns: 1fr;
-                width: 100%;
             }
         }
 
@@ -129,6 +126,9 @@
             border-radius: var(--border-radius);
             padding: 20px;
             box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .chart-title {
@@ -139,15 +139,20 @@
         }
 
         .chart-container {
-            height: 300px;
+            flex: 1;
+            min-height: 300px;
             position: relative;
+        }
+
+        .chart-footer {
+            margin-top: 20px;
         }
 
         .legend-container {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            margin-top: 20px;
+            justify-content: center;
         }
 
         .legend-item {
@@ -254,6 +259,10 @@
             .btn-primary {
                 width: 100%;
             }
+
+            .legend-container {
+                justify-content: flex-start;
+            }
         }
 
         /* Custom Date Range */
@@ -321,39 +330,59 @@
 
         <!-- Stats Section -->
         <section class="stats-section">
+            <!-- Pie Chart Card -->
             <div class="chart-card">
                 <h3 class="chart-title">Distribusi Kehadiran</h3>
                 <div class="chart-container">
                     <canvas id="attendancePieChart"></canvas>
                 </div>
-                <div class="legend-container">
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #4BC0C0;"></span>
-                        <span>Hadir: {{ round($hadirPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #FFCE56;"></span>
-                        <span>Telat: {{ round($telatPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #FF6384;"></span>
-                        <span>Alpa: {{ round($alphaPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #FF9F40;"></span>
-                        <span>Izin: {{ round($izinPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #36A2EB;"></span>
-                        <span>Sakit: {{ round($sakitPercentage, 2) }}%</span>
+                <div class="chart-footer">
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #4BC0C0;"></span>
+                            <span>Hadir: {{ round($hadirPercentage, 2) }}%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FFCE56;"></span>
+                            <span>Telat: {{ round($telatPercentage, 2) }}%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FF6384;"></span>
+                            <span>Alpa: {{ round($alphaPercentage, 2) }}%</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Bar Chart Card -->
             <div class="chart-card">
                 <h3 class="chart-title">Statistik Mingguan</h3>
                 <div class="chart-container">
                     <canvas id="weeklyBarChart"></canvas>
+                </div>
+                <div class="chart-footer">
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #4BC0C0;"></span>
+                            <span>Hadir</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FFCE56;"></span>
+                            <span>Telat</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FF6384;"></span>
+                            <span>Alpa</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FF9F40;"></span>
+                            <span>Izin</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #36A2EB;"></span>
+                            <span>Sakit</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -419,7 +448,34 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Pie Chart
+            // Common chart options
+            const commonChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== undefined) {
+                                    label += context.parsed.y;
+                                } else {
+                                    label += context.raw;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Pie Chart Data and Config
             const pieCtx = document.getElementById('attendancePieChart').getContext('2d');
             const pieChart = new Chart(pieCtx, {
                 type: 'pie',
@@ -444,12 +500,9 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     plugins: {
-                        legend: {
-                            display: false,
-                        },
+                        ...commonChartOptions.plugins,
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -463,36 +516,55 @@
                 }
             });
 
-            // Bar Chart (example data - you would replace with actual weekly data)
+            // Bar Chart Data and Config
             const barCtx = document.getElementById('weeklyBarChart').getContext('2d');
             const barChart = new Chart(barCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
-                    datasets: [{
-                        label: 'Hadir',
-                        data: [5, 4, 6, 5, 4, 0],
-                        backgroundColor: '#4BC0C0',
-                    }, {
-                        label: 'Telat',
-                        data: [1, 0, 0, 1, 0, 0],
-                        backgroundColor: '#FFCE56',
-                    }, {
-                        label: 'Alpa',
-                        data: [0, 0, 0, 0, 0, 0],
-                        backgroundColor: '#FF6384',
-                    }]
+                    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+                    datasets: [
+                        {
+                            label: 'Hadir',
+                            data: [5, 4, 6, 5, 4, 0],
+                            backgroundColor: '#4BC0C0',
+                        },
+                        {
+                            label: 'Telat',
+                            data: [1, 0, 0, 1, 0, 0],
+                            backgroundColor: '#FFCE56',
+                        },
+                        {
+                            label: 'Alpa',
+                            data: [0, 0, 0, 0, 0, 0],
+                            backgroundColor: '#FF6384',
+                        },
+                        {
+                            label: 'Izin',
+                            data: [0, 1, 0, 0, 1, 0],
+                            backgroundColor: '#FF9F40',
+                        },
+                        {
+                            label: 'Sakit',
+                            data: [0, 0, 0, 0, 0, 0],
+                            backgroundColor: '#36A2EB',
+                        }
+                    ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    ...commonChartOptions,
                     scales: {
                         x: {
                             stacked: true,
+                            grid: {
+                                display: false
+                            }
                         },
                         y: {
                             stacked: true,
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
                         }
                     }
                 }

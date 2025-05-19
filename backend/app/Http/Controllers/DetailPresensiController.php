@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Kelas;
+use App\Models\JadwalPelajaran;
 
 class DetailPresensiController extends Controller
 {
@@ -24,7 +25,7 @@ class DetailPresensiController extends Controller
             ->get();
 
         $sudahIds = $sudahPresensi->pluck('id_user');
-        
+
         $belumPresensi = User::where('role', '!=', 'admin')
             ->whereNotIn('id_user', $sudahIds)
             ->with('kelas')
@@ -226,13 +227,23 @@ class DetailPresensiController extends Controller
                     'error' => 'User sudah melakukan presensi hari ini'
                 ], 409);
             }
+            // Cari jadwal pelajaran hari ini
+            $hariIni = Carbon::now()->dayOfWeek;
+            $jadwalHariIni = JadwalPelajaran::where('hari', $hariIni)->get();
+
+            if ($jadwalHariIni->isEmpty()) {
+                return response()->json(['error' => 'Tidak ada jadwal pelajaran hari ini'], 400);
+            }
+            $id_jadwal_pelajaran = $jenis_absen === 'masuk'
+                ? $jadwalHariIni->sortBy('jam_mulai')->first()->id
+                : $jadwalHariIni->sortByDesc('jam_selesai')->first()->id;
 
             DetailPresensi::create([
                 'waktu_presensi' => $now,
                 'kehadiran' => $kehadiran,
                 'jenis_absen' => $jenis_absen,
                 'id_user' => $data['id_user'],
-                'id_jadwal_pelajaran' => '2',
+                'id_jadwal_pelajaran' => $id_jadwal_pelajaran ?? "1",
             ]);
 
             // Firebase
@@ -290,7 +301,7 @@ class DetailPresensiController extends Controller
             $presensi = DetailPresensi::where('id_user', $userId)
                 ->whereDate('waktu_presensi', $today)
                 ->first();
-
+            $now = Carbon::now();
             if ($presensi) {
                 $presensi->kehadiran = $status;
                 $presensi->jenis_absen = $jenis_absen;
@@ -301,7 +312,7 @@ class DetailPresensiController extends Controller
                     'waktu_presensi' => $today,
                     'kehadiran' => $status,
                     'jenis_absen' => $jenis_absen,
-                    'id_jadwal_pelajaran' => 2, // sesuaikan jika perlu
+                    'id_jadwal_pelajaran' => 2,
                 ]);
             }
         }

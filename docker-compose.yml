@@ -1,5 +1,6 @@
 services:
   laravel_franken:
+    container_name: franken
     build: ./backend
     ports:
       - "8002:8002"
