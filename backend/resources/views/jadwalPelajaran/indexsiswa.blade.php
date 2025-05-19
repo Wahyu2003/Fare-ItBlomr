@@ -7,7 +7,7 @@
     @if($jadwalPelajaran->isEmpty())
         <p>Tidak ada jadwal pelajaran yang ditemukan.</p>
     @else
-        <table class="table">
+        <table class="siswa-table">
             <thead>
                 <tr>
                     <th>Hari</th>
