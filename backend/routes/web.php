@@ -31,6 +31,7 @@ Route::middleware(['auth', RoleMiddleware::class.':admin'])->group(function () {
     Route::get('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'show'])->name('detailPresensi.show');
     Route::get('/detailPresensi/{detailPresensi}/edit', [DetailPresensiController::class, 'edit'])->name('detailPresensi.edit');
     Route::put('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'update'])->name('detailPresensi.update');
+    Route::post('/detailPresensi/update-multiple-status', [DetailPresensiController::class, 'updateMultipleStatus'])->name('detailPresensi.updateMultipleStatus');
     Route::post('detailPresensi/kirim', [DetailPresensiController::class, 'sendToPython'])->name('detailPresensi.send');
     Route::delete('/detailPresensi/{detailPresensi}', [DetailPresensiController::class, 'destroy'])->name('detailPresensi.destroy');
 

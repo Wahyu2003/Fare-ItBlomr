@@ -191,29 +191,43 @@
             <!-- Tabel Belum Presensi -->
             <div class="table-section">
                 <h3 class="section-title">Belum Presensi</h3>
-                <table class="admin-table" id="belumPresensiTable">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>NIK</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($belumPresensi as $siswa)
-                            <tr data-kelas="{{ $siswa->kelas_id }}" data-role="{{ $siswa->role }}">
-                                <td>{{ $siswa->nama }}</td>
-                                <td>{{ $siswa->nik }}</td>
-                                <td>{{ $siswa->role }}</td>
-                            </tr>
-                        @empty
+                <form method="POST" action="{{ route('detailPresensi.updateMultipleStatus') }}">
+                    @csrf
+                    <table class="admin-table" id="belumPresensiTable">
+                        <thead>
                             <tr>
-                                <td colspan="3" style="text-align: center;">Belum ada data siswa yang belum presensi.
+                                <th>Nama</th>
+                                <th>NIK</th>
+                                <th>Role</th>
+                                <th>Action (Pilih Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($belumPresensi as $user)
+                            <tr>
+                                <td>{{ $user->nama }}</td>
+                                <td>{{ $user->nik }}</td>
+                                <td>{{ $user->role }}</td>
+                                <td>
+                                    <select name="statuses[{{ $user->id_user }}]" class="form-select form-select-sm" aria-label="Pilih Status" >
+                                        <option value="" selected>-- Belum Hadir --</option>
+                                        <option value="izin">Izin</option>
+                                        <option value="alpha">Alfa</option>
+                                    </select>
                                 </td>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                            @empty
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Semua user sudah presensi.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+
+                    @if($belumPresensi->count() > 0)
+                    <button type="submit" class="btn btn-warning mt-3">Update Semua Presensi</button>
+                    @endif
+                </form>
             </div>
 
             <!-- Tabel Sudah Presensi -->

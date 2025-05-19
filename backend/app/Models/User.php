@@ -23,4 +23,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Kelas::class, 'kelas_id', 'id_kelas');
     }
+
+    public function detailPresensi()
+    {
+        return $this->hasMany(DetailPresensi::class, 'id_user', 'id_user');
+    }
 }

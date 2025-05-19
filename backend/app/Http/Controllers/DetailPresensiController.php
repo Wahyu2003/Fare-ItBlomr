@@ -15,14 +15,21 @@ class DetailPresensiController extends Controller
     public function index()
     {
         $today = Carbon::today();
-        $sudahPresensi = DetailPresensi::with('user')
-            ->whereDate('waktu_presensi', $today)
+
+        $sudahPresensi = DetailPresensi::whereDate('waktu_presensi', $today)
+            ->whereHas('user', function ($query) {
+                $query->where('role', '!=', 'admin');
+            })
+            ->with('user.kelas')
             ->get();
 
         $sudahIds = $sudahPresensi->pluck('id_user');
-        $belumPresensi = User::whereNotIn('id_user', $sudahIds)->get();
+        
+        $belumPresensi = User::where('role', '!=', 'admin')
+            ->whereNotIn('id_user', $sudahIds)
+            ->with('kelas')
+            ->get();
 
-        // Ambil data kelas untuk dropdown filter
         $kelasList = Kelas::all();
 
         return view('detailPresensi.index', compact('sudahPresensi', 'belumPresensi', 'kelasList'));
@@ -98,8 +105,6 @@ class DetailPresensiController extends Controller
             'sakitPercentage'
         ));
     }
-
-
 
     public function create()
     {
@@ -212,12 +217,22 @@ class DetailPresensiController extends Controller
                 $jenis_absen = 'pulang';
             }
 
+            $existing = DetailPresensi::where('id_user', $data['id_user'])
+                ->whereDate('waktu_presensi', $now)
+                ->first();
+
+            if ($existing) {
+                return response()->json([
+                    'error' => 'User sudah melakukan presensi hari ini'
+                ], 409);
+            }
+
             DetailPresensi::create([
                 'waktu_presensi' => $now,
                 'kehadiran' => $kehadiran,
                 'jenis_absen' => $jenis_absen,
                 'id_user' => $data['id_user'],
-                'id_jadwal_pelajaran' => '1',
+                'id_jadwal_pelajaran' => '2',
             ]);
 
             // Firebase
@@ -256,6 +271,44 @@ class DetailPresensiController extends Controller
         }
     }
 
+    public function updateMultipleStatus(Request $request)
+    {
+        $statuses = $request->input('statuses', []);
+
+        $today = Carbon::today();
+        $jenis_absen = 'tidak hadir';
+
+        foreach ($statuses as $userId => $status) {
+            // Lewati jika status kosong
+            if (empty($status)) continue;
+
+            // Validasi sederhana status
+            if (!in_array($status, ['izin', 'alpha'])) {
+                continue;
+            }
+
+            $presensi = DetailPresensi::where('id_user', $userId)
+                ->whereDate('waktu_presensi', $today)
+                ->first();
+
+            if ($presensi) {
+                $presensi->kehadiran = $status;
+                $presensi->jenis_absen = $jenis_absen;
+                $presensi->save();
+            } else {
+                DetailPresensi::create([
+                    'id_user' => $userId,
+                    'waktu_presensi' => $today,
+                    'kehadiran' => $status,
+                    'jenis_absen' => $jenis_absen,
+                    'id_jadwal_pelajaran' => 2, // sesuaikan jika perlu
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Status presensi berhasil diperbarui untuk semua user.');
+    }
+
     private function kirimPesanFonnte($nomor, $pesan)
     {
         try {
@@ -280,19 +333,20 @@ class DetailPresensiController extends Controller
     {
         $today = Carbon::today();
 
-        $belumPresensi = User::whereDoesntHave('detailPresensi', function ($query) use ($today) {
-            $query->whereDate('waktu_presensi', $today);
-        })->with('kelas')->get();
+        $belumPresensi = User::where('role', '!=', 'admin')  // Filter admin
+            ->whereDoesntHave('detailPresensi', function ($query) use ($today) {
+                $query->whereDate('waktu_presensi', $today);
+            })->with('kelas')->get();
 
-        // Ambil data presensi hari ini beserta relasi user dan kelas
         $sudahPresensi = DetailPresensi::whereDate('waktu_presensi', $today)
+            ->whereHas('user', function ($query) {
+                $query->where('role', '!=', 'admin');
+            })
             ->with(['user.kelas'])
             ->get();
 
-        // Ambil semua data kelas untuk dropdown filter
         $kelasList = Kelas::all();
 
-        // Gunakan view detailPresensi.index
         return view('detailPresensi.index', compact('belumPresensi', 'sudahPresensi', 'kelasList'));
     }
 }
