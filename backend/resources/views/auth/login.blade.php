@@ -25,7 +25,7 @@
         }
         .left-section {
             position: relative; /* Required for ::before positioning */
-            background-image: url('{{ asset('images/cindy.jpg') }}');
+            background-image: url('{{ asset('images/smkn4.jpg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -114,7 +114,7 @@
             <div class="judul">
                 <h1>Selamat Datang</h1>
                 <h1>di SMK Negeri 4 Jember</h1>
-                <h5>SMARTSCHOOL - Absensi masa depan menggunakan face recognition</h5>
+                <h5>SMARTSCHOOL - Absensi masa depan menggunakan deteksi wajah</h5>
             </div>
         </div>
 

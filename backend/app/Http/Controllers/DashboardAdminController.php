@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DetailPresensi;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use App\Models\Kelas;
 use App\Models\User;
 use Carbon\Carbon;
@@ -26,18 +27,16 @@ class DashboardAdminController extends Controller
         $jumlahIzin = $presensiData->where('kehadiran', 'izin')->count();
         $jumlahAlpa = $presensiData->where('kehadiran', 'alpha')->count();
 
-        // Kirimkan data ke view
+        // Kirimkan data presensi dan kelas ke view tanpa data firebase
         return view('dashboard', compact('kelasList', 'presensiData', 'jumlahHadir', 'jumlahIzin', 'jumlahAlpa'));
     }
 
-    // Fungsi untuk memperbarui data dashboard berdasarkan kelas yang dipilih
     public function updateDashboardAdmin(Request $request)
     {
-        $kelasId = $request->input('kelas', null); // Ambil kelas dari request
+        $kelasId = $request->input('kelas', null);
 
         $today = Carbon::today();
 
-        // Ambil data presensi berdasarkan kelas yang dipilih dan tanggal hari ini
         $presensiData = DetailPresensi::with('user.kelas')
             ->when($kelasId, function ($query) use ($kelasId) {
                 $query->whereHas('user', function ($q) use ($kelasId) {
@@ -47,32 +46,21 @@ class DashboardAdminController extends Controller
             ->whereDate('waktu_presensi', $today)
             ->get();
 
-        // Hitung jumlah presensi berdasarkan status kehadiran
         $jumlahHadir = $presensiData->where('kehadiran', 'tepat waktu')->count();
         $jumlahIzin = $presensiData->where('kehadiran', 'izin')->count();
         $jumlahAlpa = $presensiData->where('kehadiran', 'alpha')->count();
 
-        // Ambil data suhu dan status relay dari Firebase
-        $firebaseData = Http::get('https://smartsmn4-default-rtdb.asia-southeast1.firebasedatabase.app/ds18b20.json');
-        $firebaseData = $firebaseData->json();
-        $relayStatus = $firebaseData['relay_status'] ?? 'OFF';
-        $temperature = $firebaseData['temperature'] ?? 'N/A';
-
-        // Cek status kehadiran guru hari ini
         $guruHadir = DetailPresensi::whereDate('waktu_presensi', $today)
             ->whereHas('user', function ($q) {
                 $q->where('role', 'guru');
             })
             ->exists();
 
-        // Mengembalikan data dalam format JSON untuk dikonsumsi oleh front-end
         return response()->json([
             'dataSiswaHariIni' => $presensiData,
             'jumlahHadir' => $jumlahHadir,
             'jumlahIzin' => $jumlahIzin,
             'jumlahAlpa' => $jumlahAlpa,
-            'relayStatus' => $relayStatus,
-            'temperature' => $temperature,
             'guruHadir' => $guruHadir,
         ]);
     }

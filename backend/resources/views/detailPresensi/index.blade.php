@@ -299,7 +299,14 @@
         }
 
         // Event listener untuk tombol Mulai
-        startBtn.addEventListener('click', startCamera);
+        startBtn.addEventListener('click', () => {
+            if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+                startCamera();
+            } else {
+                resultDiv.textContent = "❌ Browser tidak mendukung akses kamera (getUserMedia).";
+                resultDiv.className = "result-message fail";
+            }
+        });
 
         // Event listener untuk tombol Berhenti
         stopBtn.addEventListener('click', stopCamera);

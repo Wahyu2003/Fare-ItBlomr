@@ -274,7 +274,7 @@
         <div class="dashboard-header">
             <div>
                 <h1 class="dashboard-title">Admin Dashboard</h1>
-                <p class="welcome-message">Selamat datang, <span class="username" style="color:#f94144"><b>{{ Auth::user()->username }}</b></span>! Berikut adalah ringkasan sistem hari ini.</p>
+                <p class="welcome-message">Selamat datang, <span class="username" style="color:#f94144"><b>{{ Auth::user()->nama }}</b></span>! Berikut adalah ringkasan sistem hari ini.</p>
             </div>
         </div>
 
@@ -367,86 +367,85 @@
         </section>
     </div>
 
-    <script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+<script>
+        // Konfigurasi Firebase - ganti sesuai projectmu di Firebase Console
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMOv8YNAVKo2qjkJjpa9ACZxtCP8Y85Dw",
+            authDomain: "smartsmkn4.firebaseapp.com",
+            databaseURL: "https://smartsmkn4-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smartsmkn4",
+            storageBucket: "smartsmkn4.firebasestorage.app",
+            messagingSenderId: "528593838541",
+            appId: "1:528593838541:web:e8d8d64d6fe2d87f9ae484",
+            measurementId: "G-42R0DH356W"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const relayStatusElem = document.getElementById("relay_status");
+        const temperatureElem = document.getElementById("temperature");
+
+        const ds18b20Ref = db.ref('ds18b20');
+
+        // Listener realtime data
+        ds18b20Ref.on('value', (snapshot) => {
+            const data = snapshot.val();
+            console.log('Firebase data:', data);
+            if (data) {
+            relayStatusElem.innerText = data.relay_status || 'OFF';
+            relayStatusElem.className = data.relay_status === 'ON' ? 'stat-value stat-relay-on' : 'stat-value stat-relay-off';
+
+            temperatureElem.innerText = data.temperature !== undefined ? data.temperature : 'N/A';
+            }
+        });
+
+        // Fungsi update dashboard presensi via AJAX tetap jalan seperti sebelumnya
         function updateDashboardAdmin() {
             const kelas = document.getElementById("kelas").value;
 
             fetch(`/update-dashboard-admin?kelas=${kelas}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Update jumlah hadir, izin, alpa untuk siswa
-                    document.getElementById("jumlah_hadir").innerText = data.jumlahHadir;
-                    document.getElementById("jumlah_izin").innerText = data.jumlahIzin;
-                    document.getElementById("jumlah_alpa").innerText = data.jumlahAlpa;
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("jumlah_hadir").innerText = data.jumlahHadir;
+                document.getElementById("jumlah_izin").innerText = data.jumlahIzin;
+                document.getElementById("jumlah_alpa").innerText = data.jumlahAlpa;
 
-                    // Update relay status dan temperature dari Firebase
-                    const relayStatusElement = document.getElementById("relay_status");
-                    relayStatusElement.innerText = data.relayStatus;
-                    relayStatusElement.className = data.relayStatus === 'ON' ?
-                        'stat-value stat-relay-on' : 'stat-value stat-relay-off';
+                const guruElement = document.getElementById("guru_hadir");
+                guruElement.innerText = data.guruHadir ? 'Hadir' : 'Tidak Hadir';
+                guruElement.className = data.guruHadir ? 'stat-value stat-teacher-present' : 'stat-value stat-teacher-absent';
 
-                    document.getElementById("temperature").innerText = data.temperature || 'N/A';
-
-                    // Update status guru
-                    const guruElement = document.getElementById("guru_hadir");
-                    guruElement.innerText = data.guruHadir ? 'Hadir' : 'Tidak Hadir';
-                    guruElement.className = data.guruHadir ?
-                        'stat-value stat-teacher-present' : 'stat-value stat-teacher-absent';
-
-                    // Update tabel data presensi siswa
-                    let tableRows = '';
-                    data.dataSiswaHariIni.forEach(presensi => {
-                        let statusClass = '';
-                        switch(presensi.kehadiran) {
-                            case 'tepat waktu': statusClass = 'status-present'; break;
-                            case 'telat': statusClass = 'status-late'; break;
-                            case 'alpha': statusClass = 'status-absent'; break;
-                            case 'izin': statusClass = 'status-permit'; break;
-                            case 'sakit': statusClass = 'status-sick'; break;
-                        }
-
-                        tableRows += `
-                            <tr>
-                                <td>${presensi.user.nama}</td>
-                                <td>${presensi.user.kelas?.nama_kelas || 'N/A'}</td>
-                                <td><span class="status-badge ${statusClass}">${presensi.kehadiran}</span></td>
-                                <td>${new Date(presensi.waktu_presensi).toLocaleString()}</td>
-                            </tr>
-                        `;
-                    });
-
-                    document.getElementById("data_presensi").innerHTML = tableRows;
-                })
-                .catch(error => console.error("Error updating dashboard:", error));
+                let tableRows = '';
+                data.dataSiswaHariIni.forEach(presensi => {
+                let statusClass = '';
+                switch(presensi.kehadiran) {
+                    case 'tepat waktu': statusClass = 'status-present'; break;
+                    case 'telat': statusClass = 'status-late'; break;
+                    case 'alpha': statusClass = 'status-absent'; break;
+                    case 'izin': statusClass = 'status-permit'; break;
+                    case 'sakit': statusClass = 'status-sick'; break;
+                }
+                tableRows += `
+                    <tr>
+                    <td>${presensi.user.nama}</td>
+                    <td>${presensi.user.kelas?.nama_kelas || 'N/A'}</td>
+                    <td><span class="status-badge ${statusClass}">${presensi.kehadiran}</span></td>
+                    <td>${new Date(presensi.waktu_presensi).toLocaleString()}</td>
+                    </tr>
+                `;
+                });
+                document.getElementById("data_presensi").innerHTML = tableRows;
+            })
+            .catch(error => console.error("Error updating dashboard:", error));
         }
 
-        // Initial load
-        updateDashboardAdmin();
-
-        // Real-time updates for Firebase data (example implementation)
-        function setupFirebaseListeners() {
-            // This would be replaced with actual Firebase initialization and listeners
-            // For demonstration, we'll simulate updates every 5 seconds
-            setInterval(() => {
-                fetch('/get-firebase-data')
-                    .then(response => response.json())
-                    .then(data => {
-                        const relayStatusElement = document.getElementById("relay_status");
-                        relayStatusElement.innerText = data.relayStatus;
-                        relayStatusElement.className = data.relayStatus === 'ON' ?
-                            'stat-value stat-relay-on' : 'stat-value stat-relay-off';
-
-                        document.getElementById("temperature").innerText = data.temperature || 'N/A';
-                    });
-            }, 5000);
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            const kelasSelect = document.getElementById('kelas');
-            if (kelasSelect) {
-                kelasSelect.addEventListener('change', updateDashboardAdmin);
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('kelas').addEventListener('change', updateDashboardAdmin);
             updateDashboardAdmin();
-            setupFirebaseListeners();
         });
-    </script>
+</script>
 @endsection

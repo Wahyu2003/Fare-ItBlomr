@@ -4,34 +4,39 @@ body {
     padding: 0;
     overflow-x: hidden;
     background-color: #E7EFFF;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .bodi {
     background-color: #E7EFFF;
 }
+
 /* Sidebar Styling */
 .sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    left: -250px; /* Hidden by default on mobile */
     width: 250px;
-    height: 100vh; /* Tinggi penuh */
+    height: 100vh;
     background-color: #ffffff;
-    /* border-right: 3px solid #ddd; */
-    box-shadow: #333 0px 2px 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    transition: left 0.3s ease;
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar on mobile when active */
 }
 
 /* Logo Styling */
 .sidebar-logo {
     padding: 20px 15px;
-    /* border-bottom: 1px solid #ddd; */
     text-align: center;
 }
 
 .sidebar-logo .navbar-brand {
     font-size: 1.5rem;
-    color: #333 !important; /* Warna logo sesuai dengan sidebar */
+    color: #333 !important;
     font-weight: bold;
     text-decoration: none;
 }
@@ -51,18 +56,15 @@ body {
 
 .sidebar .nav-link:hover,
 .sidebar .nav-link.active {
-    background-color: #3498db; /* Bright blue for active/hover */
+    background-color: #3498db;
     color: #fff;
     border-radius: 8px;
-    transform: translateX(10px); /* Subtle animation */
-}
-
-.nav-link.active {
-    margin: 10px 0;
-    transition: all 0.3s;
     transform: translateX(10px);
 }
 
+.nav-link.active {
+    transform: translateX(10px);
+}
 
 .nav-item.logout .nav-link:hover {
     background-color: #c0392b;
@@ -70,90 +72,124 @@ body {
 
 /* Main Container (Header + Content) */
 .main-container {
-    margin-left: 250px; /* Sesuaikan dengan lebar sidebar */
-    width: calc(100% - 250px); /* Lebar penuh dikurangi lebar sidebar */
+    margin-left: 0; /* No sidebar offset on mobile */
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+.main-container.shifted {
+    margin-left: 250px; /* Shift content when sidebar is active */
 }
 
 /* Header Styling */
 .navbar {
     width: calc(100% - 40px);
-    padding: 0; /* Hapus padding default */
-    margin: 20px; /* Margin untuk header */
-    border-bottom: none; /* Hapus border jika ada */
+    margin: 20px;
+    padding: 0;
+    background-color: #ffffff;
     border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
-    z-index: 900; /* Pastikan header di bawah sidebar dalam hal z-index */
+    z-index: 900;
 }
 
 .navbar .container-fluid {
-    padding: 10px 20px; /* Atur padding hanya di dalam container */
+    padding: 10px 20px;
 }
 
-/* Navbar Nav Styling */
-.navbar-nav {
+/* Reset flex dan atur tata letak dasar */
+.navbar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* penting untuk mode mobile */
+    gap: 0.5rem;
+    width: 100%;
 }
 
-/* Search Container (75%) */
+/* Container kiri: toggle + search */
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 auto; /* supaya bisa melebar */
+}
+
+/* Container kanan: icon notif, pesan, profil */
+/* Default .navbar-right di desktop */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto; /* Pindahkan ke paling kanan */
+}
+
 .search-container {
-    flex: 0 0 65%; /* 75% dari lebar header */
+    width: 100%;
+    max-width: 800px;
 }
 
-/* Search Input Styling */
 .search-input {
-    width: 100%; /* Mengambil lebar penuh dari search-container */
-    border-radius: 20px; /* Sudut melengkung */
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
 }
 
-/* .profil {
-    width: auto;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-} */
-
-.border-profil {
-    width: 40px; /* Lebar wrapper sama dengan ukuran gambar */
-    height: 40px; /* Tinggi wrapper sama dengan ukuran gambar */
-    border: 2px solid #007bff; /* Border biru di sekitar gambar */
-    border-radius: 50%; /* Membuat border berbentuk lingkaran */
-    display: flex;
-    justify-content: center; /* Posisikan gambar di tengah secara horizontal */
-    align-items: center; /* Posisikan gambar di tengah secara vertikal */
-    overflow: hidden; /* Sembunyikan bagian gambar yang melebihi wrapper */
-    margin-right: 10px; /* Jarak antara gambar dan nama */
-}
-
-/* Profile Picture Styling */
-.profil {
-    width: 100%; /* Gambar mengisi wrapper */
-    height: 100%; /* Gambar mengisi wrapper */
-    object-fit: cover; /* Pastikan gambar tidak terdistorsi, dipotong jika perlu */
-    object-position: center; /* Posisikan gambar di tengah */
-}
-
-.namaprofile {
-    font-size: 1.2rem;
-    text-overflow: ellipsis;
-}
-
-/* Icons Container (25%) */
 .icons-container {
-    flex: 0 0 35%; /* 25% dari lebar header */
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 50px;
+}
+
+.profile-link:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.profile-link .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e9ecef;
+}
+
+.profile-link .username {
+    font-weight: 500;
+    color: #212529;
+}
+
+.profile-link:hover .username {
+    color: #0d6efd;
+}
+
+.profile-link .caret {
+    transition: transform 0.3s ease;
+}
+
+.profile-link:hover .caret {
+    transform: translateX(3px);
 }
 
 /* Content Styling */
 .content {
-    margin: 0 20px 20px 20px; /* Margin untuk konten */
-    border-radius: 10px;
-    padding: 20px; /* Padding untuk konten */
+    margin: 0 20px 20px;
+    padding: 20px;
     background-color: #ffffff;
-    min-height: calc(100vh - 100px); /* Tinggi penuh dikurangi tinggi header dan margin */
+    border-radius: 10px;
+    min-height: calc(100vh - 100px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Card Styling untuk Dashboard */
@@ -203,33 +239,6 @@ body {
 }
 
 .admin-table tr:hover {
-    background-color: #f1f1f1;
-}
-.admin-tableg {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.admin-tableg th,
-.admin-tableg td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.admin-tableg th {
-    /* background-color: #00ff22; */
-    color: #fff;
-    font-weight: 600;
-}
-
-.admin-tableg td {
-    color: #333;
-}
-
-.admin-tableg tr:hover {
     background-color: #f1f1f1;
 }
 
@@ -303,6 +312,127 @@ body {
     max-width: 150px;
     border-radius: 8px;
     margin-top: 10px;
+}
+
+/* Responsive Styling */
+@media (max-width: 769px) {
+    .sidebar {
+        left: -250px; /* Hidden by default */
+    }
+
+    .sidebar.active {
+        left: 0; /* Show when active */
+    }
+
+    .main-container {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .navbar {
+        width: calc(100% - 20px);
+        margin: 10px;
+    }
+
+    .navbar-left {
+        /* Toggle button muncul */
+        .navbar-toggler {
+            display: inline-block;
+        }
+        /* Search container fleksibel, supaya di sebelah toggle */
+        .search-container {
+            width: 100%;
+            max-width: none;
+        }
+    }
+
+    /* Buat navbar-right turun ke bawah (full width baris baru) */
+     .navbar-right {
+        flex-basis: 100%;      /* Buat turun baris baru */
+        justify-content: flex-end; /* Posisikan ke kanan */
+        margin-top: 0.5rem;
+        gap: 1rem;
+    }
+
+    .icons-container {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .content {
+        margin: 0 10px 10px;
+        padding: 15px;
+    }
+
+    .admin-card {
+        padding: 15px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 770px) {
+    .sidebar {
+        left: 0; /* Always visible on desktop */
+    }
+
+    .main-container {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+
+    .navbar-left {
+        /* Toggle button sembunyikan, search ambil space */
+        .navbar-toggler {
+            display: none;
+        }
+        /* Search container lebar fix */
+        .search-container {
+            width: 100%;
+            max-width: 800px;
+        }
+    }
+    /* Navbar-top tetap satu baris */
+    .navbar-top {
+        flex-wrap: nowrap;
+    }
+
+    .icons-container {
+        margin-left: auto;
+    }
+
+}
+
+.admin-tableg {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-tableg th,
+.admin-tableg td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-tableg th {
+    /* background-color: #00ff22; */
+    color: #fff;
+    font-weight: 600;
+}
+
+.admin-tableg td {
+    color: #333;
+}
+
+.admin-tableg tr:hover {
+    background-color: #f1f1f1;
 }
 
 
@@ -434,4 +564,31 @@ body {
 /* Ikon Bootstrap */
 .bi {
     font-size: 16px;
+}
+
+
+/* Overlay default hidden */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* warna hitam semi transparan */
+    z-index: 900; /* harus di bawah sidebar yang z-index: 1000 */
+    opacity: 0;
+    pointer-events: none; /* agar tidak menangkap klik saat tidak aktif */
+    transition: opacity 0.3s ease;
+}
+
+/* Overlay aktif */
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto; /* menangkap klik */
+}
+
+.main-container.dimmed {
+    filter: brightness(0.6) blur(2px); /* buat gelap dengan filter */
+    transition: filter 0.3s ease;
+    pointer-events: none; /* agar konten tidak bisa di klik saat gelap */
 }
