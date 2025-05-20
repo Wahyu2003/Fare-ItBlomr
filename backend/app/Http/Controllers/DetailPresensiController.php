@@ -38,7 +38,7 @@ class DetailPresensiController extends Controller
 
     public function rekapanAbsenSiswa(Request $request)
     {
-        $statusFilter = $request->input('status', ''); 
+        $statusFilter = $request->input('status', '');
         $timeFilter = $request->input('time_filter', 'week');
         $startDate = null;
         $endDate = null;
@@ -89,8 +89,20 @@ class DetailPresensiController extends Controller
             ->get()
             ->groupBy('bulan');
 
-        $labels = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $labels = [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        ];
 
         $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = array_fill(0, 12, 0);
 
@@ -276,7 +288,7 @@ class DetailPresensiController extends Controller
                 'id_jadwal_pelajaran' => $id_jadwal_pelajaran ?? "1",
             ]);
 
-            // Firebase
+
             $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
             $payload = [
                 'nama' => $data['name'],
@@ -287,13 +299,21 @@ class DetailPresensiController extends Controller
             Http::put($firebaseUrl, $payload);
 
             // Kirim WhatsApp
-            $user = User::find($data['id_user']);
-            $nomor = $user?->no_hp_siswa ?? null;
+            $user = DetailPresensi::with('user')
+                ->where('id_user', $data['id_user'])
+                ->whereDate('waktu_presensi', Carbon::now())
+                ->first();
+
+            if (!$user) {
+                return response()->json(['error' => 'Presensi tidak ditemukan'], 404);
+            }
+            $nomor = $user->user?->no_hp_ortu;
+            $nama_ortu = $user->user?->nama_ortu ?? 'Orang Tua';
 
             if ($nomor) {
                 $this->kirimPesanFonnte(
                     $nomor,
-                    "Halo {$data['name']}, Anda berhasil presensi *{$jenis_absen}* pada " . $now->toDayDateTimeString()
+                    "Halo Bapak/Ibu {$nama_ortu}, Anak Anda yang bernama *{$data['name']}* berhasil presensi *{$jenis_absen}* pada " . $now->toDayDateTimeString()
                 );
             }
 
@@ -304,7 +324,6 @@ class DetailPresensiController extends Controller
                 'jenis_absen' => $jenis_absen,
                 'kehadiran' => $kehadiran,
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Terjadi kesalahan: ' . $e->getMessage(),

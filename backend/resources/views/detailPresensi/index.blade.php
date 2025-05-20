@@ -197,35 +197,34 @@
                         <thead>
                             <tr>
                                 <th>Nama</th>
-                                <th>NIK</th>
                                 <th>Role</th>
                                 <th>Action (Pilih Status)</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($belumPresensi as $user)
-                            <tr>
-                                <td>{{ $user->nama }}</td>
-                                <td>{{ $user->nik }}</td>
-                                <td>{{ $user->role }}</td>
-                                <td>
-                                    <select name="statuses[{{ $user->id_user }}]" class="form-select form-select-sm" aria-label="Pilih Status" >
-                                        <option value="" selected>-- Belum Hadir --</option>
-                                        <option value="izin">Izin</option>
-                                        <option value="alpha">Alfa</option>
-                                    </select>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>{{ $user->nama }}</td>
+                                    <td>{{ $user->role }}</td>
+                                    <td>
+                                        <select name="statuses[{{ $user->id_user }}]" class="form-select form-select-sm"
+                                            aria-label="Pilih Status">
+                                            <option value="" selected>-- Belum Hadir --</option>
+                                            <option value="izin">Izin</option>
+                                            <option value="alpha">Alfa</option>
+                                        </select>
+                                    </td>
+                                </tr>
                             @empty
-                            <tr>
-                                <td colspan="4" style="text-align: center;">Semua user sudah presensi.</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">Semua user sudah presensi.</td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
 
-                    @if($belumPresensi->count() > 0)
-                    <button type="submit" class="btn btn-warning mt-3">Update Semua Presensi</button>
+                    @if ($belumPresensi->count() > 0)
+                        <button type="submit" class="btn btn-warning mt-3">Update Semua Presensi</button>
                     @endif
                 </form>
             </div>
@@ -237,8 +236,8 @@
                     <thead>
                         <tr>
                             <th>Nama</th>
-                            <th>NIK</th>
                             <th>Role</th>
+                            <th>Status</th>
                             <th>Waktu</th>
                         </tr>
                     </thead>
@@ -246,8 +245,8 @@
                         @forelse ($sudahPresensi as $presensi)
                             <tr data-kelas="{{ $presensi->user->kelas_id }}" data-role="{{ $presensi->user->role }}">
                                 <td>{{ $presensi->user->nama }}</td>
-                                <td>{{ $presensi->user->nik }}</td>
                                 <td>{{ $presensi->user->role }}</td>
+                                <td>{{ $presensi->jenis_absen }} | {{ $presensi->kehadiran }}</td>
                                 <td>{{ \Carbon\Carbon::parse($presensi->waktu_presensi)->format('H:i:s') }}</td>
                             </tr>
                         @empty
