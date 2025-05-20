@@ -45,12 +45,12 @@
                     </td>
 
                     <td>
-                        <a href="{{ route('jadwal_bel.edit', $jadwal->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i></a>
+                        <a href="{{ route('jadwal_bel.edit', $jadwal->id) }}" class="btn btn-sm btn-warning" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
                         <form action="{{ route('jadwal_bel.destroy', $jadwal->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin?')">
-                                <i class="fas fa-trash"></i>
+                                Hapus
                             </button>
                         </form>
                     </td>

@@ -108,9 +108,9 @@
                                     <div class="d-flex flex-column flex-md-row align-items-center">
                                         <div class="mb-3 mb-md-0 me-md-4 text-center">
                                             @if($user->foto)
-                                                <img src="{{ asset('storage/profile_images/' . $user->foto) }}" 
-                                                    alt="Foto Profil" class="rounded-circle border" 
-                                                    style="width: 120px; height: 120px; object-fit: cover;">
+                                                <img src="{{ asset('storage/' . $user->foto) }}" 
+                                                    alt="Foto Profil" 
+                                                    style="width: 120px; height: 120px; object-fit: cover; border-radius : 10px;">
                                             @else
                                                 <div class="rounded-circle border bg-light d-flex align-items-center justify-content-center mx-auto" 
                                                     style="width: 120px; height: 120px;">

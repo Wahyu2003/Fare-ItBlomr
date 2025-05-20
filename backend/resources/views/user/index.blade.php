@@ -65,7 +65,7 @@
                                                 Tidak Ada
                                             @endif
                                             <br>
-                                            <span class="badge {{ $user->face_encoding ? 'bg-success' : 'bg-warning' }}">{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</span>
+                                            <!-- <span class="badge {{ $user->face_encoding ? 'bg-success' : 'bg-warning' }}">{{ $user->face_encoding ? 'Terdeteksi' : 'Belum Terdeteksi' }}</span> -->
                                         </td>
                                         <td>
                                             <div class="d-flex flex-row gap-2">
