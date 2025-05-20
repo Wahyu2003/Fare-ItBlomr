@@ -10,7 +10,7 @@
     <a href="{{ route('mataPelajaran.create') }}" class="btn btn-success mb-3">Tambah Mata Pelajaran</a>
     <!-- Form Filter -->
     <form method="GET" action="{{ route('mataPelajaran.index') }}" class="mb-4">
-        <div class="row">
+        <div class="kumpul row">
             <div class="col-md-4">
                 <label for="kelas">Filter Kelas:</label>
                 <select name="kelas" id="kelas" class="form-control">
@@ -22,13 +22,13 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col-md-3 d-flex align-items-end mt-3">
                 <button type="submit" class="btn btn-primary w-100">Filter</button>
             </div>
         </div>
     </form>
 
-    <table class="table table-bordered">
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -44,7 +44,7 @@
                     <td>{{ $mp->nama_mata_pelajaran }}</td>
                     <td>{{ $mp->kelas->nama_kelas ?? '-' }}</td>
                     <td>
-                        <a href="{{ route('mataPelajaran.edit', $mp->id_mata_pelajaran) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{{ route('mataPelajaran.edit', $mp->id_mata_pelajaran) }}" class="btn btn-sm btn-warning" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
                         <form action="{{ route('mataPelajaran.destroy', $mp->id_mata_pelajaran) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus?')">
                             @csrf
                             @method('DELETE')

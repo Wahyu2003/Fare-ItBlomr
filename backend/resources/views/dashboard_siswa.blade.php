@@ -360,6 +360,14 @@
                         <span class="legend-color" style="background-color: #FF6384;"></span>
                         <span>Alpa: {{ round($alphaPercentage, 2) }}%</span>
                     </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #FF9F40;"></span>
+                        <span>Izin: {{ round($izinPercentage, 2) }}%</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #36A2EB;"></span>
+                        <span>Sakit: {{ round($sakitPercentage, 2) }}%</span>
+                    </div>
                 </div>
             </div>
         </div>
