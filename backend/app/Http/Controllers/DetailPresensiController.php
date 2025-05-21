@@ -43,6 +43,7 @@ class DetailPresensiController extends Controller
         $startDate = null;
         $endDate = null;
 
+        // Set periode waktu berdasarkan filter
         if ($timeFilter === 'week') {
             $startDate = Carbon::now()->startOfWeek();
             $endDate = Carbon::now()->endOfWeek();
@@ -50,14 +51,15 @@ class DetailPresensiController extends Controller
             $startDate = Carbon::now()->startOfMonth();
             $endDate = Carbon::now()->endOfMonth();
         } elseif ($timeFilter === 'custom' && $request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'));
-            $endDate = Carbon::parse($request->input('end_date'));
+            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
         } else {
-            // Default rentang waktu jika filter tidak valid
+            // Default ke minggu ini jika filter tidak valid
             $startDate = Carbon::now()->startOfWeek();
             $endDate = Carbon::now()->endOfWeek();
         }
 
+        // Query presensi berdasarkan filter
         $presensiQuery = DetailPresensi::with('user', 'jadwalPelajaran')
             ->whereBetween('waktu_presensi', [$startDate, $endDate])
             ->where('id_user', auth()->user()->id_user);
@@ -69,46 +71,34 @@ class DetailPresensiController extends Controller
         $presensi = $presensiQuery->get();
         $totalPresensi = $presensi->count();
 
+        // Hitung persentase kehadiran
+        $hadirPercentage = $telatPercentage = $alphaPercentage = $izinPercentage = $sakitPercentage = 0;
         if ($totalPresensi > 0) {
             $statusCounts = $presensi->groupBy('kehadiran')->map->count();
-
             $hadirPercentage = ($statusCounts->get('tepat waktu', 0) / $totalPresensi) * 100;
             $telatPercentage = ($statusCounts->get('telat', 0) / $totalPresensi) * 100;
             $alphaPercentage = ($statusCounts->get('alpha', 0) / $totalPresensi) * 100;
             $izinPercentage = ($statusCounts->get('izin', 0) / $totalPresensi) * 100;
             $sakitPercentage = ($statusCounts->get('sakit', 0) / $totalPresensi) * 100;
-        } else {
-            $hadirPercentage = $telatPercentage = $alphaPercentage = $izinPercentage = $sakitPercentage = 0;
         }
 
-        // Statistik Bulanan untuk Bar Chart (tahun berjalan)
-        $monthlyStats = DetailPresensi::where('id_user', auth()->user()->id_user)
-            ->whereYear('waktu_presensi', Carbon::now()->year)
-            ->selectRaw('MONTH(waktu_presensi) as bulan, kehadiran, COUNT(*) as total')
-            ->groupBy('bulan', 'kehadiran')
-            ->get()
-            ->groupBy('bulan');
+        // Statistik untuk Bar Chart berdasarkan periode waktu
+        $labels = [];
+        $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = [];
 
-        $labels = [
-            'Januari',
-            'Februari',
-            'Maret',
-            'April',
-            'Mei',
-            'Juni',
-            'Juli',
-            'Agustus',
-            'September',
-            'Oktober',
-            'November',
-            'Desember'
-        ];
+        if ($timeFilter === 'week') {
+            // Label: Hari dalam seminggu
+            $labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+            $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = array_fill(0, 7, 0);
 
-        $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = array_fill(0, 12, 0);
+            $stats = DetailPresensi::where('id_user', auth()->user()->id_user)
+                ->whereBetween('waktu_presensi', [$startDate, $endDate])
+                ->selectRaw('DAYOFWEEK(waktu_presensi) as hari, kehadiran, COUNT(*) as total')
+                ->groupBy('hari', 'kehadiran')
+                ->get();
 
-        foreach ($monthlyStats as $bulan => $items) {
-            foreach ($items as $item) {
-                $index = $bulan - 1;
+            foreach ($stats as $item) {
+                $index = ($item->hari + 5) % 7; // Konversi DAYOFWEEK (1=Min, 2=Sen) ke index (0=Sen, 6=Min)
                 switch ($item->kehadiran) {
                     case 'tepat waktu':
                         $dataHadir[$index] = $item->total;
@@ -125,6 +115,96 @@ class DetailPresensiController extends Controller
                     case 'sakit':
                         $dataSakit[$index] = $item->total;
                         break;
+                }
+            }
+        } elseif ($timeFilter === 'month') {
+            // Label: Minggu dalam sebulan
+            $weeks = [];
+            $current = $startDate->copy();
+            while ($current <= $endDate) {
+                $weekStart = $current->copy()->startOfWeek();
+                $weekEnd = $current->copy()->endOfWeek();
+                if ($weekEnd > $endDate) {
+                    $weekEnd = $endDate;
+                }
+                $weeks[] = "Minggu " . (count($weeks) + 1) . " (" . $weekStart->format('d M') . " - " . $weekEnd->format('d M') . ")";
+                $current->addWeek();
+            }
+            $labels = $weeks;
+            $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = array_fill(0, count($labels), 0);
+
+            $stats = DetailPresensi::where('id_user', auth()->user()->id_user)
+                ->whereBetween('waktu_presensi', [$startDate, $endDate])
+                ->selectRaw('WEEK(waktu_presensi, 1) as minggu, kehadiran, COUNT(*) as total')
+                ->groupBy('minggu', 'kehadiran')
+                ->get();
+
+            foreach ($stats as $item) {
+                $weekIndex = 0;
+                $weekStart = $startDate->copy()->startOfWeek();
+                for ($i = 0; $i < count($labels); $i++) {
+                    if ($item->minggu == $weekStart->weekOfYear) {
+                        $weekIndex = $i;
+                        break;
+                    }
+                    $weekStart->addWeek();
+                }
+                switch ($item->kehadiran) {
+                    case 'tepat waktu':
+                        $dataHadir[$weekIndex] = $item->total;
+                        break;
+                    case 'telat':
+                        $dataTelat[$weekIndex] = $item->total;
+                        break;
+                    case 'alpha':
+                        $dataAlpha[$weekIndex] = $item->total;
+                        break;
+                    case 'izin':
+                        $dataIzin[$weekIndex] = $item->total;
+                        break;
+                    case 'sakit':
+                        $dataSakit[$weekIndex] = $item->total;
+                        break;
+                }
+            }
+        } else {
+            // Custom: Label per hari dalam rentang waktu
+            $days = $startDate->diffInDays($endDate) + 1;
+            $labels = [];
+            $current = $startDate->copy();
+            for ($i = 0; $i < $days && $i < 31; $i++) { // Batasi hingga 31 hari untuk chart
+                $labels[] = $current->format('d M');
+                $current->addDay();
+            }
+            $dataHadir = $dataTelat = $dataAlpha = $dataIzin = $dataSakit = array_fill(0, count($labels), 0);
+
+            $stats = DetailPresensi::where('id_user', auth()->user()->id_user)
+                ->whereBetween('waktu_presensi', [$startDate, $endDate])
+                ->selectRaw('DATE(waktu_presensi) as tanggal, kehadiran, COUNT(*) as total')
+                ->groupBy('tanggal', 'kehadiran')
+                ->get();
+
+            foreach ($stats as $item) {
+                $date = Carbon::parse($item->tanggal);
+                $index = $startDate->diffInDays($date);
+                if ($index < count($labels)) {
+                    switch ($item->kehadiran) {
+                        case 'tepat waktu':
+                            $dataHadir[$index] = $item->total;
+                            break;
+                        case 'telat':
+                            $dataTelat[$index] = $item->total;
+                            break;
+                        case 'alpha':
+                            $dataAlpha[$index] = $item->total;
+                            break;
+                        case 'izin':
+                            $dataIzin[$index] = $item->total;
+                            break;
+                        case 'sakit':
+                            $dataSakit[$index] = $item->total;
+                            break;
+                    }
                 }
             }
         }
@@ -288,7 +368,7 @@ class DetailPresensiController extends Controller
                 'id_jadwal_pelajaran' => $id_jadwal_pelajaran ?? "1",
             ]);
 
-
+            // Firebase
             $firebaseUrl = env('FIREBASE_DB_URL') . '/presensi.json?auth=' . env('FIREBASE_SECRET');
             $payload = [
                 'nama' => $data['name'],
@@ -299,21 +379,13 @@ class DetailPresensiController extends Controller
             Http::put($firebaseUrl, $payload);
 
             // Kirim WhatsApp
-            $user = DetailPresensi::with('user')
-                ->where('id_user', $data['id_user'])
-                ->whereDate('waktu_presensi', Carbon::now())
-                ->first();
-
-            if (!$user) {
-                return response()->json(['error' => 'Presensi tidak ditemukan'], 404);
-            }
-            $nomor = $user->user?->no_hp_ortu;
-            $nama_ortu = $user->user?->nama_ortu ?? 'Orang Tua';
+            $user = User::find($data['id_user']);
+            $nomor = $user?->no_hp_siswa ?? null;
 
             if ($nomor) {
                 $this->kirimPesanFonnte(
                     $nomor,
-                    "Halo Bapak/Ibu {$nama_ortu}, Anak Anda yang bernama *{$data['name']}* berhasil presensi *{$jenis_absen}* pada " . $now->toDayDateTimeString()
+                    "Halo {$data['name']}, Anda berhasil presensi {$jenis_absen} pada " . $now->toDayDateTimeString()
                 );
             }
 
@@ -324,6 +396,7 @@ class DetailPresensiController extends Controller
                 'jenis_absen' => $jenis_absen,
                 'kehadiran' => $kehadiran,
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Terjadi kesalahan: ' . $e->getMessage(),

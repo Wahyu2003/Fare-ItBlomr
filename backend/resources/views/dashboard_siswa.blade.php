@@ -2,293 +2,371 @@
 
 @section('contents')
 <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --warning-color: #f8961e;
-            --danger-color: #f94144;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --warning-color: #f8961e;
+        --danger-color: #f94144;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
 
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
 
-        .dashboard-title {
-            font-size: 28px;
-            font-weight: 600;
-            color: var(--dark-color);
-            margin: 0;
-        }
+    .dashboard-title {
+        font-size: 26px;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin: 0;
+    }
 
-        .welcome-message {
-            font-size: 16px;
-            color: #6c757d;
-            margin-top: 8px;
-        }
+    .welcome-message {
+        font-size: 14px;
+        color: #6c757d;
+        margin-top: 6px;
+    }
 
-        /* Filter Section */
-        .filter-section {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 30px;
-        }
+    /* Filter Section */
+    .filter-section {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 16px;
+        box-shadow: var(--box-shadow);
+        margin-bottom: 24px;
+    }
 
-        .filter-title {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--dark-color);
-        }
+    .filter-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 16px;
+        color: var(--dark-color);
+    }
 
-        .filter-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
+    .filter-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+    }
 
-        .form-group {
-            margin-bottom: 0;
-        }
+    .form-group {
+        margin-bottom: 0;
+    }
 
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #495057;
-        }
+    .form-label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #495057;
+        font-size: 14px;
+    }
 
-        .form-control {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ced4da;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            font-size: 14px;
-        }
+    .form-control {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        font-size: 13px;
+    }
 
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
-            outline: none;
-        }
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        outline: none;
+    }
 
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            align-self: flex-end;
-        }
+    .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: 500;
+        transition: var(--transition);
+        align-self: flex-end;
+        font-size: 14px;
+    }
 
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-        }
+    .btn-primary:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+    }
 
-        /* Stats Section */
+    /* Stats Section */
+    .stats-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 16px;
+        box-shadow: var(--box-shadow);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .pie-chart-card .chart-container {
+        max-width: 300px;
+        height: 250px;
+        margin: 0 auto;
+    }
+
+    .bar-chart-card .chart-container {
+        min-height: 250px;
+    }
+
+    .chart-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 16px;
+        color: var(--dark-color);
+    }
+
+    .chart-container {
+        flex: 1;
+        min-height: 200px;
+        position: relative;
+    }
+
+    .chart-footer {
+        margin-top: 16px;
+    }
+
+    .legend-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background-color: rgba(248, 249, 250, 0.8);
+    }
+
+    .legend-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+
+    /* Table Section */
+    .table-section {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 16px;
+        box-shadow: var(--box-shadow);
+        overflow-x: auto;
+    }
+
+    .table-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 16px;
+        color: var(--dark-color);
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .data-table th {
+        background-color: #f8f9fa;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .data-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    .data-table tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .status-present { background-color: rgba(76, 201, 240, 0.1); color: #4cc9f0; }
+    .status-late { background-color: rgba(248, 150, 30, 0.1); color: #f8961e; }
+    .status-absent { background-color: rgba(249, 65, 68, 0.1); color: #f94144; }
+    .status-permit { background-color: rgba(111, 66, 193, 0.1); color: #6f42c1; }
+    .status-sick { background-color: rgba(32, 201, 151, 0.1); color: #20c997; }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
         .stats-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
+            grid-template-columns: 1fr;
         }
-
-        @media (max-width: 992px) {
-            .stats-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .chart-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        /* Atur ukuran chart-container spesifik untuk pie chart dan bar chart */
         .pie-chart-card .chart-container {
-            max-width: 400px;
-            height: 300px;
-            margin: 0 auto; /* Center pie chart */
+            max-width: 250px;
+            height: 200px;
         }
-
         .bar-chart-card .chart-container {
-            min-height: 300px;
+            min-height: 200px;
         }
+    }
 
-        .chart-title {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--dark-color);
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 15px;
         }
-
-        .chart-container {
-            flex: 1;
-            min-height: 300px;
-            position: relative;
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
         }
-
-        .chart-footer {
-            margin-top: 20px;
+        .dashboard-title {
+            font-size: 22px;
         }
-
-        .legend-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
+        .welcome-message {
+            font-size: 13px;
         }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background-color: rgba(248, 249, 250, 0.8);
+        .filter-form {
+            grid-template-columns: 1fr;
         }
-
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
+        .filter-section {
+            padding: 12px;
         }
-
-        /* Table Section */
-        .table-section {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            overflow-x: auto;
+        .filter-title {
+            font-size: 15px;
         }
-
-        .table-title {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--dark-color);
-        }
-
-        .data-table {
+        .btn-primary {
             width: 100%;
-            border-collapse: collapse;
+            padding: 10px;
+        }
+        .chart-card {
+            padding: 12px;
+        }
+        .chart-title {
+            font-size: 15px;
+        }
+        .legend-container {
+            justify-content: flex-start;
+            gap: 10px;
+        }
+        .legend-item {
+            font-size: 12px;
+        }
+        .table-section {
+            padding: 12px;
+        }
+        .table-title {
+            font-size: 15px;
+        }
+        .data-table {
+            font-size: 12px;
+        }
+        .data-table th, .data-table td {
+            padding: 8px 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-container {
+            padding: 10px;
+        }
+        .dashboard-title {
+            font-size: 20px;
+        }
+        .welcome-message {
+            font-size: 12px;
+        }
+        .filter-section {
+            padding: 10px;
+        }
+        .form-control {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+        .form-label {
+            font-size: 13px;
+        }
+        .btn-primary {
+            font-size: 13px;
+        }
+        .pie-chart-card .chart-container {
+            max-width: 200px;
+            height: 180px;
+        }
+        .bar-chart-card .chart-container {
+            min-height: 180px;
+        }
+        .chart-title {
             font-size: 14px;
         }
-
-        .data-table th {
-            background-color: #f8f9fa;
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #495057;
-            border-bottom: 2px solid #e9ecef;
+        .legend-item {
+            font-size: 11px;
+            padding: 3px 8px;
         }
-
-        .data-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e9ecef;
-            vertical-align: middle;
+        .legend-color {
+            width: 8px;
+            height: 8px;
         }
-
-        .data-table tr:hover {
-            background-color: #f8f9fa;
+        .table-section {
+            padding: 10px;
         }
-
+        .data-table {
+            font-size: 11px;
+        }
+        .data-table th, .data-table td {
+            padding: 6px 8px;
+        }
         .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 10px;
+            padding: 2px 6px;
         }
+    }
 
-        .status-present {
-            background-color: rgba(76, 201, 240, 0.1);
-            color: #4cc9f0;
-        }
+    .custom-date-range {
+        display: none;
+        grid-column: 1 / -1;
+    }
 
-        .status-late {
-            background-color: rgba(248, 150, 30, 0.1);
-            color: #f8961e;
-        }
-
-        .status-absent {
-            background-color: rgba(249, 65, 68, 0.1);
-            color: #f94144;
-        }
-
-        .status-permit {
-            background-color: rgba(111, 66, 193, 0.1);
-            color: #6f42c1;
-        }
-
-        .status-sick {
-            background-color: rgba(32, 201, 151, 0.1);
-            color: #20c997;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .filter-form {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-primary {
-                width: 100%;
-            }
-
-            .legend-container {
-                justify-content: flex-start;
-            }
-        }
-
-        /* Custom Date Range */
-        .custom-date-range {
-            display: none;
-            grid-column: 1 / -1;
-        }
-
-        .custom-date-range.active {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-    </style>
+    .custom-date-range.active {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+</style>
 
 <div class="dashboard-container">
     <div class="dashboard-header">
@@ -348,33 +426,18 @@
             </div>
             <div class="chart-footer">
                 <div class="legend-container">
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #4BC0C0;"></span>
-                        <span>Hadir: {{ round($hadirPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #FFCE56;"></span>
-                        <span>Telat: {{ round($telatPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #FF6384;"></span>
-                        <span>Alpa: {{ round($alphaPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #FF9F40;"></span>
-                        <span>Izin: {{ round($izinPercentage, 2) }}%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #36A2EB;"></span>
-                        <span>Sakit: {{ round($sakitPercentage, 2) }}%</span>
-                    </div>
+                    <div class="legend-item"><span class="legend-color" style="background-color: #4BC0C0;"></span>Hadir: {{ round($hadirPercentage, 2) }}%</div>
+                    <div class="legend-item"><span class="legend-color" style="background-color: #FFCE56;"></span>Telat: {{ round($telatPercentage, 2) }}%</div>
+                    <div class="legend-item"><span class="legend-color" style="background-color: #FF6384;"></span>Alpa: {{ round($alphaPercentage, 2) }}%</div>
+                    <div class="legend-item"><span class="legend-color" style="background-color: #FF9F40;"></span>Izin: {{ round($izinPercentage, 2) }}%</div>
+                    <div class="legend-item"><span class="legend-color" style="background-color: #36A2EB;"></span>Sakit: {{ round($sakitPercentage, 2) }}%</div>
                 </div>
             </div>
         </div>
 
-        <!-- Bar Chart Bulanan -->
+        <!-- Bar Chart -->
         <div class="chart-card bar-chart-card">
-            <h3 class="chart-title">Statistik Bulanan</h3>
+            <h3 class="chart-title">Statistik {{ $timeFilter == 'week' ? 'Harian' : ($timeFilter == 'month' ? 'Mingguan' : 'Harian') }}</h3>
             <div class="chart-container">
                 <canvas id="monthlyBarChart"></canvas>
             </div>
@@ -461,6 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -474,7 +538,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Bar Chart Bulanan
+    // Bar Chart
     const barCtx = document.getElementById('monthlyBarChart').getContext('2d');
     new Chart(barCtx, {
         type: 'bar',
@@ -510,9 +574,25 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
-                x: { stacked: true, grid: { display: false } },
-                y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } }
+                x: {
+                    stacked: true,
+                    grid: { display: false },
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 10,
+                        font: { size: 12 }
+                    }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        font: { size: 12 }
+                    }
+                }
             },
             plugins: {
                 legend: { display: false },
@@ -531,11 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const timeFilterSelect = document.getElementById('time_filter');
     const customDateRange = document.getElementById('custom-date-range');
     timeFilterSelect.addEventListener('change', function() {
-        if (this.value === 'custom') {
-            customDateRange.classList.add('active');
-        } else {
-            customDateRange.classList.remove('active');
-        }
+        customDateRange.classList.toggle('active', this.value === 'custom');
     });
 });
 </script>
