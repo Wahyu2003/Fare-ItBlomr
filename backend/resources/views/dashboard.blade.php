@@ -44,12 +44,12 @@
 
         /* Filter Section */
         /* .filter-section {
-                                    background: white;
-                                    border-radius: var(--border-radius);
-                                    padding: 20px;
-                                    box-shadow: var(--box-shadow);
-                                    margin-bottom: 30px;
-                                } */
+                                        background: white;
+                                        border-radius: var(--border-radius);
+                                        padding: 20px;
+                                        box-shadow: var(--box-shadow);
+                                        margin-bottom: 30px;
+                                    } */
 
         .filter-title {
             font-size: 18px;
@@ -273,12 +273,21 @@
     <div class="dashboard-container">
         <div class="dashboard-header">
             <div>
+                <h1 class="dashboard-title">{{ Auth::user()->role === 'admin' ? 'Admin' : 'Guru' }} Dashboard</h1>
+                <p class="welcome-message">
+                    Selamat datang, <span class="username" style="color:#f94144"><b>{{ Auth::user()->nama }}</b></span>!
+                    Berikut adalah ringkasan sistem hari ini.
+                </p>
+            </div>
+        </div>
+        {{-- <div class="dashboard-header">
+            <div>
                 <h1 class="dashboard-title">Admin Dashboard</h1>
                 <p class="welcome-message">
                     Selamat datang, <span class="username" style="color:#f94144"><b>{{ Auth::user()->nama }}</b></span>! Berikut adalah ringkasan sistem hari ini.
                 </p>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Stats Section -->
         <section class="stats-section">
@@ -299,24 +308,25 @@
                 <div class="stat-value stat-absent" id="jumlah_alpa">{{ $jumlahAlpa }}</div>
                 <p>Alpa</p>
             </div>
+            @if (Auth::user()->role === 'admin')
+                <div class="stat-card">
+                    <h3 class="stat-title">Status Relay</h3>
+                    <div class="stat-value stat-relay-off" id="relay_status">OFF</div>
+                    <p>Status Perangkat</p>
+                </div>
 
-            <div class="stat-card">
-                <h3 class="stat-title">Status Relay</h3>
-                <div class="stat-value stat-relay-off" id="relay_status">OFF</div>
-                <p>Status Perangkat</p>
-            </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Suhu Ruangan</h3>
+                    <div class="stat-value stat-temp" id="temperature">N/A</div>
+                    <p>Suhu Terkini</p>
+                </div>
 
-            <div class="stat-card">
-                <h3 class="stat-title">Suhu Ruangan</h3>
-                <div class="stat-value stat-temp" id="temperature">N/A</div>
-                <p>Suhu Terkini</p>
-            </div>
-
-            <div class="stat-card">
-                <h3 class="stat-title">Kehadiran Guru</h3>
-                <div class="stat-value stat-teacher-absent" id="guru_hadir">Tidak Hadir</div>
-                <p>Status Guru</p>
-            </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Kehadiran Guru</h3>
+                    <div class="stat-value stat-teacher-absent" id="guru_hadir">Tidak Hadir</div>
+                    <p>Status Guru</p>
+                </div>
+            @endif
         </section>
 
         <!-- Table Section -->
@@ -368,7 +378,9 @@
                                             break;
                                     }
                                 @endphp
-                                <td><span class="status-badge {{ $statusClass }}">{{ ucfirst($presensi->kehadiran) }}</span></td>
+                                <td><span
+                                        class="status-badge {{ $statusClass }}">{{ ucfirst($presensi->kehadiran) }}</span>
+                                </td>
                                 <td>{{ $presensi->waktu_presensi }}</td>
                                 <td>{{ $presensi->jenis_absen ?? '-' }}</td>
                             </tr>

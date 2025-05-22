@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_mata_pelajaran'); // Hubungan dengan tabel mataPelajaran
             $table->foreign('id_mata_pelajaran')->references('id_mata_pelajaran')->on('mata_pelajaran')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -13,8 +13,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Auth;
 
+Route::middleware(['auth', RoleMiddleware::class . ':siswa'])->group(function () {
+    Route::get('/rekapan-absen-siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('rekapanAbsenSiswa.index');
+    // routes/web.php
+    Route::get('/jadwal-pelajaran', [JadwalPelajaranController::class, 'indexsiswa'])->name('siswa.jadwal');
+});
 // Rute untuk User (Siswa, Guru, dan Admin)
-Route::middleware(['auth', RoleMiddleware::class.':admin'])->group(function () {
+Route::middleware(['auth', RoleMiddleware::class . ':admin,guru'])->group(function () {
     // Rute untuk User (Siswa, Guru, dan Admin)
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
@@ -56,47 +61,30 @@ Route::middleware(['auth', RoleMiddleware::class.':admin'])->group(function () {
         'kelas' => 'kelas'
     ]);
 });
-
-Route::middleware(['auth', RoleMiddleware::class.':siswa'])->group(function () {
-    Route::get('/rekapan-absen-siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('rekapanAbsenSiswa.index');
-    // routes/web.php
-    Route::get('/jadwal-pelajaran', [JadwalPelajaranController::class, 'indexsiswa'])->name('siswa.jadwal');
-});
-
-
 Route::middleware(['web'])->group(function () {
-    // Rute login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
-    // Rute root, mengarahkan ke halaman dashboard atau login
     Route::get('/', function () {
         if (Auth::check()) {
-            // Jika sudah login, arahkan ke dashboard
             return redirect()->route('admin.dashboard');
         }
-        // Jika belum login, arahkan ke login
         return redirect()->route('login');
     });
 
     // Rute untuk dashboard admin dan siswa, menggunakan middleware auth
-    Route::middleware(['auth', RoleMiddleware::class . ':admin'])->group(function () {
+    Route::middleware(['auth', RoleMiddleware::class . ':admin,guru'])->group(function () {
         Route::get('/get-firebase-data', [DashboardAdminController::class, 'getFirebaseData']);
         Route::get('/update-dashboard-admin', [DashboardAdminController::class, 'updateDashboardAdmin']);
     });
-    Route::middleware(['auth', RoleMiddleware::class.':admin'])->get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
-    Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('siswa.dashboard');
+    Route::middleware(['auth', RoleMiddleware::class . ':admin'])->get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
+    Route::middleware(['auth', RoleMiddleware::class . ':guru'])->get('/dashboard_guru', [DashboardAdminController::class, 'index'])->name('guru.dashboard');
+    Route::middleware(['auth', RoleMiddleware::class . ':siswa'])->get('/dashboard_siswa', [DetailPresensiController::class, 'rekapanAbsenSiswa'])->name('siswa.dashboard');
 
     Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     });
-
-
-    // Route::middleware(['auth', RoleMiddleware::class.':siswa'])->get('/dashboard_siswa', function () {
-    //     return view('dashboard_siswa');
-    // })->name('siswa.dashboard');
-
 });
 
 

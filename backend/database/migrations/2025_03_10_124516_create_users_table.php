@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('no_hp_ortu')->nullable();
             $table->foreign('kelas_id')->references('id_kelas')->on('kelas')->onDelete('set null');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

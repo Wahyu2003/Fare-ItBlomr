@@ -12,11 +12,13 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = auth()->user();
-        
+
         if ($user->role == 'admin') {
             return view('profile.edit_admin', compact('user'));
         } elseif ($user->role == 'siswa') {
             return view('profile.edit_siswa', compact('user'));
+        } elseif ($user->role == 'guru') {
+            return view('profile.edit_admin', compact('user'));
         } else {
             abort(403);
         }
@@ -28,6 +30,12 @@ class ProfileController extends Controller
 
         if ($user->role === 'admin') {
             // Admin tidak perlu field khusus siswa
+            $rules = [
+                'nama' => 'required|string|max:255',
+                'password' => 'nullable|string|min:6|confirmed',
+                'foto' => 'nullable|image|max:2048',
+            ];
+        } elseif ($user->role === 'guru') {
             $rules = [
                 'nama' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6|confirmed',

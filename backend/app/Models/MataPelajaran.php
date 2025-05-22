@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MataPelajaran extends Model
 {
+    use SoftDeletes;
     protected $table = 'mata_pelajaran';
     protected $primaryKey = 'id_mata_pelajaran';
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'nama_mata_pelajaran', 'kelas_id',

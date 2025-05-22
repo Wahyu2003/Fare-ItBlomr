@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
+    <title>
+        @if (auth()->user()->role === 'admin')
+            Dashboard Admin
+        @elseif (auth()->user()->role === 'guru')
+            Dashboard Guru
+        @else
+            Dashboard
+        @endif
+    </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,20 +25,24 @@
             }
 
             .search-container {
-                width: 300px; /* Lebar search pada desktop */
+                width: 300px;
+                /* Lebar search pada desktop */
                 flex-grow: 0;
             }
 
             .icons-container {
-                margin-left: auto; /* Pindahkan ikon ke kanan */
+                margin-left: auto;
+                /* Pindahkan ikon ke kanan */
             }
 
             .navbar-toggler {
-                display: none; /* Sembunyikan toggle button pada desktop */
+                display: none;
+                /* Sembunyikan toggle button pada desktop */
             }
         }
     </style>
 </head>
+
 <body class="bodi">
     <!-- Sidebar -->
     <div class="sidebar">
@@ -38,32 +51,40 @@
         </div>
         <ul class="nav flex-column p-3">
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <a class="nav-link {{ request()->routeIs(Auth::user()->role . '.dashboard') ? 'active' : '' }}"
+                    href="{{ route(Auth::user()->role . '.dashboard') }}">
                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('jadwalPelajaran.index') ? 'active' : '' }}" href="{{ route('jadwalPelajaran.index') }}">
+                <a class="nav-link {{ request()->routeIs('jadwalPelajaran.index') ? 'active' : '' }}"
+                    href="{{ route('jadwalPelajaran.index') }}">
                     <i class="fas fa-calendar-alt me-2"></i> Jadwal Pelajaran
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}" href="{{ route('detailPresensi.index') }}">
+                <a class="nav-link {{ request()->routeIs('detailPresensi.index') ? 'active' : '' }}"
+                    href="{{ route('detailPresensi.index') }}">
                     <i class="fas fa-user-check me-1"></i> Presensi
                 </a>
             </li>
+            @if (Auth::user()->role === 'admin')
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->routeIs('jadwal_bel.index') ? 'active' : '' }}"
+                        href="{{ route('jadwal_bel.index') }}">
+                        <i class="fas fa-bell me-2"></i> Bel
+                    </a>
+                </li>
+            @endif
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('jadwal_bel.index') ? 'active' : '' }}" href="{{ route('jadwal_bel.index') }}">
-                    <i class="fas fa-bell me-2"></i> Bel
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}" href="{{ route('user.index') }}">
+                <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}"
+                    href="{{ route('user.index') }}">
                     <i class="fas fa-users me-2"></i> Daftar Wajah
                 </a>
             </li>
             <li class="nav-item mb-2 logout">
-                <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">
+                <a class="nav-link" href="#"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit()">
                     <i class="fas fa-sign-out-alt me-2"></i> Logout
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -81,7 +102,8 @@
             <div class="container-fluid">
                 <div class="navbar-top">
                     <div class="navbar-left">
-                        <button class="navbar-toggler" type="button" onclick="toggleSidebarAndNavbar()" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" onclick="toggleSidebarAndNavbar()"
+                            aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="search-container">
@@ -93,11 +115,13 @@
                     <div class="navbar-right icons-container">
                         <a class="nav-link position-relative" href="#">
                             <i class="fas fa-bell"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
                         </a>
                         <a class="nav-link position-relative" href="#">
                             <i class="fas fa-envelope"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"></span>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"></span>
                         </a>
                         <a href="{{ route('profile.edit') }}" class="profile-link">
                             <span class="username">{{ Auth::user()->nama }}</span>
@@ -126,7 +150,7 @@
 
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
-            mainContainer.classList.toggle('dimmed');  // ini bagian baru
+            mainContainer.classList.toggle('dimmed'); // ini bagian baru
 
             const toggleButton = document.querySelector('.navbar-toggler');
             const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
@@ -142,12 +166,11 @@
 
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
-            mainContainer.classList.remove('dimmed');  // hapus kelas dimmed
+            mainContainer.classList.remove('dimmed'); // hapus kelas dimmed
 
             toggleButton.setAttribute('aria-expanded', 'false');
         });
-
-
     </script>
 </body>
+
 </html>

@@ -18,6 +18,8 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'siswa') {
                 return redirect()->route('siswa.dashboard');
+            } elseif ($user->role === 'guru') {
+                return redirect()->route('guru.dashboard');
             }
 
             Auth::logout();
@@ -36,7 +38,6 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        // Compare plain text password directly
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
@@ -44,6 +45,8 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'siswa') {
                 return redirect()->route('siswa.dashboard');
+            } elseif ($user->role === 'guru') {
+                return redirect()->route('guru.dashboard');
             }
 
             Auth::logout();

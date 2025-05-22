@@ -11,8 +11,9 @@ return new class extends Migration
         Schema::create('mata_pelajaran', function (Blueprint $table) {
             $table->id('id_mata_pelajaran');
             $table->string('nama_mata_pelajaran');
-            $table->unsignedBigInteger('kelas_id'); 
+            $table->unsignedBigInteger('kelas_id');
             $table->timestamps();
+            $table->softDeletes();
 
             // Menambahkan foreign key
             $table->foreign('kelas_id')->references('id_kelas')->on('kelas')->onDelete('cascade');
