@@ -218,7 +218,6 @@
                         </button>
                     </div>
                 </div>
-                <a href="#" class="forgot-password mb-3">Lupa Password?</a>
 
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
