@@ -86,4 +86,18 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui.');
     }
+
+    public function ambilfoto(Request $request)
+    {
+        $user = Auth::user();
+        $fotoPath = 'storage/profile_images/' . $user->foto;
+
+        if (\Storage::exists($fotoPath)) {
+            return response()->file(\Storage::path($fotoPath));
+        } else {
+            abort(404);
+        }
+        // The following line seems unnecessary and unreachable, consider removing it
+        // return redirect(layouts.admin)
+    }
 }
