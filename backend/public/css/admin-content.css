@@ -11,41 +11,95 @@ body {
     background-color: #E7EFFF;
 }
 
-/* Sidebar Styling */
+/* === Sidebar Drawer Xiaomi Style === */
 .sidebar {
     position: fixed;
     top: 0;
-    left: -250px; /* Hidden by default on mobile */
-    width: 250px;
+    left: -100%; /* Gunakan persentase untuk lebih fleksibel */
+    width: 260px;
+    max-width: 80%; /* Maksimum 80% lebar layar di mobile */
     height: 100vh;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    transition: left 0.3s ease;
+    background: #fff;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.15);
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    z-index: 1100;
+    transition: left 0.35s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
 }
-
 .sidebar.active {
-    left: 0; /* Show sidebar on mobile when active */
+    left: 0;
 }
 
-/* Logo Styling */
+.sidebar-dragbar {
+    position: fixed;
+    top: 40%;
+    left: 0;
+    width: 28px;
+    height: 80px;
+    background: rgba(52, 152, 219, 0.15);
+    border-radius: 0 20px 20px 0;
+    z-index: 1201;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+/* Hide dragbar when sidebar is active */
+.sidebar.active ~ .sidebar-dragbar {
+    display: none !important;
+}
+.sidebar-dragbar:hover {
+    background: rgba(52, 152, 219, 0.25);
+}
+.sidebar-dragbar .dragbar-line {
+    width: 6px;
+    height: 48px;
+    background: #3498db;
+    border-radius: 3px;
+    margin-left: 10px;
+}
+
+/* Overlay for Sidebar */
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.35);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Blur effect on main content when sidebar open */
+.main-container.dimmed {
+    filter: blur(2px) brightness(0.95);
+    transition: filter 0.3s;
+    /* pointer-events: none; */
+}
+
+/* Sidebar Logo */
 .sidebar-logo {
     padding: 20px 15px;
     text-align: center;
 }
-
 .sidebar-logo .navbar-brand {
     font-size: 1.5rem;
     color: #333 !important;
     font-weight: bold;
     text-decoration: none;
 }
-
 .sidebar-logo .navbar-brand:hover {
     color: #007bff !important;
 }
 
-/* Menu Styling */
+/* Sidebar Menu */
 .sidebar .nav-link {
     color: #2c3e50;
     padding: 12px 15px;
@@ -53,7 +107,6 @@ body {
     border-radius: 8px;
     transition: all 0.3s ease;
 }
-
 .sidebar .nav-link:hover,
 .sidebar .nav-link.active {
     background-color: #3498db;
@@ -61,28 +114,39 @@ body {
     border-radius: 8px;
     transform: translateX(10px);
 }
-
 .nav-link.active {
     transform: translateX(10px);
 }
-
 .nav-item.logout .nav-link:hover {
     background-color: #c0392b;
 }
 
+/* Profile Link (Sidebar Bawah) */
+.profile-link .rounded-circle {
+    border: 2px solid #e7efff;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+}
+
 /* Main Container (Header + Content) */
 .main-container {
-    margin-left: 0; /* No sidebar offset on mobile */
-    width: 100%;
+    margin-left: 0;
+    width: 100vh;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 20px; /* atas kanan bawah kiri */
+    background: transparent;
     transition: margin-left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
-.main-container.shifted {
-    margin-left: 250px; /* Shift content when sidebar is active */
-}
+/* .main-container.shifted {
+    margin-left: 250px; 
+} */
 
 /* Header Styling */
-.navbar {
+/* .navbar {
     width: calc(100% - 40px);
     margin: 20px;
     padding: 0;
@@ -96,25 +160,25 @@ body {
 
 .navbar .container-fluid {
     padding: 10px 20px;
-}
+} */
 
 /* Reset flex dan atur tata letak dasar */
-.navbar-top {
+/* .navbar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap; /* penting untuk mode mobile */
-    gap: 0.5rem;
+    /* gap: 0.5rem;
     width: 100%;
-}
+} */ 
 
 /* Container kiri: toggle + search */
-.navbar-left {
+/* .navbar-left {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex: 1 1 auto; /* supaya bisa melebar */
-}
+    flex: 1 1 auto; 
+} */
 
 /* Container kanan: icon notif, pesan, profil */
 /* Default .navbar-right di desktop */
@@ -184,12 +248,15 @@ body {
 
 /* Content Styling */
 .content {
-    margin: 0 20px 20px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    min-height: calc(100vh - 100px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 12px;
+    /* min-height: 400px; */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 32px 24px;
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Card Styling untuk Dashboard */
@@ -327,16 +394,17 @@ body {
     }    
 
     .sidebar {
-        left: -250px; /* Hidden by default */
+        left: -260px;
+        border-radius: 0 18px 18px 0;
     }
-
     .sidebar.active {
-        left: 0; /* Show when active */
+        left: 0;
     }
-
+    .sidebar-dragbar { display: flex; }
     .main-container {
-        margin-left: 0;
-        width: 100%;
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 16px;
     }
 
     .navbar {
@@ -354,6 +422,14 @@ body {
             width: 100%;
             max-width: none;
         }
+
+        .wajahFlipPage {
+            padding: 10px 2px;
+            border-radius: 6px;
+        }
+        .wajahFlipTable {
+            font-size: 13px;
+        }
     }
 
     /* Buat navbar-right turun ke bawah (full width baris baru) */
@@ -369,9 +445,17 @@ body {
         flex-shrink: 0;
     }
 
+    .main-container {
+        padding: 16px;
+    }
     .content {
-        margin: 0 10px 10px;
-        padding: 15px;
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+        padding: 16px;
+        border-radius: 8px;
+        /* min-height: 300px; */
+        /* max-width: 100%; */
     }
 
     .admin-card {
@@ -387,27 +471,44 @@ body {
 
 @media (min-width: 770px) {
     .sidebar {
-        left: 0; /* Always visible on desktop */
+        left: 0;
+        width: 260px;
+        border-radius: 0 10px 10px 0;
     }
+    .sidebar-dragbar { display: none; }
 
+    .overlay {
+        display: none !important;
+    }
+    
     .main-container {
-        margin-left: 250px;
-        width: calc(100% - 250px);
+        margin-left: 260px;
+        padding: 20px; /* atas kanan bawah kiri */
+        width: calc(100% - 260px);
     }
+    .content {
+        padding: 24px;
+        border-radius: 14px;
+        /* min-height: 500px; */
+    }
+    /* Hapus atau komentar baris ini */
+    /* max-width: 1200px; */
+}
 
-    .navbar-left {
+
+    /* .navbar-left { */
         /* Toggle button sembunyikan, search ambil space */
-        .navbar-toggler {
+        /* .navbar-toggler {
             display: none;
         }
         /* Search container lebar fix */
-        .search-container {
+        /* .search-container {
             width: 100%;
             max-width: 800px;
         }
-    }
+    } */
     /* Navbar-top tetap satu baris */
-    .navbar-top {
+    /* .navbar-top {
         flex-wrap: nowrap;
     }
 
@@ -415,7 +516,7 @@ body {
         margin-left: auto;
     }
 
-}
+} */
 
 .admin-tableg {
     width: 100%;
@@ -506,26 +607,33 @@ body {
 }
 
 .wajahFlipPage {
-    position: absolute;
-    top: 0;
-    left: 0;
+    /* Hapus/komentar baris berikut: */
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 0; */
     width: 100%;
+    max-width: 100vw;      /* Batasi lebar di mobile */
+    overflow-x: auto;      /* Scroll horizontal jika tabel lebar */
     background: #fff;
     transform-origin: left center;
     transition: transform 0.8s ease-in-out;
     padding: 20px;
     border-radius: 8px;
-    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); */
-    display: none; /* Sembunyikan halaman non-aktif */
+    display: none;
+    box-sizing: border-box;
 }
 
 .wajahFlipPage.wajahFlipActive {
-    display: block; /* Tampilkan halaman aktif */
+    display: block;
     transform: rotateY(0deg);
+    width: 100%;
+    max-width: 100vw;
+    position: static;
 }
 
 .wajahFlipPage:not(.wajahFlipActive) {
-    transform: rotateY(-180deg); /* Animasi flip untuk halaman tersembunyi */
+    transform: rotateY(-180deg);
+    display: none;
 }
 
 /* Styling Tombol Switch */
@@ -574,31 +682,4 @@ body {
 /* Ikon Bootstrap */
 .bi {
     font-size: 16px;
-}
-
-
-/* Overlay default hidden */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* warna hitam semi transparan */
-    z-index: 900; /* harus di bawah sidebar yang z-index: 1000 */
-    opacity: 0;
-    pointer-events: none; /* agar tidak menangkap klik saat tidak aktif */
-    transition: opacity 0.3s ease;
-}
-
-/* Overlay aktif */
-.overlay.active {
-    opacity: 1;
-    pointer-events: auto; /* menangkap klik */
-}
-
-.main-container.dimmed {
-    filter: brightness(0.6) blur(2px); /* buat gelap dengan filter */
-    transition: filter 0.3s ease;
-    pointer-events: none; /* agar konten tidak bisa di klik saat gelap */
 }
