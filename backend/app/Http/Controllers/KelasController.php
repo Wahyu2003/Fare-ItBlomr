@@ -10,6 +10,9 @@ class KelasController extends Controller
     // Menampilkan semua kelas untuk daftar kelas
     public function index()
     {
+        if (url()->previous() !== url()->current()) {
+        session(['kelas_previous_url' => url()->previous()]);
+        }
         // Mengambil semua data kelas
         $kelas = Kelas::all();
 
@@ -28,7 +31,7 @@ class KelasController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'nama_kelas' => 'required|string|max:24|unique:kelas,nama_kelas',
+            'nama_kelas' => 'required|string|max:24',
         ]);
 
         // Menyimpan kelas baru

@@ -203,12 +203,11 @@
                         </thead>
                         <tbody>
                             @forelse ($belumPresensi as $user)
-                                <tr>
+                                <tr data-role="{{ $user->role }}" data-kelas="{{ $user->kelas_id ?? '' }}">
                                     <td>{{ $user->nama }}</td>
                                     <td>{{ $user->role }}</td>
                                     <td>
-                                        <select name="statuses[{{ $user->id_user }}]" class="form-select form-select-sm"
-                                            aria-label="Pilih Status">
+                                        <select name="statuses[{{ $user->id_user }}]" class="form-select form-select-sm" aria-label="Pilih Status">
                                             <option value="" selected>-- Belum Hadir --</option>
                                             <option value="izin">Izin</option>
                                             <option value="alpha">Alfa</option>
@@ -382,22 +381,21 @@
                 }
             }, 'image/jpeg');
         }
-
-        // Fungsi untuk memfilter tabel
+        
         function filterPresensi() {
             const kelasFilter = document.getElementById('kelasFilter');
-            const labelFilter = document.getElementById('labelf'); // Mengambil elemen label kelas
+            const labelFilter = document.getElementById('labelf'); // Label kelas
             const roleFilter = document.getElementById('roleFilter').value;
 
-            // Mengatur kelasFilter dan labelFilter berdasarkan pilihan roleFilter
+            // Atur visibilitas filter kelas jika role == GURU
             if (roleFilter === 'GURU') {
-                kelasFilter.disabled = true; // Menonaktifkan kelasFilter
-                kelasFilter.style.display = 'none'; // Menyembunyikan kelasFilter
-                labelFilter.style.display = 'none'; // Menyembunyikan label kelas
+                kelasFilter.disabled = true;
+                kelasFilter.style.display = 'none';
+                labelFilter.style.display = 'none';
             } else {
-                kelasFilter.disabled = false; // Mengaktifkan kembali kelasFilter
-                kelasFilter.style.display = 'inline-block'; // Menampilkan kembali kelasFilter
-                labelFilter.style.display = 'block'; // Memastikan label tampil dengan benar
+                kelasFilter.disabled = false;
+                kelasFilter.style.display = 'inline-block';
+                labelFilter.style.display = 'block';
             }
 
             // Filter tabel Belum Presensi
@@ -420,5 +418,5 @@
                 row.style.display = (kelasMatch && roleMatch) ? '' : 'none';
             });
         }
-    </script>
+</script>
 @endsection
