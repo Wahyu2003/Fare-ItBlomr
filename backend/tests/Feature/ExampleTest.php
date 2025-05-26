@@ -16,4 +16,11 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+    
+    public function test_redirect_to_login_if_unauthenticated()
+    {
+        $response = $this->get('/');
+        $response->assertStatus(302)
+                 ->assertRedirect('/login');
+    }
 }
