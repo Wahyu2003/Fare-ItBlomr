@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -30,12 +30,18 @@ jobs:
         composer install --no-progress --no-suggest --prefer-dist
         composer dump-autoload
 
+    - name: Save vendor directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-vendor
+        path: backend/vendor
+
   test:
     needs: setup
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:8.4
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: testing
@@ -45,8 +51,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Verify setup
+
+    - name: Restore vendor directory
+      uses: actions/download-artifact@v4
+      with:
+        name: backend-vendor
+        path: backend/vendor
+
+    - name: Verify vendor setup
       run: |
         ls -la backend/vendor/
         [ -f "backend/vendor/autoload.php" ] || (echo "Autoload file missing!" && exit 1)
@@ -63,7 +75,7 @@ jobs:
           fi
         done
 
-    - name: Prepare environment
+    - name: Prepare Laravel environment
       working-directory: ./backend
       run: |
         cp .env.example .env
@@ -128,15 +140,15 @@ jobs:
           sed -i "s|image: $LARAVEL_IMAGE.*|image: $LARAVEL_IMAGE:${{ github.sha }}|g" docker-compose.prod.yml
           sed -i "s|image: $FACEAPI_IMAGE.*|image: $FACEAPI_IMAGE:${{ github.sha }}|g" docker-compose.prod.yml
           
-          # Deploy stack
+          # Deploy Docker Swarm stack
           docker stack deploy -c docker-compose.prod.yml fare-itblomr
           
-          # Wait for services to start
+          # Wait for services to stabilize
           sleep 30
           
-          # Run migrations
+          # Run Laravel migration
           docker exec $(docker ps -q -f name=fare-itblomr_laravel_franken) php artisan migrate --force
           
-          # Cleanup
+          # Clean up
           docker system prune -af
         EOF
