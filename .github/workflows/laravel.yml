@@ -38,7 +38,16 @@ jobs:
       run: php artisan key:generate
 
     - name: Run tests
-      run: vendor/bin/phpunit
+      run: |
+        # Generate fresh encryption key
+        php artisan key:generate
+        
+        # Setup testing database
+        touch database/database.sqlite
+        php artisan migrate:fresh --env=testing --force
+        
+        # Jalankan test dengan detail
+        vendor/bin/phpunit --verbose
 
   build-and-push:
     needs: test
