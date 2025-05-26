@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  laravel_franken:
+    image: $LARAVEL_IMAGE:$TAG  # ini akan diganti oleh sed di GitHub Actions
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./backend/.env
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - mysql
+      - faceapi
+
+  faceapi:
+    image: $FACEAPI_IMAGE:$TAG  # ini juga akan diganti oleh sed
+    ports:
+      - "5000:5000"
+    volumes:
+      - face_known_faces:/app/known_faces
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  mysql:
+    image: mysql:8.4.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: web_presensi_facerecognation
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  mysql_data:
+  face_known_faces:
