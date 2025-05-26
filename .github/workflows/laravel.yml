@@ -90,7 +90,7 @@ jobs:
       run: |
         php artisan migrate:fresh --force
         chmod +x vendor/bin/phpunit
-        vendor/bin/phpunit --verbose
+        vendor/bin/phpunit
 
   build-and-push:
     needs: test
