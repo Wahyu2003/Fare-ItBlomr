@@ -29,7 +29,7 @@ jobs:
         tools: composer:v2
 
     - name: Copy .env
-      run: cp backend/.env.example backend/.env
+      run: cp .env.example .env
 
     - name: Install dependencies
       run: composer install -d backend --no-progress --no-suggest --prefer-dist
