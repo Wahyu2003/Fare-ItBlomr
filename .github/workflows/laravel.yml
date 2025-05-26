@@ -142,8 +142,9 @@ jobs:
           git pull origin ${{ github.ref_name }}
           
           # Update docker-compose with new images
-          sed -i "s|image: $LARAVEL_IMAGE.*|image: $LARAVEL_IMAGE:${{ github.sha }}|g" docker-compose.prod.yml
-          sed -i "s|image: $FACEAPI_IMAGE.*|image: $FACEAPI_IMAGE:${{ github.sha }}|g" docker-compose.prod.yml
+          sed -i "s|image: heshcp78/laravel-franken.*|image: heshcp78/laravel-franken:${{ github.sha }}|g" docker-compose.prod.yml
+          sed -i "s|image: heshcp78/faceapi.*|image: heshcp78/faceapi:${{ github.sha }}|g" docker-compose.prod.yml
+
           
           # Deploy Docker Swarm stack
           docker stack deploy -c docker-compose.prod.yml fare-itblomr
