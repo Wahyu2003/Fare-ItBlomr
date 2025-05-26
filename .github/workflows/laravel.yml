@@ -1,0 +1,98 @@
+name: CI/CD Pipeline for Fare-ItBlomr
+
+on:
+  push:
+    branches: [ "face_krisna", "main" ]
+  pull_request:
+    branches: [ "face_krisna" ]
+
+env:
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+  LARAVEL_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/laravel-franken
+  FACEAPI_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/faceapi
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, xml, mysql, zip
+        tools: composer:v2
+
+    - name: Copy .env
+      run: cp .env.example .env
+
+    - name: Install dependencies
+      run: composer install --no-progress --no-suggest --prefer-dist
+
+    - name: Generate key
+      run: php artisan key:generate
+
+    - name: Run tests
+      run: vendor/bin/phpunit
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/face_krisna' || github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push Laravel image
+      run: |
+        docker build -t $LARAVEL_IMAGE:${{ github.sha }} -f ./backend/Dockerfile ./backend
+        docker push $LARAVEL_IMAGE:${{ github.sha }}
+
+    - name: Build and push FaceAPI image
+      run: |
+        docker build -t $FACEAPI_IMAGE:${{ github.sha }} ./face_detection
+        docker push $FACEAPI_IMAGE:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/face_krisna' || github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to VPS
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd ~/Fare-ItBlomr
+          git pull origin ${{ github.ref_name }}
+          
+          # Update docker-compose with new images
+          sed -i "s|image: $LARAVEL_IMAGE.*|image: $LARAVEL_IMAGE:${{ github.sha }}|g" docker-compose.prod.yml
+          sed -i "s|image: $FACEAPI_IMAGE.*|image: $FACEAPI_IMAGE:${{ github.sha }}|g" docker-compose.prod.yml
+          
+          # Deploy stack
+          docker stack deploy -c docker-compose.prod.yml fare-itblomr
+          
+          # Run migrations
+          docker exec $(docker ps -q -f name=fare-itblomr_laravel_franken) php artisan migrate --force
+          
+          # Cleanup
+          docker system prune -af
+        EOF
