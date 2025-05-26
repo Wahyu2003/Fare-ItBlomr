@@ -12,18 +12,16 @@ class ExampleTest extends TestCase
 
     public function test_the_application_returns_a_successful_response()
     {
-        // 1. Buat user testing
-        $user = User::factory()->create();
-        
-        // 2. Authentikasi user
+        $user = User::factory()->admin()->create();
         $this->actingAs($user);
-        
-        // 3. Test akses ke home
+    
         $response = $this->get('/');
-        
-        // 4. Verifikasi
+        $response->assertRedirect('/dashboard');
+    
+        $response = $this->get('/dashboard');
         $response->assertStatus(200);
     }
+
 
     public function test_unauthenticated_redirect()
     {
