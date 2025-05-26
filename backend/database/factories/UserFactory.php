@@ -21,7 +21,7 @@ class UserFactory extends Factory
             'role' => $this->faker->randomElement($roles),
             'face_encoding' => $this->faker->text(200),
             'no_hp_siswa' => $this->faker->phoneNumber,
-            'kelas_id' => $this->faker->numberBetween(1, 10),
+            'kelas_id' => Kelas::factory(),
             'foto' => 'users/' . $this->faker->image('public/storage/users', 200, 200, null, false),
             'nama_ortu' => $this->faker->name,
             'no_hp_ortu' => $this->faker->phoneNumber,
