@@ -36,6 +36,7 @@ class UserFactory extends Factory
     {
         return $this->state([
             'role' => 'admin',
+            'kelas_id' => null,
         ]);
     }
 
