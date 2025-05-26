@@ -137,24 +137,32 @@ jobs:
 
     - name: Deploy to VPS
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
+          set -e
           cd ~/Fare-ItBlomr
           git pull origin ${{ github.ref_name }}
-          
-          # Update docker-compose with new images
-          sed -i "s|image: heshcp78/laravel-franken.*|image: heshcp78/laravel-franken:${{ github.sha }}|g" docker-compose.prod.yml
-          sed -i "s|image: heshcp78/faceapi.*|image: heshcp78/faceapi:${{ github.sha }}|g" docker-compose.prod.yml
 
-          
+          # Ganti image hanya yang terkait Laravel & FaceAPI
+          sed -i "s|image: heshcp78/laravel-franken:.*|image: heshcp78/laravel-franken:${{ github.sha }}|g" docker-compose.prod.yml
+          sed -i "s|image: heshcp78/faceapi:.*|image: heshcp78/faceapi:${{ github.sha }}|g" docker-compose.prod.yml
+
           # Deploy Docker Swarm stack
           docker stack deploy -c docker-compose.prod.yml fare-itblomr
-          
-          # Wait for services to stabilize
+
+          # Tunggu service stabil
           sleep 30
-          
-          # Run Laravel migration
-          docker exec $(docker ps -q -f name=fare-itblomr_laravel_franken) php artisan migrate --force
-          
+
+          # Temukan container Laravel (diambil dari nama service)
+          LARAVEL_CONTAINER=\$(docker ps --filter "name=fare-itblomr_laravel" --format "{{.ID}}" | head -n 1)
+
+          # Jalankan migrate jika container ditemukan
+          if [ -n "\$LARAVEL_CONTAINER" ]; then
+            docker exec \$LARAVEL_CONTAINER php artisan migrate --force
+          else
+            echo "Laravel container not found!"
+            exit 1
+          fi
+
           # Clean up
           docker system prune -af
         EOF
