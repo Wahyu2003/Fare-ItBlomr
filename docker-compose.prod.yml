@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   laravel_franken:
-    image: $LARAVEL_IMAGE:$TAG  # ini akan diganti oleh sed di GitHub Actions
+    image: wahyu2003/laravel-franken:$TAG  # ini akan diganti oleh sed di GitHub Actions
     ports:
       - "8002:8002"
     env_file:
@@ -16,7 +16,7 @@ services:
       - faceapi
 
   faceapi:
-    image: $FACEAPI_IMAGE:$TAG  # ini juga akan diganti oleh sed
+    image: wahyu2003/faceapi:$TAG  # ini juga akan diganti oleh sed
     ports:
       - "5000:5000"
     volumes:
