@@ -21,6 +21,7 @@
         <!-- Environment Settings -->
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="true"/>
+        <env name="APP_KEY" value="base64:J3q6uBEQBAhASNdT0wJkE0OgfT3vJp7XjH4XZ5Tt6FU="/>
         <env name="APP_URL" value="http://localhost"/>
         
         <!-- Database Configuration -->
