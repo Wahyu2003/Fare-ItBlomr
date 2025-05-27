@@ -86,7 +86,7 @@ services:
   cadvisor:
     image: gcr.io/google-containers/cadvisor:latest
     ports:
-      - "8080:8080"
+      - "7080:7080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/sys:ro
