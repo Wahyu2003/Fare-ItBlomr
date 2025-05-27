@@ -23,16 +23,16 @@
             <!-- Halaman Siswa -->
             <div class="wajahFlipPage wajahFlipActive" id="wajahFlipSiswa">
                 <div class="wajahFlipSwitch wajahFlipLeft ms-2 mt-2">
-                    <a href="{{ route('user.create') }}" class="btn btn-primary wajahFlipAddBtn">Tambah Pengguna</a>
+                    <a href="{{ route('user.create') }}" class="btn btn-primary wajahFlipAddBtn tes">Tambah Pengguna</a>
                 </div>
                 <div class="wajahFlipSwitch wajahFlipRight me-2 mt-2">
-                    <button class="btn btn-outline-primary wajahFlipBtn" data-target="guru">
+                    <button class="btn btn-outline-primary wajahFlipBtn tes" data-target="guru">
                         Ke Tampilan Guru <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
                 <h3 class="text-center mb-4">Daftar Siswa</h3>
                 <div class="table-responsive">
-                    <table class="admin-table table-hover wajahFlipTable">
+                    <table class="admin-table table-hover wajahFlipTable tes-tabel">
                         <thead class="table-light">
                             <tr>
                                 <th>NIK</th>
@@ -92,16 +92,16 @@
             <!-- Halaman Guru -->
             <div class="wajahFlipPage" id="wajahFlipGuru">
                 <div class="wajahFlipSwitch wajahFlipLeft ms-2 mt-2">
-                    <a href="{{ route('user.create') }}" class="btn btn-success wajahFlipAddBtn">Tambah Pengguna</a>
+                    <a href="{{ route('user.create') }}" class="btn btn-success wajahFlipAddBtn tes">Tambah Pengguna</a>
                 </div>
                 <div class="wajahFlipSwitch wajahFlipRight me-2 mt-2">
-                    <button class="btn btn-outline-success wajahFlipBtn" data-target="siswa">
+                    <button class="btn btn-outline-success wajahFlipBtn tes" data-target="siswa">
                         <i class="bi bi-arrow-left"></i> Ke Tampilan Siswa
                     </button>
                 </div>
                 <h3 class="text-center mb-4">Daftar Guru</h3>
                 <div class="table-responsive">
-                    <table class="admin-tableg table-hover wajahFlipTable">
+                    <table class="admin-tableg table-hover wajahFlipTable tes-tabel">
                         <thead class="table-light  bg-success text-white">
                             <tr>
                                 <th>NIK</th>

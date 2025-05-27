@@ -54,74 +54,80 @@
     @else
         @if($roleFilter == 'siswa')
             <!-- Tabel untuk Siswa -->
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Hari</th>
-                        <th>Jam Mulai</th>
-                        <th>Jam Selesai</th>
-                        <th>Kelas</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Ruangan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($jadwalPelajaran as $jp)
+            <div class="table-responsif">
+
+                <table class="admin-table">
+                    <thead>
                         <tr>
-                            <td>{{ $jp->hari }}</td>
-                            <td>{{ $jp->jam_mulai }}</td>
-                            <td>{{ $jp->jam_selesai }}</td>
-                            <td>{{ $jp->mataPelajaran->kelas->nama_kelas ?? 'Tidak Ada' }}</td> <!-- Menampilkan nama kelas -->
-                            <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
-                            <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
-                            <td>
-                                <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning edit" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
-                                <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus jadwal pelajaran ini?')">Hapus</button>
-                                </form>
-                            </td>
+                            <th>Hari</th>
+                            <th>Jam Mulai</th>
+                            <th>Jam Selesai</th>
+                            <th>Kelas</th>
+                            <th>Mata Pelajaran</th>
+                            <th>Ruangan</th>
+                            <th>Aksi</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($jadwalPelajaran as $jp)
+                            <tr>
+                                <td>{{ $jp->hari }}</td>
+                                <td>{{ $jp->jam_mulai }}</td>
+                                <td>{{ $jp->jam_selesai }}</td>
+                                <td>{{ $jp->mataPelajaran->kelas->nama_kelas ?? 'Tidak Ada' }}</td> <!-- Menampilkan nama kelas -->
+                                <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
+                                <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
+                                <td>
+                                    <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning edit" style="padding: 6px 20px; margin-right : 10px; color:white;">Edit</a>
+                                    <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus jadwal pelajaran ini?')">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
             <!-- Tabel untuk Guru -->
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Hari</th>
-                        <th>Jam Mulai</th>
-                        <th>Jam Selesai</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Guru</th>
-                        <th>Ruangan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($jadwalPelajaran as $jp)
+            <div class="table-responsif">
+
+                <table class="admin-table">
+                    <thead>
                         <tr>
-                            <td>{{ $jp->hari }}</td>
-                            <td>{{ $jp->jam_mulai }}</td>
-                            <td>{{ $jp->jam_selesai }}</td>
-                            <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
-                            <td>{{ $jp->guru->nama ?? 'Tidak Ada' }}</td>
-                            <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
-                            <td>
-                                <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning" style="padding: 5px 16px; margin:10px 0">Edit</a>
-                                <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus jadwal pelajaran ini?')">Hapus</button>
-                                </form>
-                            </td>
+                            <th>Hari</th>
+                            <th>Jam Mulai</th>
+                            <th>Jam Selesai</th>
+                            <th>Mata Pelajaran</th>
+                            <th>Guru</th>
+                            <th>Ruangan</th>
+                            <th>Aksi</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($jadwalPelajaran as $jp)
+                            <tr>
+                                <td>{{ $jp->hari }}</td>
+                                <td>{{ $jp->jam_mulai }}</td>
+                                <td>{{ $jp->jam_selesai }}</td>
+                                <td>{{ $jp->mataPelajaran->nama_mata_pelajaran ?? 'Tidak Ada' }}</td>
+                                <td>{{ $jp->guru->nama ?? 'Tidak Ada' }}</td>
+                                <td>{{ $jp->ruangan ?? 'Tidak Ada' }}</td>
+                                <td>
+                                    <a href="{{ route('jadwalPelajaran.edit', $jp->id_jadwal_pelajaran) }}" class="btn btn-sm btn-warning" style="padding: 5px 16px; margin:10px 0">Edit</a>
+                                    <form action="{{ route('jadwalPelajaran.destroy', $jp->id_jadwal_pelajaran) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus jadwal pelajaran ini?')">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
     @endif
 </div>

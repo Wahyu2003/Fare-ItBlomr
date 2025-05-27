@@ -7,6 +7,7 @@
         @if ($jadwalPelajaran->isEmpty())
             <p>Tidak ada jadwal pelajaran yang ditemukan.</p>
         @else
+        <div class="table-responsif">
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -31,6 +32,7 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
         @endif
     </div>
 @endsection

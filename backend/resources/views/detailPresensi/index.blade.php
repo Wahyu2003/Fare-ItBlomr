@@ -30,6 +30,23 @@
             gap: 15px;
         }
 
+        .container {
+            max-width: 100%;
+            padding: 10px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+        }
+
+        .table-section {
+            overflow-x: auto;
+        }
+
+
+
         /* Video Container */
         .video-container {
             text-align: center;
@@ -140,6 +157,53 @@
         .table-section {
             flex: 0 0 50%;
         }
+
+        .mobile-table-filter {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+        .mobile-table-filter {
+            display: block;
+        }
+        .video-control-layout,
+        .tables-layout {
+            flex-direction: column;
+        }
+
+        .video-section,
+        .control-section,
+        .table-section {
+            flex: 1 1 100%;
+        }
+
+        .filter-section {
+            flex-direction: column;
+        }
+
+        .filter-section select {
+            width: 100%;
+        }
+
+        .control-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .control-buttons .control-btn {
+            width: 100%;
+        }
+
+        .admin-table {
+            font-size: 13px;
+        }
+
+        .result-message {
+            font-size: 14px;
+        }
+    }
+
     </style>
 
     <div class="container">
@@ -182,6 +246,15 @@
                     @foreach ($kelasList as $kelas)
                         <option value="{{ $kelas->id_kelas }}">{{ $kelas->nama_kelas }}</option>
                     @endforeach
+                </select>
+            </div>
+            <!-- Filter Khusus Mobile: Pilih Tabel -->
+            <div class="mobile-table-filter">
+                <label for="tableSelector">Tampilkan Tabel:</label>
+                <select id="tableSelector" onchange="filterTabelMobile()">
+                    <option value="both">Semua</option>
+                    <option value="belum">Belum Presensi</option>
+                    <option value="sudah">Sudah Presensi</option>
                 </select>
             </div>
         </div>
@@ -381,7 +454,7 @@
                 }
             }, 'image/jpeg');
         }
-        
+
         function filterPresensi() {
             const kelasFilter = document.getElementById('kelasFilter');
             const labelFilter = document.getElementById('labelf'); // Label kelas
@@ -418,5 +491,29 @@
                 row.style.display = (kelasMatch && roleMatch) ? '' : 'none';
             });
         }
+
+        function filterTabelMobile() {
+            const value = document.getElementById('tableSelector').value;
+            const belum = document.querySelector('.table-section:nth-child(1)');
+            const sudah = document.querySelector('.table-section:nth-child(2)');
+
+            if (value === 'belum') {
+                belum.style.display = 'block';
+                sudah.style.display = 'none';
+            } else if (value === 'sudah') {
+                belum.style.display = 'none';
+                sudah.style.display = 'block';
+            } else {
+                belum.style.display = 'block';
+                sudah.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            if (window.innerWidth <= 768) {
+                filterTabelMobile();
+            }
+        });
+
 </script>
 @endsection

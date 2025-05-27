@@ -142,7 +142,7 @@ body {
 }
 
 /* .main-container.shifted {
-    margin-left: 250px; 
+    margin-left: 250px;
 } */
 
 /* Header Styling */
@@ -170,14 +170,14 @@ body {
     flex-wrap: wrap; /* penting untuk mode mobile */
     /* gap: 0.5rem;
     width: 100%;
-} */ 
+} */
 
 /* Container kiri: toggle + search */
 /* .navbar-left {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex: 1 1 auto; 
+    flex: 1 1 auto;
 } */
 
 /* Container kanan: icon notif, pesan, profil */
@@ -381,8 +381,26 @@ body {
     margin-top: 10px;
 }
 
+.judul {
+    display: block;
+}
+.judul-web {
+    display: none;
+}
+
 /* Responsive Styling */
 @media (max-width: 769px) {
+    .tes {
+        margin-top: 40px;
+    }
+
+    .tes-tabel {
+        margin-top: 40px;
+    }
+
+    .tabelbottom {
+        margin-top: 60px;
+    }
     .edit {
         margin-bottom : 10px;
     }
@@ -391,7 +409,7 @@ body {
         display: flex; /* Sembunyikan filter di mobile */
         justify-content: space-between;
         align-items: center;
-    }    
+    }
 
     .sidebar {
         left: -260px;
@@ -467,6 +485,10 @@ body {
         padding: 10px;
         font-size: 14px;
     }
+    .table-responsif {
+        overflow-x: auto;
+    }
+
 }
 
 @media (min-width: 770px) {
@@ -480,12 +502,17 @@ body {
     .overlay {
         display: none !important;
     }
-    
+
     .main-container {
         margin-left: 260px;
         padding: 20px; /* atas kanan bawah kiri */
         width: calc(100% - 260px);
     }
+
+    .table-responsif {
+        overflow-x: auto;
+    }
+
     .content {
         padding: 24px;
         border-radius: 14px;
