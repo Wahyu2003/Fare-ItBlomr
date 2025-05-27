@@ -396,7 +396,6 @@ class DetailPresensiController extends Controller
                 'jenis_absen' => $jenis_absen,
                 'kehadiran' => $kehadiran,
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Terjadi kesalahan: ' . $e->getMessage(),
@@ -411,11 +410,21 @@ class DetailPresensiController extends Controller
         $today = Carbon::today();
         $jenis_absen = 'tidak hadir';
 
+        // Ambil hari ini (0=minggu, 1=senin, ..., 6=sabtu)
+        $hariIni = Carbon::now()->dayOfWeek;
+
+        // Cari jadwal pelajaran hari ini
+        $jadwalHariIni = JadwalPelajaran::where('hari', $hariIni)->get();
+
+        if ($jadwalHariIni->isEmpty()) {
+            return redirect()->back()->withErrors(['error' => 'Tidak ada jadwal pelajaran hari ini']);
+        }
+
         foreach ($statuses as $userId => $status) {
             // Lewati jika status kosong
             if (empty($status)) continue;
 
-            // Validasi sederhana status
+            // Validasi status hanya 'izin' dan 'alpha'
             if (!in_array($status, ['izin', 'alpha'])) {
                 continue;
             }
@@ -423,7 +432,13 @@ class DetailPresensiController extends Controller
             $presensi = DetailPresensi::where('id_user', $userId)
                 ->whereDate('waktu_presensi', $today)
                 ->first();
-            $now = Carbon::now();
+
+            // Tentukan id_jadwal_pelajaran berdasarkan jenis_absen 'tidak hadir' (di sini tetap 'tidak hadir')
+            // Jika ingin logic berbeda, sesuaikan
+            $id_jadwal_pelajaran = $jenis_absen === 'masuk'
+                ? $jadwalHariIni->sortBy('jam_mulai')->first()->id
+                : $jadwalHariIni->sortByDesc('jam_selesai')->first()->id;
+
             if ($presensi) {
                 $presensi->kehadiran = $status;
                 $presensi->jenis_absen = $jenis_absen;
@@ -434,12 +449,12 @@ class DetailPresensiController extends Controller
                     'waktu_presensi' => $today,
                     'kehadiran' => $status,
                     'jenis_absen' => $jenis_absen,
-                    'id_jadwal_pelajaran' => 2,
+                    'id_jadwal_pelajaran' => $id_jadwal_pelajaran ?? 1,
                 ]);
             }
         }
 
-        return redirect()->back()->with('success', 'Status presensi berhasil diperbarui untuk semua user.');
+        return redirect()->back()->with('success', 'Status presensi berhasil diperbarui untuk semua user.');
     }
 
     private function kirimPesanFonnte($nomor, $pesan)
