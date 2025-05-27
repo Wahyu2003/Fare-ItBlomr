@@ -14,6 +14,7 @@ services:
     depends_on:
       - mysql
       - faceapi
+      - redis
 
   faceapi:
     image: heshcp78/faceapi:266752f6a1b79d334aea2ca86dea5738e65dc226
@@ -48,6 +49,15 @@ services:
       PMA_PORT: 3306
       PMA_USER: root
       PMA_PASSWORD: root
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
     deploy:
       replicas: 1
       restart_policy:
