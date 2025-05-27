@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   laravel_franken:
-    image: heshcp78/laravel-franken:4c087be91dc3862b8db394ec9111b07a056c0ed1
+    image: heshcp78/laravel-franken:266752f6a1b79d334aea2ca86dea5738e65dc226
     ports:
       - "8002:8002"
     env_file:
@@ -16,7 +16,7 @@ services:
       - faceapi
 
   faceapi:
-    image: heshcp78/faceapi:4c087be91dc3862b8db394ec9111b07a056c0ed1
+    image: heshcp78/faceapi:266752f6a1b79d334aea2ca86dea5738e65dc226
     ports:
       - "5000:5000"
     volumes:
