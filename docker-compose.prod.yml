@@ -64,6 +64,8 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+    depends_on:
+      - cadvisor
 
   grafana:
     image: grafana/grafana
@@ -74,6 +76,21 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana_data:/var/lib/grafana
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/google-containers/cadvisor:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
     deploy:
       replicas: 1
       restart_policy:

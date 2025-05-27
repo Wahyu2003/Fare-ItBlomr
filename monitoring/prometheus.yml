@@ -4,12 +4,16 @@ global:
 scrape_configs:
   - job_name: 'laravel'
     static_configs:
-      - targets: ['laravel_franken:8002'] # ganti sesuai endpoint metrics jika ada
+      - targets: ['laravel_franken:8002']
 
   - job_name: 'faceapi'
     static_configs:
-      - targets: ['faceapi:5000'] # hanya jika faceapi punya endpoint metrics
+      - targets: ['faceapi:5000']
 
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
