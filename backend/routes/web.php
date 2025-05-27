@@ -89,35 +89,3 @@ Route::middleware(['web'])->group(function () {
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-use Prometheus\CollectorRegistry;
-use Prometheus\RenderTextFormat;
-use Prometheus\Storage\Redis;
-
-Route::get('/metrics', function () {
-    // Konfigurasi koneksi Redis
-    $redisStorage = new Redis([
-        'host' => 'redis',    // sesuai nama service di docker-compose
-        'port' => 6379,
-        'persistent_connections' => false,
-    ]);
-
-    $registry = new CollectorRegistry($redisStorage);
-
-    // Mendaftarkan dan meningkatkan metrik counter
-    $counter = $registry->getOrRegisterCounter(
-        'app',                          // namespace
-        'http_requests_total',         // nama metrik
-        'Total HTTP requests received',// deskripsi
-        ['path']                       // label
-    );
-
-    $counter->inc(['/metrics']); // tambahkan 1 ke counter untuk endpoint ini
-
-    // Render metrik ke format Prometheus
-    $renderer = new RenderTextFormat();
-    $metrics = $registry->getMetricFamilySamples();
-
-    return response($renderer->render($metrics), 200)
-        ->header('Content-Type', RenderTextFormat::MIME_TYPE);
-});

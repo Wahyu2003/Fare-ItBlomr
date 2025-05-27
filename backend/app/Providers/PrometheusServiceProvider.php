@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Prometheus\CollectorRegistry;
-use Prometheus\Storage\InMemory;
 use Prometheus\RenderTextFormat;
+use Prometheus\Storage\Redis as RedisStorage;
 use Illuminate\Support\Facades\Route;
 
 class PrometheusServiceProvider extends ServiceProvider
@@ -15,9 +15,12 @@ class PrometheusServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Daftarkan registry ke service container
         $this->app->singleton(CollectorRegistry::class, function () {
-            $adapter = new InMemory(); // Ganti ke Redis jika perlu
+            $adapter = new RedisStorage([
+                'host' => 'redis',
+                'port' => 6379,
+                'persistent_connections' => false,
+            ]);
             return new CollectorRegistry($adapter);
         });
     }
