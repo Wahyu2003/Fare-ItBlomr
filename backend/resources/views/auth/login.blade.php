@@ -187,7 +187,7 @@
 
         <!-- Right Section: Login Form -->
         <div class="right-section">
-            <h2>Login</h2>
+            <h2>Log in</h2>
 
             <!-- Error Messages -->
             @if($errors->any())
