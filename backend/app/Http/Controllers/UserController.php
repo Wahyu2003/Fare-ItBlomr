@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\Kelas;
 
@@ -29,7 +30,7 @@ class UserController extends Controller
         $rules = [
             'nik' => ['required', 'string', 'max:20'],
             'nama' => ['required', 'string', 'max:30'],
-            'username' => ['required', 'string', 'max:30', 'min:8', 'lowercase', 'unique:users,username'],
+            'username' => ['required', 'string', 'max:30', 'min:8', Rule::unique('users','username')->whereNull('deleted_at')],
             'password' => ['required', 'string', 'min:8'],
             'role' => ['required', 'in:admin,siswa,guru'],
             'face_encoding' => ['nullable'],
@@ -103,7 +104,7 @@ class UserController extends Controller
         $rules = [
             'nik' => ['required', 'string', 'max:20'],
             'nama' => ['required', 'string', 'max:30'],
-            'username' => ['required', 'string', 'max:30', 'min:8', 'lowercase', 'unique:users,username,' . $user->id_user . ',id_user'],
+            'username' => ['required', 'string', 'max:30', 'min:8', Rule::unique('users', 'username')->ignore($user->id_user, 'id_user')->whereNull('deleted_at'),],
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['required', 'in:admin,siswa,guru'],
             'face_encoding' => ['nullable'],
