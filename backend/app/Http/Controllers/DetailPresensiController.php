@@ -410,10 +410,24 @@ class DetailPresensiController extends Controller
         $today = Carbon::today();
         $jenis_absen = 'tidak hadir';
 
-        // Ambil hari ini (0=minggu, 1=senin, ..., 6=sabtu)
-        $hariIni = Carbon::now()->dayOfWeek;
+        // Mapping angka dayOfWeek ke nama hari string sesuai enum di DB
+        $daysMap = [
+            0 => 'Minggu',
+            1 => 'Senin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Kamis',
+            5 => 'Jumat',
+            6 => 'Sabtu',
+        ];
 
-        // Cari jadwal pelajaran hari ini
+        $hariIni = $daysMap[Carbon::now()->dayOfWeek] ?? null;
+
+        if (!$hariIni) {
+            return redirect()->back()->withErrors(['error' => 'Hari tidak valid']);
+        }
+
+        // Cari jadwal pelajaran hari ini berdasarkan nama hari string
         $jadwalHariIni = JadwalPelajaran::where('hari', $hariIni)->get();
 
         if ($jadwalHariIni->isEmpty()) {
@@ -421,10 +435,8 @@ class DetailPresensiController extends Controller
         }
 
         foreach ($statuses as $userId => $status) {
-            // Lewati jika status kosong
             if (empty($status)) continue;
 
-            // Validasi status hanya 'izin' dan 'alpha'
             if (!in_array($status, ['izin', 'alpha'])) {
                 continue;
             }
@@ -433,11 +445,9 @@ class DetailPresensiController extends Controller
                 ->whereDate('waktu_presensi', $today)
                 ->first();
 
-            // Tentukan id_jadwal_pelajaran berdasarkan jenis_absen 'tidak hadir' (di sini tetap 'tidak hadir')
-            // Jika ingin logic berbeda, sesuaikan
             $id_jadwal_pelajaran = $jenis_absen === 'masuk'
-                ? $jadwalHariIni->sortBy('jam_mulai')->first()->id
-                : $jadwalHariIni->sortByDesc('jam_selesai')->first()->id;
+                ? $jadwalHariIni->sortBy('jam_mulai')->first()->id_jadwal_pelajaran
+                : $jadwalHariIni->sortByDesc('jam_selesai')->first()->id_jadwal_pelajaran;
 
             if ($presensi) {
                 $presensi->kehadiran = $status;
@@ -454,7 +464,7 @@ class DetailPresensiController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Status presensi berhasil diperbarui untuk semua user.');
+        return redirect()->back()->with('success', 'Status presensi berhasil diperbarui untuk semua user.');
     }
 
     private function kirimPesanFonnte($nomor, $pesan)
